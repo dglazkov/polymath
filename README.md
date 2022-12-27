@@ -30,7 +30,7 @@ TRANSFORMERS_VERBOSITY=error
 
 Any embeddings pkl files you have in `out/` will be used as the content. If none exist, it will use the `sample-import-content.pkl`.
 
-Then run `python3 sample/main.py`
+Then run `python3 sample/main.py "How does building a platform differ from building a product?"`
 
 ## Creating a new pkl
 
