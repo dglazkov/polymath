@@ -9,10 +9,9 @@ import sys
 sys.path.insert(0, os.path.abspath(
     os.path.join(os.path.dirname(__file__), '..')))
 
-from ask_embeddings import load_embeddings, get_embedding, get_similarities, get_context, get_issues
+from ask_embeddings import load_default_embeddings, get_embedding, get_similarities, get_context, get_issues
 
 
-EMBEDDINGS_FILE = "out/embeddings.pkl"
 WANDERING_MEMORY = 60 * 60 * 2  # 2 hours, why not
 WANDERING_VARIETY = 5
 
@@ -30,7 +29,7 @@ def start():
             return jsonify({
                 "error": "Query is required"
             })
-        embeddings = load_embeddings(EMBEDDINGS_FILE)
+        embeddings = load_default_embeddings()
         query_embedding = get_embedding(query)
         similiarities = get_similarities(
             query_embedding, embeddings["embeddings"])

@@ -28,7 +28,7 @@ TRANSFORMERS_VERBOSITY=error
 
 (The last line will suppress the `None of PyTorch, TensorFlow >= 2.0, or Flax have been found` warning you may get when running the code)
 
-Then, ensure you have a pkl file of the proper structure stored in `out/embeddings.pkl`
+Any embeddings pkl files you have in `out/` will be used as the content. If none exist, it will use the `sample-import-content.pkl`.
 
 Then run `python3 sample/main.py`
 

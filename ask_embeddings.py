@@ -1,5 +1,7 @@
 import pickle
 from random import shuffle
+import os
+import glob
 
 import numpy as np
 import openai
@@ -29,6 +31,26 @@ def get_similarities(query_embedding, embeddings):
         for text, embedding, tokens, issue_id
         in embeddings], reverse=True)
 
+EMBEDDINGS_DIR = 'out'
+SAMPLE_EMBEDDINGS_FILE = 'sample-import-content.pkl'
+
+def load_default_embeddings():
+    files = glob.glob(os.path.join(EMBEDDINGS_DIR, '*.pkl'))
+    if len(files):
+        return load_multiple_embeddings(files)
+    return load_embeddings(SAMPLE_EMBEDDINGS_FILE)
+
+def load_multiple_embeddings(embeddings_file_names):
+    embeddings = []
+    issue_info = {}
+    for file in embeddings_file_names:
+        content = load_embeddings(file)
+        embeddings.extend(content['embeddings'])
+        issue_info.update(content['issue_info'])
+    return {
+        'embeddings': embeddings,
+        'issue_info': issue_info
+    }
 
 def load_embeddings(embeddings_file):
     with open(embeddings_file, "rb") as f:
@@ -77,8 +99,8 @@ def get_completion(prompt):
     return response.choices[0].text.strip()
 
 
-def ask(query, embeddings_file):
-    embeddings = load_embeddings(embeddings_file)
+def ask(query, embeddings_file = None):
+    embeddings = load_embeddings(embeddings_file) if embeddings_file else load_default_embeddings()
     query_embedding = get_embedding(query)
     similiarities = get_similarities(query_embedding, embeddings["embeddings"])
     (context, issue_ids) = get_context(similiarities)
