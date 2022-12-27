@@ -49,7 +49,7 @@ To create a new pkl file for a source, first, create a json object like this:
 }
 ```
 
-Then run `python3 converter.py <FILENAME>`. It will create a new file that can be moved to `out` and used as embeddings.
+Then run `python3 converter.py <FILENAME>`. It will create a new file with the same name but a `.pkl` extension in the `out/` directory.
 
 ### Running the server
 
