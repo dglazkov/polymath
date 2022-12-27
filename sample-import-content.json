@@ -1,0 +1,604 @@
+{
+	"chunks": [
+		{
+			"id": "c-014-adf979",
+			"text": "Keep abstract and concrete work separate\nConcrete work is focused on hill-climbing, efficiency, short term outcomes.\nAbstract work is often focused on hill-finding, new ways of sense-making, new insights, combining new information.\nYou need both; the proportion you need is where in the s-curve your project is.\nBut the mindsets to do each are very, very different. Divergent vs convergent. The day-to-day reality of jobs where everyone's in hill-climbing mode will pull you strongly out of abstract modes of inquiry. To do it properly you must make a separate space to do it, possibly with others, ideally in a collaborative debate environment.\nBy keeping it separate, you make the mental state as pure as you can and not be pulled towards the profane. But of course both types of inquiry are in your head, meaning you'll naturally make better zig-vs-zag decisions.\n",
+			"url": "https://thecompendium.cards/c/c-014-adf979",
+			"title": "Keep abstract and concrete work separate"
+		},
+		{
+			"id": "c-016-bfd943",
+			"text": "Knowhow is embodied knowledge\nAlso called metis.\nKnowhow can only be gained by doing and trying.\nMuch of what we call knowledge colloquially is knowhow.\nCanonical example is learning to surf. But most everything has to be done to be actually  understood.\nKnowhow is patterns to match against for intuition. It's a lived experience, an embodied feeling, less book knowledge. Knowhow can't be passed down directly. In a given context, knowhow is more important than knowledge.\n",
+			"url": "https://thecompendium.cards/c/c-016-bfd943",
+			"title": "Knowhow is embodied knowledge"
+		},
+		{
+			"id": "c-018-fff711",
+			"text": "Creativity and curiosity require some transcendence\nCreativity and curiosity (and any kind of openness) requires some kind of transcendence, to see beyond the horizon imposed by the boundary of your current world view.\nTranscendence can't be forced, but it can be cultivated.\n",
+			"url": "https://thecompendium.cards/c/c-018-fff711",
+			"title": "Creativity and curiosity require some transcendence"
+		},
+		{
+			"id": "c-019-dbf233",
+			"text": "Platforms all the way down\nThe word \"platform\" is typically used to define a set of APIs, but the actual concept is more general and can be clarifying even when applied to problems not typically thought of as platforms. A platform is any layered system that allows other agents an interface point with the system.\nPlatforms typically are built on top of other platforms, all the way down to the actual instructions that run on processors (although the lower levels tend to get less and less interesting). That means that when trying to frame a platform problem, it's important to figure out where the bounds of the system is. (In the same way you make a similar decision when consider any systems  framing).\nTypically you choose to define a platform based on which parts you can most directly write code for, excluding layers that are written by other organizations. But in other cases your analysis might need to take a broader view, and consider multiple platforms as one bigger meta-platform.\n",
+			"url": "https://thecompendium.cards/c/c-019-dbf233",
+			"title": "Platforms all the way down"
+		},
+		{
+			"id": "c-020-abe755",
+			"text": "Spectacular failures open people's minds to growth\nIf you think that you've mastered the space you're in (you haven't!) then you'll keep on doing more of what you think works, even as the bottom rots out under you, until it fails spectacularly.\nIf you aren't in the growth mindset, as you go faster and faster down the drain you'll be more and more existentially scared, making you less and less open to growth, making it go faster. Only when you hit rock bottom and fail spectacularly will you be able to realize you need to change and be open to growth.\nIf you see someone spiraling this way and they don't know they need help then step back and let them fail and then help them when they're lying broken on the floor and are most open to learning and teaching.\n",
+			"url": "https://thecompendium.cards/c/c-020-abe755",
+			"title": "Spectacular failures open people's minds to growth"
+		},
+		{
+			"id": "c-025-cca546",
+			"text": "Aligned agents create coherent system-wide momentum\nWhen the gradients surrounding various agents are random--when the fitness landscape is at a plateau, then the actions of agents resemble brownian motion.\nBut if there is a force exerting some amount of pull on all of the agent's gradients, then they can all tend to move in one general direction. This can be caused by an asymmetry, which creates a gradient. This can cause the entire system as a whole to gain momentum in a specific direction. This movement might change the underlying context, leading the system to experience a different fitness landscape.\nIf you were to view the system as an agent in a still larger system, it would look like the agent having a clear gradient around it.\n",
+			"url": "https://thecompendium.cards/c/c-025-cca546",
+			"title": "Aligned agents create coherent system-wide momentum"
+		},
+		{
+			"id": "c-027-fea825",
+			"text": "Many chicken-and-egg problems just need coevolution\nChicken-and-egg problems seem impossible to solve, but are actually a problem of framing. They assume fixed categories, when in reality there is continuous change (which humans have a hard time spotting). Once you remove the framing problem, they can be straightforward to solve.\nGetting an ecosystem off the ground is often posed as a chicken-and-egg problem, reducing it to an an almost impossible paradox. But the way to solve it is to have the two sides continuously and interdependently change--that is, to coevolve. The two sides of a boundary naturally coevolve, and platforms and their attendant ecosystems, separated by the boundary of the API, are no different.\nYou start from a small seed crystal (that might look almost infinitesimally small), and then the gradient is the coevolutionary path as you grow the platform and its ecosystem. That's not an easy process--it requires surfing some nuanced gradients--but it doesn't require novel strategies.\n",
+			"url": "https://thecompendium.cards/c/c-027-fea825",
+			"title": "Many chicken-and-egg problems just need coevolution"
+		},
+		{
+			"id": "c-033-edd465",
+			"text": "How 3P platforms differ from 1P platforms\nMany problems can be framed as platform problems.\nPlatforms that offer functionality to both 3P developers as well as 1P developers share many commonalities. The biggest difference--and it's a big one--is how much leverage you have over the developers to compel them to take actions that are good for the long-term health of the platform. This can in practice make the coordination headwind orders of magnitude higher.\nIn 1P contexts, you often have at least the backstop of escalating to the CEO (even if that isn't likely in practice). But in 3P contexts you often don't have any formal leverage and must use a series of carefully-calibrated carrots and sticks, providing guardrails to align short-term individual and long-term aggregate incentives.\n1P platforms can also be thought of, generally, as infrastructure, although the platform framing also makes it harder to forget the importance of incentives. In a 3P platform, be careful on what expressible semantics you expose, since it's hard to change.\n",
+			"url": "https://thecompendium.cards/c/c-033-edd465",
+			"title": "How 3P platforms differ from 1P platforms"
+		},
+		{
+			"id": "c-035-deb230",
+			"text": "Continuously monitor your rate of surprise\nYour rate of surprise is an effective tool to detect how much uncertainty exists in your current context. But no situation is ever stable. The context will change, and that means that the thing that worked just fine before might become disastrously incorrect.\nFor that reason you must continuously monitor your rate of surprise to help detect when the situation changes and there is increased uncertainty. When you do find a surprise, don't reject or ignore it, but rather dig into it with curiosity and ontological humility. You might find something that will help you grow and learn.\nIf you're actively seeking disconfirming evidence and staying alert for surprises, then you can trust your feeling of certainty is correct, allowing you to rely on your intuition.\nIf you detect that the situation has changed early, you can often tweak your approach, preventing yourself from making expensive-to-fix mistakes.\n",
+			"url": "https://thecompendium.cards/c/c-035-deb230",
+			"title": "Continuously monitor your rate of surprise"
+		},
+		{
+			"id": "c-042-fdb565",
+			"text": "Power causes deep-seated emotional reactions\nWe have a strongly intuitive sense of power because it's so important.\nAnd we will resist power changes where we lose out strongly.\nAnd depending on the context--how bad the worst case scenario is--we will react very differently.\n",
+			"url": "https://thecompendium.cards/c/c-042-fdb565",
+			"title": "Power causes deep-seated emotional reactions"
+		},
+		{
+			"id": "c-047-ede707",
+			"text": "Ruinous empathy is dysfunctional amounts of politeness\nHaving psychologically safe environments is critical for innovation and collaborative debates. Psychologically safe environments require trust and respect. Many disagreements manifest as inadvertently adversarial, especially when stakes are high.\nBuilding trust and respect is hard, and takes effort. It requires embracing the inherent tensions that come in any team, which can be awkward or even embarrassing. An easier approach to addressing the same superficial symptoms is to focus entirely on politeness. When this happens to a dysfunctional degree, it is called ruinous empathy.\nTeams in this state are in a supercritical state; those tensions didn't go away, they just got hidden. And ignored tensions will erode a systems strength and can lead to spectacular failure.\n",
+			"url": "https://thecompendium.cards/c/c-047-ede707",
+			"title": "Ruinous empathy is dysfunctional amounts of politeness"
+		},
+		{
+			"id": "c-055-fea790",
+			"text": "The size of agents in a system follows a power law\nThis is because phenomena like preferential attachment lead to rich-get-richer dynamics, leading to compounding loops and a power law distribution.\nThis distribution is true for any meaningful property of agents in the system: size, power, motivation/engagement.\n",
+			"url": "https://thecompendium.cards/c/c-055-fea790",
+			"title": "The size of agents in a system follows a power law"
+		},
+		{
+			"id": "c-060-aef576",
+			"text": "Knowhow is orders of magnitude more rich than knowledge\nKnowledge is the information you gain from books; it is theoretical. Knowhow is experience, embodied knowledge, almost a form of muscle memory. Knowhow is intuitive, rich, nuanced, nebulous, and interconnected.\nUnit for unit, knowhow is orders of magnitude more rich than knowledge, and more effective at helping someone actually accomplish something in the real world. In some cases, like surfing, book knowledge can never be even partially sufficient.\nOne of the cruel constraints for human is that knowhow is impossible to transmit in high fidelity. Instead, it must be serialized into an extremely narrow, linearlized, low throughput stream of information called language, hoping that it somehow induces even a glimmer of the knowhow in the reader's head that the author wanted to impart.\n",
+			"url": "https://thecompendium.cards/c/c-060-aef576",
+			"title": "Knowhow is orders of magnitude more rich than knowledge"
+		},
+		{
+			"id": "c-062-ebc209",
+			"text": "Platforms should provide high-level functionality\nDevelopers will always prefer to have lower-level control than is globally optimal for the platform.\nUsing a higher-level API trades off convenience and succinctness for a real decline in control and power for developers. Ideally, in a rational, well-layered platform, when they run into something they can't do at a higher layer they can simply drop one layer down.\nBut the answer is not to just provide a bedrock API that all developers use. \nTo the extent that multiple developers are doing the same (or broadly similar) things in the layers above the current edge of the platform, that functionality should be factored down into the platform as an optional layer. This allows less code to be written, meaning bugs can be fixed once, performance optimizations can be done once, security bugs can be fixed once.\nThis process is a complement to experimentation happening on the frontier. Good ideas, once found on the frontier (for multiple developers) can then be systematized.\n",
+			"url": "https://thecompendium.cards/c/c-062-ebc209",
+			"title": "Platforms should provide high-level functionality"
+		},
+		{
+			"id": "c-064-dcb763",
+			"text": "Capture ideas by writing documents to increase your luck\nThe more nets you put out, the more adjacent possible you have coverage over, making it more likely that you'll be in the right place at the right time to seize an opportunity. One type of useful net is writing documents, even if you don't yet know who will want to read them.\nIdeas in your head are somewhat nebulous; they flit around and morph. Writing a document reifies the ideas, pinning them down into a crystallized, stable form. That time to capture them in a document is non-trivial, especially if you try to polish them and make them perfect. But often a good enough document, to roughly capture the ideas, is fine--no more than three hours of work.\nBy capturing the ideas in a stable form, you make it more likely that if in the future there's ever an audience for that idea that shows up (\"Hey, have we ever thought about X?\"), you can dust the unfinished document off and say, \"Is this in the direction you head in mind?\". Having the document ready to go makes it way more likely you'll be able to pounce. And while the idea is active in your head it's 10x cheaper to write than trying to distill it later.\n",
+			"url": "https://thecompendium.cards/c/c-064-dcb763",
+			"title": "Capture ideas by writing documents to increase your luck"
+		},
+		{
+			"id": "c-074-abd159",
+			"text": "Ignored tensions will erode a system's strength\n Fundamental tensions exist within every system. Sometimes it can be tempting to ignore them, because they can be awkward or embarrassing to deal with. But ignored tensions don't go away, they just fester.\nThese festering tensions will chip away at the system's strength subtly and consistently over time. It can even put the system in a supercritical state, where it looks stable but is one random blip away from complete collapse. Maybe different members of a team who have different personalities have had hidden resentment for one another slowly building up. All it takes is an accidental slight (like forgetting to invite someone to a meeting) for it to blow up.\nOther times the tension will slowly erode the system's strength, picking up speed the farther it gets. The tension isn't going away. You can choose to ignore it and have it kill you or you can choose to work with it. If you embrace the tension you can use it as a source of strength and innovation.\n",
+			"url": "https://thecompendium.cards/c/c-074-abd159",
+			"title": "Ignored tensions will erode a system's strength"
+		},
+		{
+			"id": "c-075-bbc492",
+			"text": "Small change in the exponential term can have huge effects \n Compounding loops are extremely powerful. They typically have an exponential shape, which means that they can sneak up on people because they don't look like much at all... until suddenly they're inescapably huge and impossible to catch up with.\nCreating a compounding loop is impossible to do directly, although you can create the conditions where they are likely to show up and then search for them in the wild. But once you find one, it's possible to accelerate them in a number of ways, effectively improving the exponential term.\nEven a teensy change in the exponential term can have huge effects in the absolute size of the curve. It can be tempting to extrapolate a curve and conclude it's not big enough to worry about. But if it's a compounding curve you do that at your own peril, because if the exponential term accelerates even a teensy bit it can lead to a much different absolute outcome, and you might find yourself in a Wile E Coyote situation.\n",
+			"url": "https://thecompendium.cards/c/c-075-bbc492",
+			"title": "Small change in the exponential term can have huge effects "
+		},
+		{
+			"id": "c-083-bda618",
+			"text": "Tradeoffs are often hard to see\nTradeoffs is when you can't have the best of both worlds; you have to fundamentally make a choice. Tradeoffs are often inconvenient and people will wish they didn't exist, and tempting to try to ignore.\nTradeoffs are often hard to see, both because people who can successfully navigate the tradeoff won't realize it's there, and because a lot of fundamental tensions are totally non-obvious at first glance because it's not clear how the two ends of the spectrum are related.\nBut tradeoffs are everywhere. If you see a lot of smart, collaborative people debating something without progress for a long time, look for the hidden tradeoff.\n",
+			"url": "https://thecompendium.cards/c/c-083-bda618",
+			"title": "Tradeoffs are often hard to see"
+		},
+		{
+			"id": "c-083-eef035",
+			"text": "There is no such thing as strategy in a vacuum\nA strategy is fundamentally a situated idea, applied within some context.\nThe goodness of a strategy is whether the team contemplating can actually successfully accomplish it--which means a clear-eyed accounting of the constraints to understand if the strategy is actually plausible.\nIn many cases, the constraints are the most important part, aggressively winnowing down the list of possible strategies until what you're left with looks almost unremarkable. If you ignore constraints, your strategy is bad.\n",
+			"url": "https://thecompendium.cards/c/c-083-eef035",
+			"title": "There is no such thing as strategy in a vacuum"
+		},
+		{
+			"id": "c-086-eab843",
+			"text": "In polite teams tensions don't go away, they get hidden\nIn complex environments it's important for teams to be collaborative. Sometimes that manifests as politeness, which can accidentally lead to an environment of ruinous empathy.\nFundamental tensions exist in every team. Some are inherent and large-scale, like when a team contains sub components that are horizontally oriented next to sub components that are vertically oriented. But even just different personalities create tensions.\nTeams might accidentally ignore these tensions out of politeness. However, the tensions don't go away, they just get hidden.\nTensions, when ignored, will tend to fester, and over time erode the strength of a team, perhaps putting it in a supercritical state. However embracing a tension, as opposed to ignoring it, can be a source of strength and creativity.\n",
+			"url": "https://thecompendium.cards/c/c-086-eab843",
+			"title": "In polite teams tensions don't go away, they get hidden"
+		},
+		{
+			"id": "c-088-ddf726",
+			"text": "Super-critical systems can have spectacular upheaval\nA specific example is the emperor has no clothes. A specific type is rotted foundations leading to spectacular failures. Super-critical systems are primed for shattering.\nA super-critical system is one that is primed for a massive. cascade. This is possible when everyone as a preference (even a weak one) away from the status quo, but everyone is held to the status quo because they believe that others support it.\nA single moment or observation can reveal the true state of the system, rapidly collapsing it to a new state. This is effectively a discontinuity, meaning the system goes through a temporary state of chaos.\n",
+			"url": "https://thecompendium.cards/c/c-088-ddf726",
+			"title": "Super-critical systems can have spectacular upheaval"
+		},
+		{
+			"id": "c-088-fff293",
+			"text": "Systems that can't continuously adjust will have whiplash\nSystems need to find the right balance points along a series of different dimensions that represent different tradeoffs. The balance point is contextual, and contexts are always changing, which means the balance point is always changing.\nHealthy systems will be able to make micro-adjustments to respond to the balance point chaning and stay in balance. But sometimes systems will get stuck, unable to move, with broken or overly-long feedback loops. The tension will build up and up and up until it breaks loose. If it's bad enough, the system is said to be in a supercritical state and might shatter. Even if it's not supercritical, it will likely snap to a new equilibrium, almost certainly overshooting the new balance point, and causing a large, discontinuous shock: whiplash.\nThis pattern tends to repeat, leading to successive waves of whiplash over time, as the system bounces back and forth between two extremes instead of surfing the spectrum continuously.\n",
+			"url": "https://thecompendium.cards/c/c-088-fff293",
+			"title": "Systems that can't continuously adjust will have whiplash"
+		},
+		{
+			"id": "c-091-adf679",
+			"text": "The right insight can crack open a person's mind\nPeople who don't know they need help can't be helped. But everyone always has room to grow and learn. When you're busy fighting fires you aren't in a growth mindset. One way out is to have a spectacular failure, opening your mind to growth.\nBut there's an easier way: the right insight to blow your mind in the right way. Everyone's mind is different (and everyone's mind is constantly evolving, like any other system, so what works today won't necessarily work tomorrow). If the insight connects, then it might leave little cracks or fissures, where seeds of new ideas can be planted and grow at a compounding rate.\nIt's important to bring yourself into constant contact with new insights from diverse sources. Practicing ontological humility makes it more likely that when the right insight comes along it will connect in the right way. Insight factories can spew out so many insights that if they are able to travel, they'll more likely connect with the right mind.\n",
+			"url": "https://thecompendium.cards/c/c-091-adf679",
+			"title": "The right insight can crack open a person's mind"
+		},
+		{
+			"id": "c-092-ead076",
+			"text": "Invest continuous energy to rationalize platforms\nRationalizing platforms improves their operating efficiency, among other benefits. But real world platforms are messy beasts that are always changing.\nThey often have very large expressible semantics, making it very hard to reason about how to properly factor them down to be more rational. It requires keeping thousands of real-world use cases in your head, as well as a deep understanding of the current architecture, what you expect future developers will want, etc. That means typically only a small number of people on the team are capable of doing it.\nThese characteristics mean that often the right next step to rationalize a platform doesn't look like much, or is hard to explain to others outside of the team (for example leaders) about why this thing or that thing is better. That explaining is often pure overhead, as long as the platform is actually getting better over time. That's why the best way to approach it is to devote a fixed percentage of investment into rationalizing the platform, and give the team autonomy.\n",
+			"url": "https://thecompendium.cards/c/c-092-ead076",
+			"title": "Invest continuous energy to rationalize platforms"
+		},
+		{
+			"id": "c-110-eea097",
+			"text": "Horizontal and vertical will create tension where they meet\nIn many systems, there are subsystems that can be categorized as horizontal: they focus on breadth and sustainability. There are other subsystems that are vertical: they focus on depth and innovation. These two approaches are fundamentally at odds and cannot mix sustainably which means that wherever they meet will be an area of inevitable tension. If you ignore this tension it will erode the strength of the system, and could lead to failure. However if you embrace it, it can be a source of strength.\nExamples of horizontal vs vertical interactions:\n\n\tBusiness models - Products aiming for reach vs products aiming for control and fidelity.\n\tPlatform vs Product - Product teams building features on top of a platform or infrastructure\n\tRegional vs Central - Regional product teams trying to fit within a given market vs the central product teams making the core products.\n\n",
+			"url": "https://thecompendium.cards/c/c-110-eea097",
+			"title": "Horizontal and vertical will create tension where they meet"
+		},
+		{
+			"id": "c-113-cba734",
+			"text": "Insights seem obvious in retrospect\nInsights are statements that distill complexity down to mere complication. One property of them is that they're naturally viral.\nAnother is that they're obvious, but only in retrospect. Another way of putting this is that they can't be unheard. Once they're heard and understood, they change the way you look at the world, and some subset of things that used to feel unknowably complex now feel merely complicated.\nThis obviousness can make them sound almost trite, and in fact the deepest insights are often considered the most trite, in the hallmark card curse. However, insights are by definition not obvious if you don't already know them, otherwise they would have been found and their worth would have been self-evident.\n",
+			"url": "https://thecompendium.cards/c/c-113-cba734",
+			"title": "Insights seem obvious in retrospect"
+		},
+		{
+			"id": "c-113-dbb353",
+			"text": "Hilly landscapes will have more diversity\nYou can think of the \"flatness\" of a fitness landscape like friction. And the lower the friction--the more flat the landscape--the more that you'll see a smaller number of bigger winners.\nWhen you have a large flat landscape you often have dense interconnections in the network of agents, which leads to accelerated homogenization, as well as letting compounding loops like preferential attachment run hotter.\nA hilly landscape will create pockets, where diversity and innovation can flourish. If there's the right amount of weak-ties connecting the pocket to the main field, that innovation can percolate out into the rest of the network.\n",
+			"url": "https://thecompendium.cards/c/c-113-dbb353",
+			"title": "Hilly landscapes will have more diversity"
+		},
+		{
+			"id": "c-116-efd034",
+			"text": "Seven people is the ideal number for collaborative debate\nIf you're trying to have a rigorous generative discussion, the ideal size is generally around seven people.\nYou want diversity of viewpoints, experiences, and skillsets to make it more likely you're able to find the creative ideas and have the right information, so you want more people. But you also want the group to trust one another, be psychologically safe, and have everyone have a lot of shared context and jargon to be able to move through the problem quickly, which implies a smaller group. Finally, if you have too many people in a real-time face-to-face conversation, the limited resource of airtime (only one person can talk at a time) starts getting challenging with more than a handful of people, leading to a lot of people busy-waiting, waiting their turn to say the insight inside of their head, and not listening to and riffing on the conversation live.\nOf course in different contexts the ideal number might be higher or lower. For example, if the discussion is partially or entirely over text chat, you can support a larger number of people.\n",
+			"url": "https://thecompendium.cards/c/c-116-efd034",
+			"title": "Seven people is the ideal number for collaborative debate"
+		},
+		{
+			"id": "c-127-bea563",
+			"text": "Certainty comes from effective predictive models\nWhen you feel like you \"have a handle\" on a given situation, what does that mean?\nIt means that your rate of surprise is low. You or your organization have created a model that makes successful predictions, which means that you're less often surprised. You might not think about it that way. The model might be a highly intuitive one in your head that you aren't even consciously aware of. It might be an effective process in the organization. But there is a predictive model somewhere. You can think of this certainty as a form of expertise, a form of power.\nOf course, this situation is only temporary. The context is always changing, which means that things that were perfectly well adapted one moment can be disastrously mal-adapted the next. That's one of the reasons expertise is contextual.\nYou must continue checking your rate of surprise to detect when your uncertainty has risen.\n",
+			"url": "https://thecompendium.cards/c/c-127-bea563",
+			"title": "Certainty comes from effective predictive models"
+		},
+		{
+			"id": "c-128-fbd030",
+			"text": "It's not necessarily irrational to avoid coordinating\nOften if only a coordination problem could be solved, it would lead to a large good. It can be tempting to diagnose this as an example of the tyranny of small decisions--that local, short-term incentives tend to dominate long-term incentives. Or, a problem of greed.\nBut the only way to solve a coordination problem is with some kind of power differential. And that means that that empowered entity has some power over you, which might compel you to do things you don't want to do.\nSometimes it's possible to create an empowered entity that is \"good\", but it's still something that constrains your actions. If there's a big shock to the system, those constraints might prevent you from taking actions that would allow you to survive. Or perhaps that empowered entity will be corrupted by power even faster than you'd expect.\n",
+			"url": "https://thecompendium.cards/c/c-128-fbd030",
+			"title": "It's not necessarily irrational to avoid coordinating"
+		},
+		{
+			"id": "c-129-afc903",
+			"text": "Extrinsic motivation is often unsustainable\nIntrinsic motivation is an amazing resource to harness. But it's not possible to create it, and it's best to not even try. Often it's tempting to instead try to create extrinsic motivation to get something going--that is, to create incentives, or external gradients for the agent to roll down.\nThere are ways to do this sustainably. For example, some gradients you create are stable \"terraforming\" of the topology. Other incentives can emerge and strengthen organically, as when a gravity well forms from a successful system changing the incentives of those around it.\nBut most techniques to create incentives are forms of unsustainable heroics: massive influxes of energy to counteract the entropy of the system. This could be activating a large Go To Market team, or even paying agents to participate. But because intrinsic motivation is sacred and extrinsic motivation is profane, these efforts often are not only unsustainable but also directly counter to your long-term goal, since extrinsic motivation erodes internal motivation. The self-sustaining flame metaphor is about this effect.\n",
+			"url": "https://thecompendium.cards/c/c-129-afc903",
+			"title": "Extrinsic motivation is often unsustainable"
+		},
+		{
+			"id": "c-133-dbf968",
+			"text": "\"Bad\" challenge has more growth potential than \"good\"\nChallenge of all types is how you grow.\nGood challenge is the fun kind, where you're in your flow state. One of the reasons to follow your flow state is because it gives you free energy, which might allow you to go for an order of magnitude longer. But it's actually, unit for unit, less growth potential, because it only forces you to stretch in directions you can already stretch.\nBad challenge is more of.a bummer, and it can be existentially terrifying. Bad challenge forces you to grow in ways you didn't expect or even see value in before, which helps you become a more resilient and holistic human being.\n",
+			"url": "https://thecompendium.cards/c/c-133-dbf968",
+			"title": "\"Bad\" challenge has more growth potential than \"good\""
+		},
+		{
+			"id": "c-133-fce795",
+			"text": "Compounding loops sneak up on people\nCompounding loops are continuous processes that have a super-linearity: their second-order derivative is positive. Continuous processes are hard for humans to spot. But by the time someone does spot them, it's often too late to do much about them; the exponential curve is spinning off such huge absolute numbers that it dominates anything else.\nIf you're the beneficiary of that loop, that's great--your competitors will have a hard time doing anything to catch up. If you're on the losing side of that loop, you might have a Wile E Coyote moment where you don't realize your predicament until it's too late to do anything.\nThis is why it's a good idea to look out even tiny compounding loops, because with the right care and feeding (or sometimes just waiting for them to bake) they'll one day be huge forces to reckon with.\n",
+			"url": "https://thecompendium.cards/c/c-133-fce795",
+			"title": "Compounding loops sneak up on people"
+		},
+		{
+			"id": "c-134-faa978",
+			"text": "You can go from long-tail to head but not vice versa\nWhen tackling use cases in any ecosystem problem, you can start with head use cases and work your way down or start with making the long-tail work and then walk your way up to head use cases.\nHead use cases are where the most user value is. They're concrete and obvious and large, and if you have the resources to go after them, it's tempting to start there (see self-sustaining flame for why that's a bad idea). Long-tail approaches require figuring out complex security, privacy, and incentives problems from the beginning. Those are problems that will later constrain your system, and your head solutions will have locked in details at every layer of your system that are impossible to make scale (e.g. trust decisions, which are often implicit).\nThis is a more specific instantiation of the more general observation that you can go from bottoms-up to top-down but not vice versa. It's also related to why whitelists are hard to remove once added.\n",
+			"url": "https://thecompendium.cards/c/c-134-faa978",
+			"title": "You can go from long-tail to head but not vice versa"
+		},
+		{
+			"id": "c-142-ebc618",
+			"text": "A successful organization will be unable to see other hills\nA successful organization is one that has found a hill to climb. Over time they will get increasingly focused on efficiency and climbing the hill they are on, until it ultimately kills them.\nAs they get better at climbing that hill, the logic accelerates. A myth-making occurs that is mainly survivorship bias (\"climbing this hill has always worked for us, we should keep doing it\" is only true because the org would have died and not been around to tell itself the myth if it had not been true at any point in the past). The myth is true at its core; what is missed is that it only happened to be true in the org's historical context, and the story is only being passed on precisely because the org happens to have survived. This myth-making will be passed down as ground truth, making it hard to ever consider going against.\nMetrics get increasingly focused on climbing this particular hill efficiently, which will make it ever harder to recognize other adjacent hills with slightly different shapes even if they are spotted. The thing that will kill an org is precisely what can't be measured by its key metrics.\n",
+			"url": "https://thecompendium.cards/c/c-142-ebc618",
+			"title": "A successful organization will be unable to see other hills"
+		},
+		{
+			"id": "c-143-eeb845",
+			"text": "Challenge is the only way to grow\nChallenge can be the \"good kind\" where you're in your flow state, with the amount of challenge perfectly calibrated to be at the edge of your ability, and where the learning is highly motivating. Or it can be the \"bad kind\" where you are thrust into a situation where you're in over your head, or a situation that is unexpectedly chaotic.\nBut the truth is that all challenge, even the \"bad\" kind, is useful to grow, if you have a growth mindset. You're far less likely to be in a growth mindset for bad challenge, which means you'll find it existentially terrifying, which means you'll crouch defensively. Seeing even bad challenge as fundamentally an opportunity for growth is one of those deep insights that sounds trite.\nChallenge gives you variance, a thing to learn from to become more resilient. Challenge is a way of doing and growing, thus a way to gain knowhow.\n",
+			"url": "https://thecompendium.cards/c/c-143-eeb845",
+			"title": "Challenge is the only way to grow"
+		},
+		{
+			"id": "c-144-bfd354",
+			"text": "Mentoring relationships require a clear mentor and mentee\nAlthough you always have something to learn from everyone, in practice you have to put yourself into a learning mode. If you think that a person you're engaging with is a peer, then you won't think of them as someone you have to learn from. Even worse, when they try to give you challenging but important feedback you might resist it, perceiving it as them trying to gain or exert power over you.\nThat's why mentors should have some kind of power differential; it makes it very clear who is the mentor and who is the mentee. Often it's seniority, rank, or some other success criteria. But they shouldn't be someone in your direct management chain--that's too much power to be an effective mentor.\nWhen one party thinks they're entering into a mentor/mentee relation, and one party thinks it's a peer relationship, awkwardness can result, because the way the conversations go is fundamentally different.\n",
+			"url": "https://thecompendium.cards/c/c-144-bfd354",
+			"title": "Mentoring relationships require a clear mentor and mentee"
+		},
+		{
+			"id": "c-144-fed076",
+			"text": "The ideal goals of rational platforms\nMany problems can be approached as platforms, and in any problem spaces, there are many ways to frame where a given platform begins and ends.\nNo platform is ever perfectly  rational--it's an ideal that can be only asymptotically approached--but individual changes can generally be said to make a platform more or less rational. More rational platforms:\n\n\tAre constructed of bricks held together loosely where each layer is relatively thin\n\tProvide the proper level of high-level surfaces, and provide a relatively even surface\n\tAt each layer build on  top of concepts expressed only in layers below\n\tAt every point have more opinionated layers above less opinionated layers\n\tDon't mix opinion and lack of opinion (of a given type) in a single layer\n\tMinimize the length of normative spec text required to describe the system over time\n\tAllow experimentation at the frontier and provide foundations, not ceilings.\n\n",
+			"url": "https://thecompendium.cards/c/c-144-fed076",
+			"title": "The ideal goals of rational platforms"
+		},
+		{
+			"id": "c-145-dea963",
+			"text": "Identifying a tradeoff is harder than navigating it \nTradeoffs are often inconvenient and temping to ignore. But tradeoffs are everywhere, and exist as fundamental tensions in all problem spaces. You must grapple with a tradeoff in order to move forward.\nOften if a group of smart, collaborative people can't agree on a way forward, there's a hidden tradeoff at play that must be brought to the surface. The good news is that that's often the hard part. A tradeoff, once brought to the surface and acknowledged as inescapable, can often be balanced reasonably easily.\nMost people in the group will likely agree on roughly where on the tradeoff we currently are, and which direction we should move to bring it into balance for the current context. They may disagree on how far we should move in that direction, but often the next step in that direction will be the same no matter how far you think we should move, and once you make it you can reassess, continuously surfing until you find the right balance point.\n",
+			"url": "https://thecompendium.cards/c/c-145-dea963",
+			"title": "Identifying a tradeoff is harder than navigating it "
+		},
+		{
+			"id": "c-145-ffc393",
+			"text": "If you can navigate a tradeoff well you won't realize it's there\nTradeoffs are everywhere, and they are often extremely hard to navigate, requiring a calibrated intuition and knowhow to be able to apply nuanced judgement to navigate.\nNavigating tradeoffs properly requires relevant knowhow. Relevant knowhow is a form of power. People who enjoy power in a given context will often be blind to it. That means agents who know how to navigate a tradeoff will have it feel so effortless (almost like a superpower they can't introspect) that they might erroneously conclude that there's not even a tradeoff there in the first place.\nThis can make life difficult for everyone else. They're banging their heads against this tradeoff which is likely hard to see in the first place, not being able to figure out how to do what the agent with the knowhow is doing. They might feel gaslit, and will be even more likely to burn out.\n",
+			"url": "https://thecompendium.cards/c/c-145-ffc393",
+			"title": "If you can navigate a tradeoff well you won't realize it's there"
+		},
+		{
+			"id": "c-152-eea567",
+			"text": "Stop energy is easier than forward energy\nStop energy is any energy applied by an agent that opposes the forward momentum of something.Stop energy is easier to apply than forward energy for a number of reasons.\nThe most fundamental is that there are simply more actions in the adjacent possible to slow down an idea than to give it momentum. Another is that to propose a forward action is to stick your neck out and take on some risk, whereas \"I'm just not sure yet\" is safe.\nAnother reason is that there are a number of questions that sound reasonable individually but where the effort to answer them all adds up to non-trivial amount of work:\n\n\t\"Just asking questions\"\n\t\"This sounds good, but as a follow-up, do an analysis of X\"\n\t\"Here's a concern I have about this one detail\"\n\t\"Have you considered this other option?\"\n\n",
+			"url": "https://thecompendium.cards/c/c-152-eea567",
+			"title": "Stop energy is easier than forward energy"
+		},
+		{
+			"id": "c-155-cbf767",
+			"text": "Ideas adjacent to existing  understanding are easier to grok\nThe concept of the adjacent possible applies directly to whether or not a person or group is able to \"hang onto\" or grok an idea. The set of ideas that you have already grokked provides the foundation for understanding of other ideas.\nYou can only stretch so far from your current base of understanding to grok a new idea. If it's too far, they'll feel free floating, and you won't be able to make heads or tails of the idea. You'll find yourself saying \"this is BS\", \"I don't see how this is useful\", or \"I don't have time for this navelgazing, I have real things to do.\"\nBut if a new idea you come into contact with is close enough to stretch to, then you can combine it into a foundation that you can reach still-further ideas from. That good stretch is precisely learning. The farther you're able to stretch to grab onto a new idea, the better. There are a number of techniques to grab onto more insights, including exposing yourself to novel information streams, being open and curious, and collecting many lenses.\n",
+			"url": "https://thecompendium.cards/c/c-155-cbf767",
+			"title": "Ideas adjacent to existing  understanding are easier to grok"
+		},
+		{
+			"id": "c-163-ffc794",
+			"text": "Softening words can invite collaborative debate\nPrefixes like \"I think... ,\" \"It seems to me... ,\" \"Perhaps... ,\" can help soften a question or assertion and make it clear that you're open to engaging in the nuance and gray area. It also implies a subjective perspective, as opposed to an assertion of an omniscient, absolute truth that cannot be argued with. That makes others feel more comfortable engaging in collaborative debate.\nIt's the opposite of totalizing language, which makes truth-seeking harder.\nThis is especially important in written communication, where the lack of social cues often makes the discourse inadvertently more charged.\nSee also asking open-ended questions invites collaborative debate.\n",
+			"url": "https://thecompendium.cards/c/c-163-ffc794",
+			"title": "Softening words can invite collaborative debate"
+		},
+		{
+			"id": "c-166-adf525",
+			"text": "The goodness of an idea is entirely contextual\nIdeas are not platonically \"good\" or \"bad\" in some vacuum. They are good or bad judged relative to the current fitness landscape, or context, being considered.\nAn idea that is great--but only if we had significantly more resources at our disposal than we do at the moment, or are likely to at any time in the near future--is not good in this context. An idea that is otherwise great, but is extremely challenging to get buy-in on (because it is controversial, or requires a long-winded argument that is challenging to follow, or because the knee-jerk reaction to it will be strongly negative) is also not a good idea.\nThe upshot of this is that often the context changes automatically over time. The core project does better and better, attracting additional resources. Key members of the team who might have opposed the idea move on. An idea that is not good right now, but is potentially good in the conceivable, not-too-distant future, is one that it's a good idea to leave planted as a seed.\n",
+			"url": "https://thecompendium.cards/c/c-166-adf525",
+			"title": "The goodness of an idea is entirely contextual"
+		},
+		{
+			"id": "c-176-ceb454",
+			"text": "Don't wait for others to have perfect understanding\nPerhaps you see something so clearly that you can't imagine how anyone could possibly miss it. You want to share that insight and knowledge with others, and have the same deep insight that you're having.\nBut passing on that full understanding is impossible to do with full fidelity, especially if the other person doesn't think they have anything to learn or that there's value in working for the same insight. And maybe the insight is very contextual, or requires the individual to have had a relevant personal experience to unlock it. Finally, their own version of the insight will have their own personal context and meaning that you don't get either, and that's good!\nInstead of trying to get them to have the same insight with full fidelity, try to help them along the path of deeper understanding with 'tricks' like simple intuitive framings, drafting off of shared context, metaphors, etc.\n",
+			"url": "https://thecompendium.cards/c/c-176-ceb454",
+			"title": "Don't wait for others to have perfect understanding"
+		},
+		{
+			"id": "c-177-afe709",
+			"text": "In complexity, nothing is monocausal\nEspecially true for any systemic or complex problem. There is no one person's fault. There is no single solution (just as there is no single permanent balance point).\nWe collectively waste so much time looking for someone to blame. Saying, \"well, it's not my fault,\" and then looking for someone else to blame. We want a single causal narrative so badly (to have someone to shoot) that we collectively waste a huge fraction of our time on it.\nThat's not to say that there aren't unambiguously bad actors. Related to assume there isn't a villain.\nWhen you fall into the trap of assuming something is monocausal (e.g after assigning blame in a polarized environment), you remove the incentive to continue digging in to more fully understand, because you've already 'explained' the thing that needed to be explained!\n",
+			"url": "https://thecompendium.cards/c/c-177-afe709",
+			"title": "In complexity, nothing is monocausal"
+		},
+		{
+			"id": "c-177-cbb781",
+			"text": "Wile E Coyote moment: when you realize after it's too late\nLet's say you're chasing something valuable and have a ton of momentum. You focus on going faster and faster, with more and more focus. Then you look down and realize that there's no longer ground beneath you--you ran right off the edge of a cliff when you weren't paying attention. You frantically flail, trying to figure out a way to get yourself back over solid ground, but it's impossible because you're hanging in mid-air. Your fall is now inevitable.\nThis state is a kind of super-critical state. The system is unsustainable and can't be fixed, but it can take time to notice--meaning that when it fails, it will fail spectacularly. A lot of dynamics that have a ratcheting effect lead to this. When you know how common this is, sometimes you can spot when a competitor is about to do this, and not get in their way.\nThe Wile E Coyote effect is most likely to happen when you've got blinders on, when you're pushing to optimize some metric, ignoring disconfirming evidence or noticing how the context around you has changed.\n",
+			"url": "https://thecompendium.cards/c/c-177-cbb781",
+			"title": "Wile E Coyote moment: when you realize after it's too late"
+		},
+		{
+			"id": "c-179-abd306",
+			"text": "The \"people stuff\" is often the key strategic constraint\nIn large organizations, things like the coordination headwind create force-of-gravity style constraints. They make many ideas that might have seemed great turn out to be implausible.\nIt can be tempting to want to ignore the \"people stuff\" and think about \"pure strategy.\" But the fact is that strategies are implemented by agents that have to coordinate, leading to emergent coordination headwinds. The existence of human emotions and biases is also a force of gravity.\nA strategy cannot be done in a vacuum; accounting for constraints is the bulk of the work, and if you ignore them, your strategy will be bad.\nThe \"people stuff\" is not a distraction from \"real strategy\", it's the main event.\n",
+			"url": "https://thecompendium.cards/c/c-179-abd306",
+			"title": "The \"people stuff\" is often the key strategic constraint"
+		},
+		{
+			"id": "c-179-ffc100",
+			"text": "Viable compounding loops are precious\n Compounding loops are extraordinarily powerful. They demonstrate a viable feedback loop, something that is like finding a needle in a haystack. Of all of the nearly infinite combinations and configurations of loops, the vast majority don't work: they are nonviable, dead. Successful compounding loops can't be created in a lab. They can only be found in the wild and grown.\nThe extreme value of compounding loops, combined with how rare they are, is what makes them extremely precious. It's one of the reasons searching for tiny compounding loops is a powerful meta-strategy.\n",
+			"url": "https://thecompendium.cards/c/c-179-ffc100",
+			"title": "Viable compounding loops are precious"
+		},
+		{
+			"id": "c-192-bde239",
+			"text": "You have 30 seconds or less to land an abstract idea\nAbstract ideas are way harder to communicate at scale. Abstract ideas are hard for people to connect with intuitively.\nIf you're trying to get someone to connect with an abstract idea, you have a very short amount of time to \"hook\" them and get them to sit around for the rest of it. It's roughly 30 seconds or so.\nEven within that first 30 seconds, the time drops off in importance according to a power law. The first 3 seconds are an order of magnitude more important than the last 3 seconds. A powerful bit of shared context about a problem, or an evocative metaphor are good ways to get people to connect to start.\nObviously, the more pre-existing motivation the reader has, the longer this critical period of what they're willing to sit still and read. If your artifact is enthusiastically shared by others who have read it, then that might make other readers willing to give it a bit more time.\n",
+			"url": "https://thecompendium.cards/c/c-192-bde239",
+			"title": "You have 30 seconds or less to land an abstract idea"
+		},
+		{
+			"id": "c-192-cac385",
+			"text": "Straightforward though not easy to solve\nThere are a number of problems, like growing a platform and it attendant ecosystem, that are considered to be nearly impossible, chicken-and-egg style problems.\nA number of those problems are actually somewhat straightforward to solve, once you acknowledge that they are inherently complex problems, which means that our normal surgical tools of analysis don't apply, and the problem can't be broken down into smaller and smaller parts. They require holistic approaches to understand, but often have straightforward strategies to execute on, like seed-crystal/gradient/ceiling and other slow-and-steady strategies.\n... But that doesn't mean they're easy. Executing on those strategies requires surfing some very nuanced and turbulent gradients. That requires both a well-calibrated intuition for the current context (perhaps by lots of relevant experience across the team, leading to accumulated knowhow), as well as staying curious, nimble, humble, and long-term-oriented. These problem spaces fundamentally require the right mindset and stance than anything else.\n",
+			"url": "https://thecompendium.cards/c/c-192-cac385",
+			"title": "Straightforward though not easy to solve"
+		},
+		{
+			"id": "c-195-dcb133",
+			"text": "Debt is the distance from a full-fidelity outcome\nTechnical debt is a familiar concept, but the concept is more general and useful than that. There are many forms of debt, both output-oriented and organizational-oriented.\nYou can think of debt as the the distance that something has between its current state, and an imagined full-fidelity state. You can conceptualize of what that looks like by imagining what your team would do if the rest of the world paused for three years. Debt can be a good thing that gives you short-term velocity in uncertain environments, but it's bad because it robs you of future velocity--even though it's hard to see and easy to ignore, it is often the single biggest thing slowing you down.\nAs long as your existential runway is long enough, you should always be thinking about debt paydown. Debt is always accruing. Don't pay it down heroically, pay it down as a continuous tax in a proportion tied to your current situation.\n",
+			"url": "https://thecompendium.cards/c/c-195-dcb133",
+			"title": "Debt is the distance from a full-fidelity outcome"
+		},
+		{
+			"id": "c-196-dcb011",
+			"text": "Do creative work in three hour chunks\nSome work is execution-focused, or turn-the-crank. Other work is creative, requiring focus and creating new things. Creative work often requires minimizing distraction, time to load up state in your head, and time to wander without being too goal directed--in other words, it takes a meta focus. When you're focused, you need to be careful not to go down a rabbit hole. But when you sit down to do creative work, you don't know if the ideas you create will be good--if they'll be useful in any current context. And it's easy to lose yourself in the work. That said, if an idea is active in your mind, it's like a firefly within your grasp, and it's much cheaper to catch it while it's there instead of letting it flutter away.\nAs a rule of thumb, do creative work in three hour chunks. That gives you enough time to focus and get in creative mode to produce a good enough document. Then, seek some feedback--any kind of signal that it will be useful. Show it to a trusted colleague for a quick thumbs up to continue going. Tell people about the idea and see if they seem curious. If you don't get positive feedback now, leave it on the back burner and pick it back up if conditions change.\n",
+			"url": "https://thecompendium.cards/c/c-196-dcb011",
+			"title": "Do creative work in three hour chunks"
+		},
+		{
+			"id": "c-198-ebc497",
+			"text": "Mentors benefit from being a mentor, too\nMentoring is a magical thing for the mentee, one of the best ways to grow and learn. But the benefit doesn't just flow to the mentee; the mentor gains a lot, too. That's part of the magic of mentoring: it's win-win-win. A few things mentors gain:\n\n\tSharpen their intuition - Much of what makes us good at what we do is intuition and accumulated know-how. But it's squishy and hard to get a handle on. Being forced to distill it to words to give it to the mentee will help the mentor sharpen their intuition, allowing them to apply it even more directly.\n\tMore patterns to match against - Being a good pattern matcher is one of the ways to get better on the job, the more patterns, the better. Mentoring allows you to add more patterns and indirect experiences from the mentee to the bank to use later.\n\tMeaningful impact on someone's life - Being a mentor allows you to have a meaningful positive effect on someone's life, which is an amazing feeling.\n\n",
+			"url": "https://thecompendium.cards/c/c-198-ebc497",
+			"title": "Mentors benefit from being a mentor, too"
+		},
+		{
+			"id": "c-201-edd616",
+			"text": "Create a lot of fertile ground for seed crystals to form\nCompounding loops are extremely powerful. But they also cannot be created by engineering in a lab; they can only show up organically in the wild. This is one of the reasons a powerful meta-strategy is to be on the lookout for tiny compounding loops.\nHowever, there's another, complementary meta-strategy: create a lot of fertile ground with the conditions you know these little tiny seed crystal compounding loops will like. You can't know precisely which ones will show up and where, but you can increase the stochastic likelihood a given region will have seed crystals popping up. Once you find one, you can then harness it and accelerate it, growing and arcing it in the direction you want it to go. The larger the area of ground, the higher the \"clock speed\" of seed crystal formation, and the more closely you're watching for crystals to form, the more likely you find one.\nThis slow-and-steady strategy is extremely powerful, and nearly always works (if you have enough time). All you have to do is trade off the illusion of direct control over the specific outcome.\n",
+			"url": "https://thecompendium.cards/c/c-201-edd616",
+			"title": "Create a lot of fertile ground for seed crystals to form"
+		},
+		{
+			"id": "c-204-aae191",
+			"text": "Agents tend to have a highly intuitive sense of power\nPower is a key dynamic that defines important properties of nearly every system.\nAgents who will lose power will tend to resist it strongly.\nBecause power is so important, and because power differentials tend to compound, it's really important for agents to notice when they're about to lose power, to avoid being much worse off in the future.\nThis means that agents, especially highly aware ones like humans, have evolved an extremely intuitive sense of power. It's so finely tuned and hyper-sensitive that in many cases the agent doesn't even realize that is what they're picking up on; they only feel the strong emotions that it automatically kicks off.\n",
+			"url": "https://thecompendium.cards/c/c-204-aae191",
+			"title": "Agents tend to have a highly intuitive sense of power"
+		},
+		{
+			"id": "c-204-bff709",
+			"text": "Most group norms get stronger as the group gets bigger\nEveryone wants to belong, so they orient to what the group is already doing. This is then massively strengthened by the power of the crowd watching the crowd, which goes up with the square of number of participants. Norms at scale are culture.\nAs long as there is a continuous, steady infusion of new members, that is never beyond some critical proportion of total group size in some time window, then the group norms stay very stable and get stronger and stronger as the group grows due to the power of the crowd watching the crowd. Behind-the-scenes norm policing can strengthen them even farther.\nSome expensive norms are harder to maintain as a group grows larger, like secrecy. And at a certain point a group is so big that the size of it gives virality, which erodes community.\nHowever, a large influx of new participants all at once throws the group out of equilibrium and allows a new chaotic phase, where the norms may scramble in unpredictable ways. This is one of the reason that very over-the-top rituals often limit the number of simultaneous inductees.\n",
+			"url": "https://thecompendium.cards/c/c-204-bff709",
+			"title": "Most group norms get stronger as the group gets bigger"
+		},
+		{
+			"id": "c-214-bdc209",
+			"text": "Acknowledge there are other plausible worldviews\nYour worldview defines so much about how you make sense of your environment--it colors everything you sense and experience so fundamentally that you just take it for granted. (As in the story told by David Foster Wallace of fish not knowing what water is.) But of course there is no one perfect static worldview, just as there is no single solution or perfect model. Your own worldview will be evolving and changing--one of the components of growth.\nBut to grow, you must acknowledge that your own way of viewing the world is just one way, and that there are other plausible worldviews. Many of them at the beginning will seem fundamentally wrong, leading you to reject them out of hand. But try to sit with them and see how they might have value in some contexts, even if you don't understand... yet. That will put you on the path to growth. Diversity of experience and surroundings is great for exposing you to multiple worldviews to bump off of and grow from.\nSee also casting blame prevents growth and learning.\n",
+			"url": "https://thecompendium.cards/c/c-214-bdc209",
+			"title": "Acknowledge there are other plausible worldviews"
+		},
+		{
+			"id": "c-215-ffe679",
+			"text": "Platforms don't have killer use cases\nA killer use case is one that makes creating the platform a no-brainer. The reason is because the value of a platform is its generative potential--its fundamentally messy ability to create new valuable things on its own in an unpredictable way.\nAny singular use case you can imagine will almost certainly be done with higher fidelity or more value if done in a bespoke, non-generic-platform way. If you build that individual feature, then the case for the platform gets even harder to make, an example of the myopic trap. The lens of \"what's the use case\" is fundamentally the wrong one when motivating the building of a platform and will lead you on a wild goose chase.\nIn retrospect you might be able to realize that a given use case that was built on the platform was extremely powerful, but it's not possible to make that case a priori. The difficulty of making this case in a forward looking way is one of the reasons that it's hard to go from head to tail in a platform.\n",
+			"url": "https://thecompendium.cards/c/c-215-ffe679",
+			"title": "Platforms don't have killer use cases"
+		},
+		{
+			"id": "c-217-bdb808",
+			"text": "Be in the moment\nBeing in the moment helps you not focus on efficiency or all of the short-term fires.\nIt gives you time to \"smell the roses\", giving you time to wander, be curious, have a non-existential mindset, and thus open to large new insights or perspective shifts. Curiosity and learning require space, and being in the moment can help create the space. You can't be contemplative if you're in an achiever mindset.\nThis is one of the reasons that lectures can be an effective format to unlock new insights, even if you think you're familiar with the material.\n",
+			"url": "https://thecompendium.cards/c/c-217-bdb808",
+			"title": "Be in the moment"
+		},
+		{
+			"id": "c-219-abd577",
+			"text": "You can capture more insights when you can stretch farther\nWe can more easily grok ideas that are adjacent to ideas that we've already captured into your foundation of understanding.\nThere's a limit to how far you're able or willing to reach to \"grab onto\" a new proto-insight before giving up.\nThe farther you are willing and able to reach to incorporate new insights, the more likely that you'll be able to grab onto more proto-insights fluttering by.\n",
+			"url": "https://thecompendium.cards/c/c-219-abd577",
+			"title": "You can capture more insights when you can stretch farther"
+		},
+		{
+			"id": "c-220-dbf156",
+			"text": "Curiosity: extracting surprising info from an experience\nCuriosity is a fundamentally open stance that looks at situations carefully to extract surprising information. It is a fundamental requirement in complex spaces.\nSome experiences are inherently richer for a given person than others, based on the person's preexisting knowhow and mental models. But there is always something surprising to extract in a given experience, if you're curious enough.\nFor each incremental unit of curiosity, a given person will extract more surprising information from a given experience. That surprising information is the raw material that, fed into the model-generating capability of intelligence, generates knowhow.\n",
+			"url": "https://thecompendium.cards/c/c-220-dbf156",
+			"title": "Curiosity: extracting surprising info from an experience"
+		},
+		{
+			"id": "c-231-eca494",
+			"text": "One-shot vs repeated games have wildly different equilibria\nIn game theoretic contexts, often the equilibrium is a tragedy where everybody loses (like with the prisoner's dilemma).\nIt can be tempting to come away from that concluding that it's a dog-eat-dog world where everything is zero-sum and you might as well optimize for yourself.\nBut repeated games have very different equilibria. If you know that this is a one-shot where you'll never interact with the other players again, you have a fully extractive mindset. But if you know you'll interact with these same players many times in the future (technically, it has to be an uncertain number), then a different equilibrium of trust and cooperation becomes dominant.\nTrust is a kind of earned credibility among players in a game. Trust can help solve coordination problems that couldn't be solved elsewhere.\n",
+			"url": "https://thecompendium.cards/c/c-231-eca494",
+			"title": "One-shot vs repeated games have wildly different equilibria"
+		},
+		{
+			"id": "c-237-cad112",
+			"text": "Experimentation should happen at the frontier\nPlatforms are layered systems. The lower the layer, the less opinionated it is--but also the more constrained it is. That's because it has a large number of users immediately above it who must potentially be changed when its API changes. (And even if most developers actually use the API via higher layers, those higher layers themselves must be changed.)\nThis means that experimentation and prototyping of new ideas in the middle layers is extremely costly to do. Experimentation in a platform should take case at the frontier on the top. \nThat's where new ideas should be explored in userland, with many of them being discarded, but when a good idea is found that multiple developers implement, it should be factored down into the platform so it can add values for others.\nBe careful though, because developers will find a way--even to ends that you find surprising and unhealthy for an ecosystem.\n",
+			"url": "https://thecompendium.cards/c/c-237-cad112",
+			"title": "Experimentation should happen at the frontier"
+		},
+		{
+			"id": "c-237-ddd274",
+			"text": "The Myopic Trap pops up all over the place\nThe Myopic Trap occurs when you consider cost/benefit tradeoffs over too-small time horizons, consistently picking the choice that gives short-term non-compounding momentum. It shows up a lot of places. Here are a few examples:\n\n\tYou can never go from the head to the tail.\n\tYou can go bottoms up to top down but not vice versa.\n\tYou can never get rid of an allowlist\n\n",
+			"url": "https://thecompendium.cards/c/c-237-ddd274",
+			"title": "The Myopic Trap pops up all over the place"
+		},
+		{
+			"id": "c-237-fde112",
+			"text": "Building a minimal-spanning argument\nThe more words or concepts in your argument, the more likely that a given reader takes issue with something in it, which could lead to snowballing disagreement. The answer is to minimize surface area in your argument. But how do you do that?\nThe answer is to approach it like building a minimum-spanning-tree. First, write a scratch document to understand the argument you want to make fully.\nYou want the smallest convincing argument, and the trick is, conceptually, to not write full sentences but rather grow them word by word, out of order, based on the marginal impact of each additional word. That is, for each word, consider which one word would give the maximal additional clarity. You start with a handful of words and then crystallize ideas around it. With this technique, you'll leave out unnecessary adjectives and have punchier non-sentences.\nWhen combined with the power of formatting, you can create punchy, effective artifacts.\n",
+			"url": "https://thecompendium.cards/c/c-237-fde112",
+			"title": "Building a minimal-spanning argument"
+		},
+		{
+			"id": "c-240-fed030",
+			"text": "Measurable things will become more short-term focused\nThings that are easier to measure will tend to become more and more short-term optimized over time.\nThat's because the short-term, direct effects are always easier to measure than the long-term, non-local, indirect effects. That asymmetry gets stronger the easier it is to measure the short-term results in some concrete way.\nAbstract things have to be an order of magnitude larger than concrete things to balance out, so over time the focus will tend to accumulate more and more of the short-term.\nRelated to Goodhart's law.\n",
+			"url": "https://thecompendium.cards/c/c-240-fed030",
+			"title": "Measurable things will become more short-term focused"
+		},
+		{
+			"id": "c-244-ebc519",
+			"text": "Asking open ended questions invites collaborative debate\nAsking open ended questions, like, \"How might we...\", is another way to open up a discussion to nuance and create the conditions for collaborative debate.\nQuestions like this can help counteract totalizing words, which make truth-seeking harder.\nAnother complementary approach is softening words.\nThese kinds of approaches are especially important in written communications, which often have inadvertently high stakes.\n",
+			"url": "https://thecompendium.cards/c/c-244-ebc519",
+			"title": "Asking open ended questions invites collaborative debate"
+		},
+		{
+			"id": "c-250-fbf113",
+			"text": "Fundamental attribution error\nThe fundamental attribution error that all humans tend to make is to explain away our own faults as being caused by situational factors, while over-emphasizing the intrinsic causes for the faults of others.\nThis effect occurs at the individual level, but can also occur at the group level, which for example can cause polarized environments to become more polarized over time.\n",
+			"url": "https://thecompendium.cards/c/c-250-fbf113",
+			"title": "Fundamental attribution error"
+		},
+		{
+			"id": "c-256-bef492",
+			"text": "The fundamental attribution error affects organizations too\nThe fundamental attribution error is where you blame your own failures on external causes (\"I was late because of traffic\") but others' failures on innate causes (\"Jeff was late because he doesn't value other people's time.\") It arises because you have an inside perspective on your own mind (you aren't an outside observer), and because you are obviously heavily invested in your own success.\nThe same thing occurs when you're part of an organization. You can see how the inside of the system works, and you also feel invested in the organization and have agency within it. It's tied up in your ego: you are more likely to use \"we\". You know it won't hurt you, and you empathize with its perspective. However, when you're an outsider to the organization--especially if it's a powerful one--you can see how it could negatively affect you. Like all beneficiaries of a powerful differential, the power the org wields will be invisible to it. You can partially counteract this bias by replacing your organizations' name with your rival's and seeing how you feel about it.\n",
+			"url": "https://thecompendium.cards/c/c-256-bef492",
+			"title": "The fundamental attribution error affects organizations too"
+		},
+		{
+			"id": "c-260-ddd818",
+			"text": "A compounding loop can be accelerated\nA compounding loop is an extraordinarily powerful force. They're also extremely precious, a needle in a haystack. They can't be created in a lab. Going from nonviable to viable is like going from finite to infinity, or zero to one.\nBut once you find one, there are often lots of things you can do to accelerate the curve. For example, you can make it more efficient for the two sides of the market to find each other, or make the onboarding easier, or invest in marketing.\nEven a small change in the exponential term can have huge effects over time.\n",
+			"url": "https://thecompendium.cards/c/c-260-ddd818",
+			"title": "A compounding loop can be accelerated"
+		},
+		{
+			"id": "c-263-dde638",
+			"text": "Three to five years is a magical time frame for alignment\nYou want to make sure that various teams or organizations are aligning to the same north star so that over time they have eventual convergence, as a kind of schelling point.\nA 3-5 year time horizon is a magical distance for this exercise. It's close enough that you can't imagine huge changes in context (e.g. \"in twenty years we can assume everyone has jetpacks\"), but it's far enough out that you can ignore short-term constraints (e.g. \"our infrastructure is buckling under the weight of our current load\"). Of course, make sure your existential runway is at least 3-5 years long, otherwise you might be planning for a future your org will never see.\nLonger time-horizons also allow people to think more abstractly, and abstract ideas have more wiggle room, making it easier to get multiple perspectives to align in a good-enough way that they are directionally compatible. Longer time-horizons also help people think with their aspirational minds as opposed to their reptilian minds, and better understand their preferences.\n",
+			"url": "https://thecompendium.cards/c/c-263-dde638",
+			"title": "Three to five years is a magical time frame for alignment"
+		},
+		{
+			"id": "c-265-bdf936",
+			"text": "Raising a child forces you to be in the moment\nBeing in the moment is a good way to have personal growth and invite curiosity. Raising a child forces you to be in the moment. It's like having a little agent of chaos in your life, and injecting a little chaos helps build resilience.\nBeing in the moment also helps you escape from the hill-climbing rat race of promotions, raises, etc. Those types of achievements impede personal growth and development.\n",
+			"url": "https://thecompendium.cards/c/c-265-bdf936",
+			"title": "Raising a child forces you to be in the moment"
+		},
+		{
+			"id": "c-270-aeb148",
+			"text": "The morality of helping good things happen\nRelated to having a moral compass in complex problem spaces.\nThings that are good from the broadest possible perspective are morally good, and actions that cause them to happen are morally good, and actions that prevent them from happening (including adding stop energy) are morally bad.\nImportantly, you must always be willing to consider the goodness of things from the broadest possible perspective, including investigating when you find unexpected stop energy to see if you might be missing something that makes the idea actually a bad one.\nOf course, the size of the moral good or bad is not fixed, but is a spectrum that is tied to the potential downside risk, the potential upside value, and the uncertainty.\nNote that all of this is distinct from whether an idea is good for the current context, because some good ideas are bad only because they are hard to convince people of currently.\n",
+			"url": "https://thecompendium.cards/c/c-270-aeb148",
+			"title": "The morality of helping good things happen"
+		},
+		{
+			"id": "c-272-aaa419",
+			"text": "Resist reflexively judging things as dumb\nThe real world is extremely complex: shades of gray and rarely black and white. Over time our perspectives and mindsets change as we learn and experience more, and we're never done learning.\nWhen you come across something that you don't like or see the purpose of, it can be temping to reflexively judge it as dumb. But that's an easy shortcut to take that will prevent you from learning anything from it. If some subset of people think it's meaningful, important, or useful, and that has persisted over time, there's a good likelihood it does have value, even if you can't see it.\nPerhaps it has value in a context that is different from yours, or has a different type of value than what you originally assumed. It could open your eyes to a new perspective that you had been missing, giving you more surprise to use to learn. This is not to say that you have to like everything, or that everything has value. It's just to say that it's better to stay curious and open minded. Related to start by assuming there's no villains.\n",
+			"url": "https://thecompendium.cards/c/c-272-aaa419",
+			"title": "Resist reflexively judging things as dumb"
+		},
+		{
+			"id": "c-273-add165",
+			"text": "Intrinsic motivation emerges from within a system\nIntrinsic motivation is motivation that emerges from within the system of a given agent.\nIt's an amazing, renewable, self-sustaining resource. An ecosystem engine's momentum can be thought of as intrinsic motivation of the system (when viewed from the outside).\nIntrinsic motivation is an emergent property which means even the system itself doesn't get to \"choose\" what direction it will take. Intrinsic motivation can be accelerated, but not enabled.\nAlthough it might be indirectly affected by the external context, it is to some extent context-free. Since it's internal, you can't directly affect it from the outside. That means that you shouldn't try to create intrinsic motivation. Intrinsic motivation is sacred and extrinsic motivation is profane, so don't try to mix them.\n",
+			"url": "https://thecompendium.cards/c/c-273-add165",
+			"title": "Intrinsic motivation emerges from within a system"
+		},
+		{
+			"id": "c-282-aed279",
+			"text": "Bricks held together loosely\nOne of the properties of a rational platform is that the system should be broken into a series of bricks that are held together loosely. If the platform is all one large brick, then developers cannot use it if the brick does anything that they don't want. If the bricks are glued together with mortar, they're hard to separate. The ideal is bricks held together by gravity--they fit nicely in their default configuration but are easy to separate.\nThis is one of the reasons that infrastructure (which any platform can be thought of) have compounding effects. The adjacent possible is the set of possibilities not surrounding the whole platform, but instead the union of the set of space around each of the bricks, since they can all be used separately. This is the set of expressible semantics.\nOf course, it's possible to take this too far. Every bit of semantics you expose constrains your future actions by leading to more combinatorial actions developers could use.  Build only API boundaries where you know of multiple instances of concrete demand.\n",
+			"url": "https://thecompendium.cards/c/c-282-aed279",
+			"title": "Bricks held together loosely"
+		},
+		{
+			"id": "c-284-bbd443",
+			"text": "Greenshifting: fudging numbers positively for your boss\nGreenshifting is a type of asymmetry that triggers any time that an agent with power over others wants reports on the status of things. The agents preparing the report will all have a tendency to fudge the numbers slightly more positive than they actually are. In healthy organizations, this tendency will be small but persistent. But in some organizations, like totalitarian dictatorships, it can become literally a matter of life and death.\nThis effect tends to compound within an organization. If 9 of 10 agents in the report are greenshifting, there's a strong incentive for the remaining one to greenshift, too. It's also highly recursive: small greenshifts at each level can lead to huge greenshifting at the top.\nAs the process compounds, the leader's information will decohere more and more from the situation on the ground, but in a way that isn't obvious to them. If there's a chilling effect on providing feedback it can make the problem worse. The problem can create rotted foundations and can lead to spectacular failure.\n",
+			"url": "https://thecompendium.cards/c/c-284-bbd443",
+			"title": "Greenshifting: fudging numbers positively for your boss"
+		},
+		{
+			"id": "c-287-bae139",
+			"text": "Write yourself fortune cookies from the future\nAs you're exploring a problem space, you're feeding more and more information into your pattern-matching intuition. Insights that have been distilled out of intuition form building blocks that make it easier for you--but especially others--to build on them. But distilling insights takes work.\nOne exercise you can do, after you've overcome a challenge or otherwise feel like you've learned something, is to attempt to distill an insight, by asking yourself: If I were able to send a fortune cookie worth of message to my past self, and have my past self know it was an important message from the future, what message would I write to most help my past self?\nThat message is your insight. By asking yourself the fortune cookie question often, you can accumulate a collection of insights to build on, growing your ability to make sense of new patterns at an exponential rate.\n",
+			"url": "https://thecompendium.cards/c/c-287-bae139",
+			"title": "Write yourself fortune cookies from the future"
+		},
+		{
+			"id": "c-289-ecb606",
+			"text": "If the team can't converge, look for the hidden tradeoff\nTradeoffs are inconvenient and tempting to ignore. But they're everywhere.\nIf you have a group of people on a team who are smart and collaborative, but nevertheless have been going in circles (wandering the wilderness) for an extended period of time, there is almost certainly a hidden tradeoff at play. Perhaps it's inconvenient or embarrassing, or can only be seen if you take a broad perspective that encompasses the perspectives of all members of the group.\nBut in any case, you must grapple with the hidden tradeoff to move forward. The good news is that often identifying the tradeoff and bringing it to the surface is harder than navigating it.\nCollaborative debate is a good tool to identify hidden tradeoffs and bring them to the surface.\n",
+			"url": "https://thecompendium.cards/c/c-289-ecb606",
+			"title": "If the team can't converge, look for the hidden tradeoff"
+		},
+		{
+			"id": "c-290-cfd530",
+			"text": "Arguments can be rigorous, self-evident, short: pick two\n Some arguments are necessarily abstract. These arguments have an iron triangle set of tradeoffs, where you can only have two of the following:\n\n\tRigorous: The argument is strong and well-argued. Rigor does not mean more faux detail; it means that the closer one looks the stronger the argument is.\n\tSelf-evident: The argument stands on its own. A typical member of your target audience who reads it will find it convincing without having to read any other materials.\n\tShort: The argument is succinct and can be consumed in a minimum of time.\n\nA rigorous and short argument will need to rely on metaphors and jargon, which will come across as fluffy to people unfamiliar with the shorthand. A self-evident and short argument will need to make shortcuts that make it non-rigorous, like relying on one \"killer use case\". A self-evident and rigorous argument will be intimidatingly long and won't be consumed by the target audience. One way out of this trap is a well-factored tree of arguments.\n",
+			"url": "https://thecompendium.cards/c/c-290-cfd530",
+			"title": "Arguments can be rigorous, self-evident, short: pick two"
+		},
+		{
+			"id": "c-294-baf924",
+			"text": "Systems that get more efficient can never go back\nIt's a one way street.\nFor the same reason that it's not possible to say what variation is load-bearing.\nThe logic of becoming more efficient is specific, clear, and concrete. The logic for innovation is speculative, abstract, and in aggregate. This creates an asymmetry.\nAnd systems that are more efficient will drive away the types of people who like innovation.\nMost often systems that are overly efficient will have ossified and will die or fade away rather than change.\n",
+			"url": "https://thecompendium.cards/c/c-294-baf924",
+			"title": "Systems that get more efficient can never go back"
+		},
+		{
+			"id": "c-295-baf442",
+			"text": "Having only your intended audience hear your message\nLet's say you have information that you want a certain audience to hear, but you don't want others to take out of context. Maybe it's a subtle issue where the knee-jerk reaction will be incorrect--that is, it's FUD-able. Maybe you want to signal to an engaged creator community some new features will be coming up but don't want the tech press to cover it, because you want to be able to have a marketing launch later.\nIn these cases, you want to make sure that only your intended audience is likely to hear or grok your message. You can do this by making your message anti-viral outside of your target audience. Leaving the document as overly abstract, or using voiceover instead of written communication, or hiding the details in an illegible mess of an open source project that is only legible to active community members.\nThis is a slightly dark pattern. A dark pattern version of this is a dogwhistle, used sometimes in political speech. Like all such patterns, it's important to be doing the right thing from the broadest possible perspective, otherwise use of the pattern can be immoral.\n",
+			"url": "https://thecompendium.cards/c/c-295-baf442",
+			"title": "Having only your intended audience hear your message"
+		},
+		{
+			"id": "c-296-bfd217",
+			"text": "Debt robs you of future velocity\nDebt is any way that your project differs from the full-fidelity ideal version of the project. It comes in many different forms. Debt isn't inherently a bad thing; in proper amounts it can give you temporary velocity in uncertain environments.\nAs your project increases in debt, it becomes harder and harder to add new functionality to it. Debt compounds and grows at a super-linear rate; in some ways it is anti-matter version of useful infrastructure. If your existential runway is long, then paying down debt is almost always the right thing to do.\nDebt paydown isn't shiny. It is never in the critical path to implement any given feature or enhancement. It is about making generic expected future features or enhancements easier to build more quickly. Because that benefit is abstract and speculative, it often won't be prioritized as much as it should be. In particular, it is very hard to make the benefit of debt paydown legible to leadership, which means that if they want to be hands on in prioritization, your team will almost certainly do too little of it.\n",
+			"url": "https://thecompendium.cards/c/c-296-bfd217",
+			"title": "Debt robs you of future velocity"
+		},
+		{
+			"id": "c-296-eef808",
+			"text": "Full-fidelity is what you could do in three years\nWhen figuring out how much debt your project has, you have to first know what to compare it to, in order to figure out how far you are from that.\nA good rule of thumb is to imagine what improvements you would make to your project if the entire rest of the world paused for three years, and you maintained the same head count and resources. This is your north star. You will  never achieve it, because you will never be able to pause for three years, you're constantly taking on debt, and the world is constantly changing.\nImagining this allows you to include your intuition about which parts of your project are most in need of maintenance, or most likely to have different requirements imposed on them by outside (your users, your customers, your peer teams).\nThree years is a good timeframe because it's far enough in the future to allow big projects, but not far enough to imagine impossible changes.\n",
+			"url": "https://thecompendium.cards/c/c-296-eef808",
+			"title": "Full-fidelity is what you could do in three years"
+		},
+		{
+			"id": "c-301-bee412",
+			"text": "Optimizing for a metric robs it of meaning\nGoodhart's law says that when you begin to optimize for a metric, it ceases to measure what you intend. That's because the metric-optimizing agents will find shortcuts to improve the metric that aren't actually in line with the goal you actually had, because all metrics are fundamentally contextual.\nBut optimizing a metric doesn't just lead to that outcome. It also creates a very different feeling among the agents that are asked to optimize it, especially for things that were already happening organically on their own. It shifts from intrinsic to extrinsic motivation, making it feel 'cheap' and less meaningful.\nA good example is \"citizenship\" tasks within an organization. Many people will do it organically, but when you start optimizing it by saying that people must do, say, 10 interviews per quarter in order to be promoted, it robs it of meaning and might lead to less of the desired behavior.\nAn example of this was captured memorably in the Office Space quote about pieces of flair.\n",
+			"url": "https://thecompendium.cards/c/c-301-bee412",
+			"title": "Optimizing for a metric robs it of meaning"
+		},
+		{
+			"id": "c-301-ebd583",
+			"text": "Platforms are constrained by developers' usage\nThe more a platform's API is used, the more constrained it is and the harder it is to change.\nThe reason is that the API provider and the API user are coupled relatively tightly by the API contract. If the only user of the API is in the exact same code-base, then changing the API is relatively straightforward (and it's debatably not an API at all).\nBut the farther away the uses of the API are, the more of them they are (in number of developers using), and the less leverage the platform has to induce developers to change, the harder it can be to change the API--sometimes to an overwhelming degree. The web platform is an example of one of the worst cases because of how evenly power is spread through the system. This is one of the key ways 1P and 3P platforms differ.\nThis is one of the benefits of a well-layered platform. If most developers are using the proper, higher-level abstraction, then the number of API users is smaller (and, in the case of the platform layers above, also closer), making them easier to change.\n",
+			"url": "https://thecompendium.cards/c/c-301-ebd583",
+			"title": "Platforms are constrained by developers' usage"
+		},
+		{
+			"id": "c-302-dbf090",
+			"text": "Balance requires change\nThe correct balance point is highly contextual. The context is always changing.\nThus, properly keeping things in balance requires change.\nIf a system is not able to change or adapt, then it will get out of balance, which can ultimately lead to it shattering or failing.\n",
+			"url": "https://thecompendium.cards/c/c-302-dbf090",
+			"title": "Balance requires change"
+		},
+		{
+			"id": "c-320-dbf442",
+			"text": "Slow and steady works well when conditions change slowly\nSlow and steady strategies can be extremely effective in many cases.\nOne of the reasons is because they encourage small, continuously varying changes in force applied instead of discontinuous heroic efforts.\nSystems with uncertainty and long feedback loops will naturally oscillate. Humans are bad with boring or continuously changing things, so the tendency is to overcorrect as those oscillations occur. But that will then cause the rest of the system to overcorrect, leading to even greater oscillations.\nSmooth and steady applications of force can help dampen the oscillations and stay the course. This works well as long as the underlying forces you're balancing against are also continuous and smooth.\n",
+			"url": "https://thecompendium.cards/c/c-320-dbf442",
+			"title": "Slow and steady works well when conditions change slowly"
+		},
+		{
+			"id": "c-321-fdb342",
+			"text": "Hobbyist, makers, and other enthusiasts make good seeds\nA great strategy is when you can find a seed crystal, a gradient, and a high ceiling.\nHobbyists often form pockets of excitement and motivation; people crawling through broken glass to achieve a thing. Reducing the amount of broken glass they have to crawl through is a natural and easy gradient to descend.\nAs long as the ceiling surrounding the gradient is big enough, it can be a great strategy.\nHobbyist communities often emit tell tale signs, as people show off the stuff they've made to other enthusiasts, making them easier to spot. Looking for hobbyist communities in the neighborhood of the area you want to build in is a great way to sniff out possible seed crystals.\n",
+			"url": "https://thecompendium.cards/c/c-321-fdb342",
+			"title": "Hobbyist, makers, and other enthusiasts make good seeds"
+		},
+		{
+			"id": "c-324-abd983",
+			"text": "Navigating tradeoffs properly requires relevant knowhow\nTradeoffs are often inconvenient and tempting to try to ignore. But tradeoffs are everywhere, and successfully navigating them is critical.\nTradeoffs are about finding the right contextual balance. There is no right answer; that balance is contextual and always changing, and must be sensed. Like learning to surf, the balance can only be found with the right muscle memory, or knowhow, intuitively trading off the different factors to sense your way to the right point for right this moment.\nThis is another reason that relevant knowhow is a form of power. People who have the relevant knowhow might not even realize that they're navigating a tradeoff in the first place.\n",
+			"url": "https://thecompendium.cards/c/c-324-abd983",
+			"title": "Navigating tradeoffs properly requires relevant knowhow"
+		},
+		{
+			"id": "c-324-dce955",
+			"text": "Boundary gradients are extremely powerful growth vectors\nIf you have a seed crystal, you need a gradient to descend to grow it.\nIf people on the boundary of the group would rather be inside than outside, then it creates a powerful asymmetry that will lead to the group growing, potentially at accelerating rates.\nThese gradients often look like a party when you're outside looking in.\nFacebook used a powerful boundary gradient to grow: original just Harvard, then Ivy League colleges, then other prestigious universities, then all universities, then all students, then anyone. At each stage, the group that wasn't yet allowed in would rather be affiliated with the people \"inside\" than the ones \"outside\".\nOther ecosystems can achieve this with an air of exclusivity, perhaps accentuated by mystique or invitation criteria. Boundary gradients can help overcome the ramp up time to join a community.\n",
+			"url": "https://thecompendium.cards/c/c-324-dce955",
+			"title": "Boundary gradients are extremely powerful growth vectors"
+		},
+		{
+			"id": "c-324-ead063",
+			"text": "Erosion accelerates over time\nIf you have a dynamic that can be accurately compared to erosion, then the effects will tend to accelerate over time.\nImagine a dribble in a dam: at first it's not that big of a deal. But as the hole gets larger, more water can course through, which erodes more of the dam. This leads to a compounding acceleration of rate of erosion over time. You can also think of it like a ball rolling down a hill, picking up more and more momentum as it accelerates.\nOnce the erosion gets bad, it can lead to wholesale failure of the system.\nThis is one reason people intuitively fear slippery slope situations.\n",
+			"url": "https://thecompendium.cards/c/c-324-ead063",
+			"title": "Erosion accelerates over time"
+		},
+		{
+			"id": "c-329-aaa711",
+			"text": "Orgs get better at climbing their hill until it kills them\nAn organization that has found a hill to climb is very lucky--if they didn't, they would have died early. When they look around themselves for opportunities, the best is always to climb up the established hill. It's in the adjacent possible, it's concrete (non-speculative, and thus lower risk), and it's easy to measure.\nThe survivorship bias of the org will lead it to myth-make about why it's been successful, making it increasingly unable to see other hills. The org tends to focus even more on the metrics that are about the hill climbing, which is a form of ossification and will lead to shattering or being surpassed.\nIn addition, value that is not hill climbing is inherently more speculative, and thus much harder to make a case for. This asymmetry of concrete loss vs speculative gain makes the hill look ever-more attractive, since downside keeps getting bigger. The only way to pick better speculative bets (to \"find a new hill\") is to have an evolutionary search process in which most of the agents die.\n",
+			"url": "https://thecompendium.cards/c/c-329-aaa711",
+			"title": "Orgs get better at climbing their hill until it kills them"
+		},
+		{
+			"id": "c-333-eec741",
+			"text": "Incremental effort has strongly diminishing returns in fidelity\nThe full fidelity of your idea is what you could achieve in three years if the rest of the world froze. The first units of effort unlock huge amounts of fidelity, but each additional unit of effort unlocks only logarithmically more fidelity, asymptotically approaching full fidelity.\nIf you're on the wrong hill, then you might be wasting tons of effort climbing the wrong hill. That's why you should get to good enough to get it in the hands of real users and then incrementally improve in response to concrete demand--especially because you likely have PMF before you think you do.\nThis is one of the reasons for the observation that once you think you're 80% of the way done you're only 20% of the way done. It's also why product excellence is not an all-encompassing good in all cases, because polish has huge opportunity cost, and perfection is infinitely expensive.\n",
+			"url": "https://thecompendium.cards/c/c-333-eec741",
+			"title": "Incremental effort has strongly diminishing returns in fidelity"
+		},
+		{
+			"id": "c-334-edd577",
+			"text": "Systems that are inflexible have ossified\nSystems that have found a useful hill will keep on optimizing efficiency. That will reduce their flexibility and resiliency.\nThey'll get better and better at doing their one task, but will be less and less well equipped to handle changing contexts. But contexts always change.\nOssification means the system is unable to adapt. At some point it will be either be superceded (continuing to exist, but fading in importance, possibly until it goes dormant or ceases to exist), or shatters catastrophically.\n",
+			"url": "https://thecompendium.cards/c/c-334-edd577",
+			"title": "Systems that are inflexible have ossified"
+		},
+		{
+			"id": "c-339-ecf497",
+			"text": "Systems under tension can shatter\nSystems that are not resilient (because they have focused too much on efficiency at the cost of resilience) are ossified and prone to failure. These failures might be that they can't adapt quickly enough and are superseded by some other system.\nBut ossified systems can also fail in a spectacular way, by shattering. This happens when the system has accumulated tension that it cannot dissipate. Systems in this state are known as super-critical.\nTension in a system creates a gradient, and excessive tension can create extremely steep gradients. If the right seed crystal forms, it can expand along that gradient so explosively that the system cannot cohere and it shatters.\nThe precise cause of the failure, in terms of the specific seed crystal, is hard to predict, but what can be predicted (at least within a few orders of magnitude) is the likelihood of some force to come along and shatter the system.\n",
+			"url": "https://thecompendium.cards/c/c-339-ecf497",
+			"title": "Systems under tension can shatter"
+		},
+		{
+			"id": "c-341-aba195",
+			"text": "Lower friction leads to a smaller number of bigger winners\nWithin a system, the size and power of various agents typically follows a power law, with a small number of bigger players and a large number of smaller ones.\nThis is due to the phenomenon of preferential attachment, which leads to rich-get-richer dynamics.\nFriction is a measure of how hard it is to do relevant things in a system, like communicate information or move goods. It is effectively the clock speed or metabolic rate of a system.\nWhen you lower friction, you speed up the clock speed of the system, allowing the loops to run hotter. This means that the preferential attachment dynamic runs faster--it's easier for power to be pulled to the agents that are already powerful. This mean that the distribution of agents in the system will have a steeper power law distribution: a smaller number of bigger winners.\n",
+			"url": "https://thecompendium.cards/c/c-341-aba195",
+			"title": "Lower friction leads to a smaller number of bigger winners"
+		},
+		{
+			"id": "c-345-bec450",
+			"text": "Heroics ratchet upwards\nHeroic actions in an organization tend to purely ratchet upwards. This is for a number of reasons:\n\n\tHeroics feel good. Heroics create the feeling of momentum, of wind in your hair, which feels good. It's also a form of focus, which allows you to put blinders on and not stare into the existential abyss.\n\tHeroes get heaped with praise. They did a concrete, easy-to-understand thing that prevented a disaster, so everyone pats them on the back.\n\tEverybody wants to pull their weight. If others around you are going to heroic lengths, you don't want to be a free-rider, or look like you've gone soft... especially if you'll be compared to those heroes come perf review, leading to a dynamic where everyone's trying to be a bit more heroic than average.\n\tHeroes create churn. Faster movement without considering the consequences creates churn which creates uncertainty which people often try to counteract by applying heroics.\n\nThis ratcheting means that orgs that fall into the heroics trap might spiral until they explode.\n",
+			"url": "https://thecompendium.cards/c/c-345-bec450",
+			"title": "Heroics ratchet upwards"
+		},
+		{
+			"id": "c-347-eae336",
+			"text": "Growing platforms by paving cowpaths\nOne of the properties of a rational platform is the proper layering. You want experimentation and prototyping to happen on the frontier. But once the system finds good functionality that others could use, you want to pave that cowpath to create a rational layer on top that others can also use, allowing code-reuse.\nNow that you have a rational layering, you ideally want new developers and existing ones to use the proper layer, which might imply applying pressure to get them to use the new, more appropriate layer.\nThis is a subclass of the more general observation to only pave cowpaths retroactively when structuring a problemspace.\nThis is a way of continuously accreting more useful functionality in a properly-layered way, which allows you to capture compounding value.\n",
+			"url": "https://thecompendium.cards/c/c-347-eae336",
+			"title": "Growing platforms by paving cowpaths"
+		}
+	]
+}
