@@ -19,6 +19,15 @@ answer the question.
 
 To run it, ensure you have an environment variable set for `OPENAI_API_KEY`.
 
+Alternatively, create a `.env` file with these contents:
+
+```
+OPENAI_API_KEY=<key goes here>
+TRANSFORMERS_VERBOSITY=error
+```
+
+(The last line will suppress the `None of PyTorch, TensorFlow >= 2.0, or Flax have been found` warning you may get when running the code)
+
 Then, ensure you have a pkl file of the proper structure stored in `out/embeddings.pkl`
 
 Then run `python3 sample/main.py`
