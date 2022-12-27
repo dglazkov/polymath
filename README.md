@@ -13,6 +13,16 @@ relevant to the question. Then it injects as many chunks of content into a
 prompt as will fit, appends the question, and uses the OpenAI completions API to
 answer the question.
 
+## Sample
+
+`sample/` includes a sample question answerer.
+
+To run it, ensure you have an environment variable set for `OPENAI_API_KEY`.
+
+Then, ensure you have a pkl file of the proper structure stored in `out/embeddings.pkl`
+
+Then, sitting in `sample/` run `python main.py`
+
 ### Developing
 
 It's recommended to use `virtualenv` to manage your python environment for this project.
