@@ -32,6 +32,25 @@ Then, ensure you have a pkl file of the proper structure stored in `out/embeddin
 
 Then run `python3 sample/main.py`
 
+## Creating a new pkl
+
+To create a new pkl file for a source, first, create a json object like this:
+
+```
+{
+  chunks: [
+    text: '<raw text>',
+    //all of the following are optional
+    url: '<URL>',
+    image_url: '<IMAGE_URL>',
+    title: '<TITLE>',
+    description: '<DESCRIPTION>',
+  ]
+}
+```
+
+Then run `python3 converter.py <FILENAME>`. It will create a new file that can be moved to `out` and used as embeddings.
+
 ### Developing
 
 It's recommended to use `virtualenv` to manage your python environment for this project.

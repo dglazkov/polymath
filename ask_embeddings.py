@@ -35,6 +35,10 @@ def load_embeddings(embeddings_file):
         return pickle.load(f)
 
 
+def get_token_length(text):
+    tokenizer = GPT2TokenizerFast.from_pretrained("gpt2")
+    return tokenizer.tokenize(text)
+
 def get_context(similiarities):
     context = []
     context_len = 0
