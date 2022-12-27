@@ -51,6 +51,10 @@ To create a new pkl file for a source, first, create a json object like this:
 
 Then run `python3 converter.py <FILENAME>`. It will create a new file that can be moved to `out` and used as embeddings.
 
+### Running the server
+
+To start the host server, run `python3 host/server.py`. It will start a Flask app as a local server. Go to `http://127.0.0.1:8080/api/query` to see the API endpoint.
+
 ### Developing
 
 It's recommended to use `virtualenv` to manage your python environment for this project.
