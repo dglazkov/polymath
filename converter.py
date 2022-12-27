@@ -14,6 +14,8 @@ args = parser.parse_args()
 filename = args.filename
 max_lines = args.max
 
+OUTPUT_DIRECTORY = 'out'
+
 with open(filename, 'r') as f:
     data = json.load(f)
 
@@ -56,8 +58,11 @@ result = {
     'issue_info': issue_info
 }
 
+if not os.path.exists(OUTPUT_DIRECTORY):
+    os.mkdir(OUTPUT_DIRECTORY)
+
 base_filename, file_extension = os.path.splitext(filename)
-new_filename = f'{base_filename}.pkl'
+new_filename = os.path.join(OUTPUT_DIRECTORY, f'{base_filename}.pkl')
 
 with open(new_filename, 'wb') as f:
     pickle.dump(result, f)
