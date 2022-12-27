@@ -5,7 +5,7 @@ Some noodlings on the format. The current pickle format for embeddings for [wand
     (
       <text>,
       <embedding>,
-      <tokens>,
+      <tokens_length>,
       <issue_id>
     )
   ],
