@@ -21,7 +21,7 @@ To run it, ensure you have an environment variable set for `OPENAI_API_KEY`.
 
 Then, ensure you have a pkl file of the proper structure stored in `out/embeddings.pkl`
 
-Then, sitting in `sample/` run `python main.py`
+Then run `python3 sample/main.py`
 
 ### Developing
 

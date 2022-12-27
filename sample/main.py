@@ -1,8 +1,10 @@
 import os
+
 import ask_embeddings
 import openai
-#TODO: use dotenv
+from dotenv import load_dotenv
 
+load_dotenv()
 openai.api_key = os.getenv("OPENAI_API_KEY")
 
 query = "Tell me about 3P"

@@ -11,6 +11,7 @@ packaging==22.0
 pandas==1.5.2
 pandas-stubs==1.5.2.221213
 python-dateutil==2.8.2
+python-dotenv==0.21.0
 pytz==2022.7
 PyYAML==6.0
 regex==2022.10.31
