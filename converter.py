@@ -8,9 +8,11 @@ import os
 
 parser = argparse.ArgumentParser()
 parser.add_argument('filename', help='The name of the input file to be processed')
+parser.add_argument('--max', help='The number of max lines to process. If negative, will process all.', default=-1, type=int)
 args = parser.parse_args()
 
 filename = args.filename
+max_lines = args.max
 
 with open(filename, 'r') as f:
     data = json.load(f)
@@ -24,7 +26,14 @@ if not chunks:
 embeddings = []
 issue_info = {}
 
+count = 0
+
+print('Will process ' + ('all' if max_lines < 0 else str(max_lines)) + ' lines')
+
 for chunk in chunks:
+    if max_lines >= 0 and count >= max_lines:
+        print('Reached max lines')
+        break
     id = chunk.get('id')
     if not id:
         print('Skipping chunk missing an ID')
@@ -40,6 +49,7 @@ for chunk in chunks:
     embedding = ask_embeddings.get_embedding(text)
     token_length = ask_embeddings.get_token_length(text)
     embeddings.append((text, embedding, token_length, id))
+    count += 1
 
 result = {
     'embeddings': embeddings,
