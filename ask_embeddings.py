@@ -37,7 +37,7 @@ def load_embeddings(embeddings_file):
 
 def get_token_length(text):
     tokenizer = GPT2TokenizerFast.from_pretrained("gpt2")
-    return tokenizer.tokenize(text)
+    return len(tokenizer.tokenize(text))
 
 def get_context(similiarities):
     context = []
