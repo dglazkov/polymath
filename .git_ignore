@@ -1,0 +1,6 @@
+.env
+env/
+in/
+out/
+__pycache__
+*.code-workspace
