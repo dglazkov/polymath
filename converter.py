@@ -29,6 +29,7 @@ embeddings = []
 issue_info = {}
 
 count = 0
+total = len(chunks) if max_lines < 0 else max_lines
 
 print('Will process ' + ('all' if max_lines < 0 else str(max_lines)) + ' lines')
 
@@ -40,7 +41,7 @@ for chunk in chunks:
     if not id:
         print('Skipping chunk missing an ID')
         continue
-    print(f'Processing chunk {id}')
+    print(f'Processing chunk {id} ({count + 1}/{total})')
     text = chunk.get('text')
     if not text:
         print('Skipping a row with id ' + id + ' that was missing text')
