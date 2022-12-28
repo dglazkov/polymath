@@ -70,6 +70,9 @@ def load_multiple_libraries(library_file_names):
     result = empty_library()
     for file in library_file_names:
         content = load_library(file)
+        if result['embedding_model'] != content['embedding_model']:
+            model = content['embedding_model']
+            raise Exception(f'Embedding model {model} in {file} did not match')
         result['embeddings'].extend(content['embeddings'])
         result['issue_info'].update(content['issue_info'])
     return result
