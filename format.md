@@ -1,23 +1,21 @@
 The format of the library files is as follows:
 ```{
-  //version will be incremented to 0 when we update from the OG version.
-  version: -1,
+  version: 0,
   embedding_model: 'text-embedding-ada-002',
-  embeddings: [
-    (
-      <text>,
-      <embedding>,
-      <tokens_length>,
-      <issue_id>
-    )
-  ],
-  issue_info: {
-    <issue_id>: (
-      <url>
-      <image_url>,
-      <title>,
-      <description>
-    )
+  content: {
+    //A chunk_id is any string unique within this index to address your content. It could be a post's slug, a URL, or a monotonically-increasing integer formatted as a string.
+    <chunk_id>: {
+      text: <text>,
+      embedding: <embedding>,
+      token_count: <tokens_count>,
+      info: {
+        url: <url>,
+        //All of the following properties are optional
+        image_url: <image_url>,
+        title: <title>,
+        description: <description>
+      }
+    }
   }
 }
 ```

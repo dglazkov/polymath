@@ -18,7 +18,7 @@ MAX_CONTEXT_LEN = 2048
 LIBRARY_DIR = 'out'
 SAMPLE_LIBARRIES_FILE = 'sample-import-content.pkl'
 
-CURRENT_VERSION = -1
+CURRENT_VERSION = 0
 
 # In JS, the argument can be produced with with:
 # ```
@@ -56,9 +56,9 @@ def get_embedding(text):
 
 def get_similarities(query_embedding, library):
     return sorted([
-        (vector_similarity(query_embedding, embedding), text, tokens, issue_id)
-        for text, embedding, tokens, issue_id
-        in library['embeddings']], reverse=True)
+        (vector_similarity(query_embedding, item['embedding']), item['text'], item['token_count'], issue_id)
+        for issue_id, item
+        in library['content'].items()], reverse=True)
 
 
 def load_default_libraries():
@@ -75,10 +75,9 @@ def load_multiple_libraries(library_file_names):
         if result['embedding_model'] != content['embedding_model']:
             model = content['embedding_model']
             raise Exception(f'Embedding model {model} in {file} did not match')
-        result['embeddings'].extend(content['embeddings'])
         #TODO: handle key collisions; keys are only guaranteed to be unique
         #within a single library.
-        result['issue_info'].update(content['issue_info'])
+        result['content'].update(content['content'])
     return result
 
 
@@ -100,22 +99,39 @@ def validate_library(library):
     #TODO: also validate the shape of each item
 
 
+def _convert_library_from_version_og(og_library):
+    library = empty_library()
+    for embedding in og_library['embeddings']:
+        text, embedding, token_count, issue_id = embedding
+        url, image_url, title, description = og_library['issue_info'].get(issue_id, ('', '', '', ''))
+        #TODO: handle cases where the OG file has multiple embedding lines with the same content.
+        library['content'][issue_id] = {
+            'text': text,
+            'embedding': embedding,
+            'token_count': token_count,
+            'info': {
+                'url': url,
+                'image_url': image_url,
+                'title': title,
+                'description': description
+            }
+        }
+    return library
+
+
 def load_library(library_file):
     library = _load_raw_library(library_file)
-    if 'version' not in library or library['version'] == -1:
-        #This is the OG format, where version is 0 and embedding model is the default
-        library['version'] = CURRENT_VERSION
-        library['embedding_model'] = EMBEDDINGS_MODEL_NAME
+    if library.get('version', -1) == -1:
+        library = _convert_library_from_version_og(library)
     validate_library(library)
     return library
 
 
 def empty_library():
     return {
-        'version': 0,
+        'version': CURRENT_VERSION,
         'embedding_model': 'text-embedding-ada-002',
-        'embeddings': [],
-        'issue_info': {}
+        'content': {}
     }
 
 
@@ -146,7 +162,7 @@ def get_context(similiarities, token_count=MAX_CONTEXT_LEN):
 
 
 def get_issues(issue_ids, library):
-    return [library['issue_info'][issue_id] for issue_id in issue_ids]
+    return [library[issue_id]['info'] for issue_id in issue_ids]
 
 
 def get_completion(prompt):

@@ -54,17 +54,24 @@ for chunk in chunks:
     if not id:
         print('Skipping chunk missing an ID')
         continue
-    if id in result['issue_info']:
+    if id in result['content']:
         continue
     print(f'Processing new chunk {id} ({count + 1}/{total})')
     text = chunk.get('text')
     if not text:
         print('Skipping a row with id ' + id + ' that was missing text')
         continue
-    result['issue_info'][id] = (chunk.get(property_name, '') for property_name in ['url', 'image_url', 'title', 'description'])
     embedding = ask_embeddings.get_embedding(text)
     token_length = ask_embeddings.get_token_length(text)
-    result['embeddings'].append((text, embedding, token_length, id))
+    info = {'url': chunk.get('url', '')}
+    for property_name in ['image_url', 'title', 'description']:
+        if property_name in chunk: info[property_name] = chunk.get(property_name, '')
+    result['content'][id] = {
+            'text': text,
+            'embedding': embedding,
+            'token_count': token_length,
+            'info': info
+    }
     count += 1
 
 print(f'Loaded {count} new lines')
