@@ -10,12 +10,14 @@ import openai
 from dotenv import load_dotenv
 
 parser = argparse.ArgumentParser()
-parser.add_argument('query', help='The query to issue', default="Tell me about 3P")
+parser.add_argument('query', help='The question to ask', default="Tell me about 3P")
+parser.add_argument('context', help='The query to use to fetch the context', default='')
 args = parser.parse_args()
 
 load_dotenv()
 openai.api_key = os.getenv("OPENAI_API_KEY")
 
 query = args.query
+context = args.context
 
-print(ask_embeddings.ask(query))
+print(ask_embeddings.ask(query, context))
