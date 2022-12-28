@@ -16,7 +16,7 @@ SEPARATOR = "\n"
 MAX_CONTEXT_LEN = 2048
 
 EMBEDDINGS_DIR = 'out'
-SAMPLE_EMBEDDINGS_FILE = 'sample-import-content.pkl'
+SAMPLE_LIBARRIES_FILE = 'sample-import-content.pkl'
 
 # In JS, the argument can be produced with with:
 # ```
@@ -63,13 +63,13 @@ def load_default_libraries():
     files = glob.glob(os.path.join(EMBEDDINGS_DIR, '*.pkl')) + glob.glob(os.path.join(EMBEDDINGS_DIR, '*.json'))
     if len(files):
         return load_multiple_libraries(files)
-    return load_library(SAMPLE_EMBEDDINGS_FILE)
+    return load_library(SAMPLE_LIBARRIES_FILE)
 
 
-def load_multiple_libraries(embeddings_file_names):
+def load_multiple_libraries(library_file_names):
     embeddings = []
     issue_info = {}
-    for file in embeddings_file_names:
+    for file in library_file_names:
         content = load_library(file)
         embeddings.extend(content['embeddings'])
         issue_info.update(content['issue_info'])
@@ -79,13 +79,13 @@ def load_multiple_libraries(embeddings_file_names):
     }
 
 
-def load_library(embeddings_file):
-    filetype = os.path.splitext(embeddings_file)[1].lower()
+def load_library(library_file):
+    filetype = os.path.splitext(library_file)[1].lower()
     if filetype == '.json':
-        with open(embeddings_file, "r") as f:
+        with open(library_file, "r") as f:
             return json.load(f)  
     else:
-        with open(embeddings_file, "rb") as f:
+        with open(library_file, "rb") as f:
             return pickle.load(f)
 
 
