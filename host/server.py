@@ -7,7 +7,7 @@ from dotenv import load_dotenv
 from flask import Flask, jsonify, render_template, request
 
 from ask_embeddings import (get_context, get_issues,
-                            get_similarities, load_embeddings, vector_from_base64)
+                            get_similarities, load_library, vector_from_base64)
 
 WANDERING_MEMORY = 60 * 60 * 2  # 2 hours, why not
 WANDERING_VARIETY = 5
@@ -40,7 +40,7 @@ def start():
             return jsonify({
                 "error": "Query is required"
             })
-        embeddings = load_embeddings(embeddings_filename)
+        embeddings = load_library(embeddings_filename)
         query_embedding = vector_from_base64(query)
         similiarities = get_similarities(
             query_embedding, embeddings["embeddings"])

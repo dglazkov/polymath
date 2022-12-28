@@ -63,14 +63,14 @@ def load_default_embeddings():
     files = glob.glob(os.path.join(EMBEDDINGS_DIR, '*.pkl')) + glob.glob(os.path.join(EMBEDDINGS_DIR, '*.json'))
     if len(files):
         return load_multiple_embeddings(files)
-    return load_embeddings(SAMPLE_EMBEDDINGS_FILE)
+    return load_library(SAMPLE_EMBEDDINGS_FILE)
 
 
 def load_multiple_embeddings(embeddings_file_names):
     embeddings = []
     issue_info = {}
     for file in embeddings_file_names:
-        content = load_embeddings(file)
+        content = load_library(file)
         embeddings.extend(content['embeddings'])
         issue_info.update(content['issue_info'])
     return {
@@ -79,7 +79,7 @@ def load_multiple_embeddings(embeddings_file_names):
     }
 
 
-def load_embeddings(embeddings_file):
+def load_library(embeddings_file):
     filetype = os.path.splitext(embeddings_file)[1].lower()
     if filetype == '.json':
         with open(embeddings_file, "r") as f:
@@ -141,7 +141,7 @@ def get_completion_with_context(query, context):
 def ask(query, context_query=None, embeddings_file=None):
     if not context_query:
         context_query = query
-    embeddings = load_embeddings(
+    embeddings = load_library(
         embeddings_file) if embeddings_file else load_default_embeddings()
     query_embedding = get_embedding(context_query)
     similiarities = get_similarities(query_embedding, embeddings["embeddings"])

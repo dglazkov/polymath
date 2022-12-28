@@ -40,7 +40,7 @@ issue_info = {}
 
 if not overwrite and os.path.exists(full_output_filename):
     print(f'Found {full_output_filename}, loading it as a base to incrementally extend.')
-    existing_data = ask_embeddings.load_embeddings(full_output_filename)
+    existing_data = ask_embeddings.load_library(full_output_filename)
     embeddings = existing_data['embeddings']
     issue_info = existing_data['issue_info']
 
