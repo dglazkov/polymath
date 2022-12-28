@@ -14,6 +14,9 @@ COMPLETION_MODEL_NAME = "text-davinci-003"
 SEPARATOR = "\n"
 MAX_CONTEXT_LEN = 2048
 
+EMBEDDINGS_DIR = 'out'
+SAMPLE_EMBEDDINGS_FILE = 'sample-import-content.pkl'
+
 # In JS, the argument can be produced with with:
 # ```
 # btoa(String.fromCharCode(...(new Uint8Array(new Float32Array(data).buffer))));
@@ -53,10 +56,6 @@ def get_similarities(query_embedding, embeddings):
         (vector_similarity(query_embedding, embedding), text, tokens, issue_id)
         for text, embedding, tokens, issue_id
         in embeddings], reverse=True)
-
-
-EMBEDDINGS_DIR = 'out'
-SAMPLE_EMBEDDINGS_FILE = 'sample-import-content.pkl'
 
 
 def load_default_embeddings():
