@@ -10,6 +10,7 @@ OUTPUT_DIRECTORY = 'out'
 
 parser = argparse.ArgumentParser()
 parser.add_argument('filename', help='The name of the input file to be processed')
+parser.add_argument('--format', help='The format to use', choices=['pkl', 'json'], default='pkl')
 parser.add_argument('--output', help=f'The name of the file to store in {OUTPUT_DIRECTORY}/. If not provided, will default to the input file with a new extension', default='')
 parser.add_argument('--max', help='The number of max lines to process. If negative, will process all.', default=-1, type=int)
 parser.add_argument('--overwrite', action='store_true', help='If set, will ignore any existing output and overwrite it instead of incrementally extending it')
@@ -19,6 +20,7 @@ filename = args.filename
 max_lines = args.max
 overwrite = args.overwrite
 output_filename = args.output
+output_format = args.format
 
 with open(filename, 'r') as f:
     data = json.load(f)
@@ -31,7 +33,7 @@ if not chunks:
 
 if not output_filename:
     base_filename, file_extension = os.path.splitext(filename)
-    output_filename = f'{base_filename}.pkl'
+    output_filename = f'{base_filename}.{output_format}'
 
 full_output_filename = os.path.join(OUTPUT_DIRECTORY, output_filename)
 
@@ -40,8 +42,12 @@ issue_info = {}
 
 if not overwrite and os.path.exists(full_output_filename):
     print(f'Found {full_output_filename}, loading it as a base to incrementally extend.')
-    with open(full_output_filename, 'rb') as f:
-        existing_data = pickle.load(f)
+    if output_format == 'json':
+        with open(full_output_filename, 'r') as f:
+            existing_data = json.load(f)
+    else:
+        with open(full_output_filename, 'rb') as f:
+            existing_data = pickle.load(f)
     embeddings = existing_data['embeddings']
     issue_info = existing_data['issue_info']
 
@@ -83,5 +89,9 @@ result = {
 if not os.path.exists(OUTPUT_DIRECTORY):
     os.mkdir(OUTPUT_DIRECTORY)
 
-with open(full_output_filename, 'wb') as f:
-    pickle.dump(result, f)
+if output_format == 'json':
+    with open(full_output_filename, 'w') as f:
+        json.dump(result, f, indent='\t')
+else:
+    with open(full_output_filename, 'wb') as f:
+        pickle.dump(result, f)
