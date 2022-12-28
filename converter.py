@@ -40,12 +40,7 @@ issue_info = {}
 
 if not overwrite and os.path.exists(full_output_filename):
     print(f'Found {full_output_filename}, loading it as a base to incrementally extend.')
-    if output_format == 'json':
-        with open(full_output_filename, 'r') as f:
-            existing_data = json.load(f)
-    else:
-        with open(full_output_filename, 'rb') as f:
-            existing_data = pickle.load(f)
+    existing_data = ask_embeddings.load_embeddings(full_output_filename)
     embeddings = existing_data['embeddings']
     issue_info = existing_data['issue_info']
 
