@@ -1,5 +1,4 @@
-Some noodlings on the format. The current pickle format for embeddings for [wanderer](https://github.com/dglazkov/wanderer) is this:
-
+The format of the library files is as follows:
 ```{
   embeddings: [
     (
