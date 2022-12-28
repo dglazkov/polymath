@@ -30,7 +30,7 @@ TRANSFORMERS_VERBOSITY=error
 
 Any embeddings pkl files you have in `out/` will be used as the content. If none exist, it will use the `sample-import-content.pkl`.
 
-Then run `python3 sample/main.py "How does building a platform differ from building a product?"`
+Then run `python3 -m sample.main "How does building a platform differ from building a product?"`
 
 ## Creating a new pkl
 
@@ -49,11 +49,11 @@ To create a new pkl file for a source, first, create a json object like this:
 }
 ```
 
-Then run `python3 converter.py <FILENAME>`. It will create a new file with the same name but a `.pkl` extension in the `out/` directory.
+Then run `python3 -m converter <FILENAME>`. It will create a new file with the same name but a `.pkl` extension in the `out/` directory.
 
 ### Running the server
 
-To start the host server, run `python3 host/server.py`. It will start a Flask app as a local server. Go to `http://127.0.0.1:8080/api/query` to see the API endpoint.
+To start the host server, run `python3 -m host.server`. It will start a Flask app as a local server. Go to `http://127.0.0.1:8080/api/query` to see the API endpoint.
 
 ### Developing
 
