@@ -89,6 +89,13 @@ def load_library(library_file):
             return pickle.load(f)
 
 
+def empty_library():
+    return {
+        'embeddings': (),
+        'issue_info': {}
+    }
+
+
 def get_token_length(text):
     tokenizer = GPT2TokenizerFast.from_pretrained("gpt2")
     return len(tokenizer.tokenize(text))
