@@ -1,6 +1,7 @@
 The format of the library files is as follows:
 ```{
-  version: 0,
+  //version will be incremented to 0 when we update from the OG version.
+  version: -1,
   embedding_model: 'text-embedding-ada-002',
   embeddings: [
     (

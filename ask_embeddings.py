@@ -18,6 +18,8 @@ MAX_CONTEXT_LEN = 2048
 LIBRARY_DIR = 'out'
 SAMPLE_LIBARRIES_FILE = 'sample-import-content.pkl'
 
+CURRENT_VERSION = -1
+
 # In JS, the argument can be produced with with:
 # ```
 # btoa(String.fromCharCode(...(new Uint8Array(new Float32Array(data).buffer))));
@@ -90,9 +92,9 @@ def _load_raw_library(library_file):
 
 def load_library(library_file):
     library = _load_raw_library(library_file)
-    if 'version' not in library:
+    if 'version' not in library or library['version'] == -1:
         #This is the OG format, where version is 0 and embedding model is the default
-        library['version'] = 0
+        library['version'] = CURRENT_VERSION
         library['embedding_model'] = 'text-embedding-ada-002'
     return library
 
