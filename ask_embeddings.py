@@ -67,16 +67,12 @@ def load_default_libraries():
 
 
 def load_multiple_libraries(library_file_names):
-    embeddings = []
-    issue_info = {}
+    result = empty_library()
     for file in library_file_names:
         content = load_library(file)
-        embeddings.extend(content['embeddings'])
-        issue_info.update(content['issue_info'])
-    return {
-        'embeddings': embeddings,
-        'issue_info': issue_info
-    }
+        result['embeddings'].extend(content['embeddings'])
+        result['issue_info'].update(content['issue_info'])
+    return result
 
 
 def load_library(library_file):
