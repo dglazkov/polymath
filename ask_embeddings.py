@@ -87,7 +87,7 @@ def load_library(library_file):
 
 def empty_library():
     return {
-        'embeddings': (),
+        'embeddings': [],
         'issue_info': {}
     }
 
