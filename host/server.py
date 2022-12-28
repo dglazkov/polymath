@@ -40,12 +40,12 @@ def start():
             return jsonify({
                 "error": "Query is required"
             })
-        embeddings = load_library(embeddings_filename)
+        library = load_library(embeddings_filename)
         query_embedding = vector_from_base64(query)
         similiarities = get_similarities(
-            query_embedding, embeddings["embeddings"])
+            query_embedding, library["embeddings"])
         (context, issue_ids) = get_context(similiarities, token_count)
-        issues = get_issues(issue_ids, embeddings["issue_info"])
+        issues = get_issues(issue_ids, library["issue_info"])
         return jsonify({
             "context": context,
             "issues": issues
