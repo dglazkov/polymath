@@ -25,8 +25,18 @@ if not chunks:
     print('Data did not have chunks as expected')
     sys.exit(1)
 
+base_filename, file_extension = os.path.splitext(filename)
+output_filename = os.path.join(OUTPUT_DIRECTORY, f'{base_filename}.pkl')
+
 embeddings = []
 issue_info = {}
+
+if os.path.exists(output_filename):
+    print(f'Found {output_filename}, loading it as a base to incrementally extend.')
+    with open(output_filename, 'rb') as f:
+        existing_data = pickle.load(f)
+    embeddings = existing_data['embeddings']
+    issue_info = existing_data['issue_info']
 
 count = 0
 total = len(chunks) if max_lines < 0 else max_lines
@@ -41,7 +51,9 @@ for chunk in chunks:
     if not id:
         print('Skipping chunk missing an ID')
         continue
-    print(f'Processing chunk {id} ({count + 1}/{total})')
+    if id in issue_info:
+        continue
+    print(f'Processing new chunk {id} ({count + 1}/{total})')
     text = chunk.get('text')
     if not text:
         print('Skipping a row with id ' + id + ' that was missing text')
@@ -54,6 +66,8 @@ for chunk in chunks:
     embeddings.append((text, embedding, token_length, id))
     count += 1
 
+print(f'Loaded {count} new lines')
+
 result = {
     'embeddings': embeddings,
     'issue_info': issue_info
@@ -62,8 +76,5 @@ result = {
 if not os.path.exists(OUTPUT_DIRECTORY):
     os.mkdir(OUTPUT_DIRECTORY)
 
-base_filename, file_extension = os.path.splitext(filename)
-new_filename = os.path.join(OUTPUT_DIRECTORY, f'{base_filename}.pkl')
-
-with open(new_filename, 'wb') as f:
+with open(output_filename, 'wb') as f:
     pickle.dump(result, f)
