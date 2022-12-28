@@ -6,9 +6,11 @@ import sys
 import pickle
 import os
 
+OUTPUT_DIRECTORY = 'out'
+
 parser = argparse.ArgumentParser()
 parser.add_argument('filename', help='The name of the input file to be processed')
-parser.add_argument('--output', help='The name of the file to store in {OUTPUT_DIRECTORY}/. If not provided, will default to the input file with a new extension', default='')
+parser.add_argument('--output', help=f'The name of the file to store in {OUTPUT_DIRECTORY}/. If not provided, will default to the input file with a new extension', default='')
 parser.add_argument('--max', help='The number of max lines to process. If negative, will process all.', default=-1, type=int)
 parser.add_argument('--overwrite', action='store_true', help='If set, will ignore any existing output and overwrite it instead of incrementally extending it')
 args = parser.parse_args()
@@ -17,8 +19,6 @@ filename = args.filename
 max_lines = args.max
 overwrite = args.overwrite
 output_filename = args.output
-
-OUTPUT_DIRECTORY = 'out'
 
 with open(filename, 'r') as f:
     data = json.load(f)
