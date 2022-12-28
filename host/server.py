@@ -1,16 +1,12 @@
-from flask import Flask, jsonify, render_template, request
-from dotenv import load_dotenv
-import openai
 import os
 import traceback
-import sys
 
-# TODO: remove this ugly hack to import the ask_embeddings in the containing directory
-sys.path.insert(0, os.path.abspath(
-    os.path.join(os.path.dirname(__file__), '..')))
+import openai
+from dotenv import load_dotenv
+from flask import Flask, jsonify, render_template, request
 
-from ask_embeddings import load_default_embeddings, get_embedding, get_similarities, get_context, get_issues
-
+from ask_embeddings import (get_context, get_embedding, get_issues,
+                                       get_similarities, load_default_embeddings)
 
 WANDERING_MEMORY = 60 * 60 * 2  # 2 hours, why not
 WANDERING_VARIETY = 5

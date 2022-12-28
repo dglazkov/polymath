@@ -1,13 +1,10 @@
-import os
-import sys
 import argparse
+import os
 
-#TODO: remove this ugly hack to import the ask_embeddings in the containing directory
-sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
-
-import ask_embeddings
 import openai
 from dotenv import load_dotenv
+
+import ask_embeddings
 
 parser = argparse.ArgumentParser()
 parser.add_argument('query', help='The question to ask', default="Tell me about 3P")
