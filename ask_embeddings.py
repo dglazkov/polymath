@@ -61,7 +61,7 @@ def get_token_length(text):
     tokenizer = GPT2TokenizerFast.from_pretrained("gpt2")
     return len(tokenizer.tokenize(text))
 
-def get_context(similiarities):
+def get_context(similiarities, token_count=MAX_CONTEXT_LEN):
     context = []
     context_len = 0
 
@@ -72,9 +72,9 @@ def get_context(similiarities):
 
     for id, (_, text, tokens, issue_id) in enumerate(similiarities):
         context_len += tokens + separator_len
-        if context_len > MAX_CONTEXT_LEN:
+        if context_len > token_count:
             if len(context) == 0:
-                context.append(text[:(MAX_CONTEXT_LEN - separator_len)])
+                context.append(text[:(token_count - separator_len)])
             break
         context.append(text)
         if id < 4:
@@ -99,6 +99,11 @@ def get_completion(prompt):
     return response.choices[0].text.strip()
 
 
+def get_completion_with_context(query, context):
+    # Borrowed from https://github.com/openai/openai-cookbook/blob/838f000935d9df03e75e181cbcea2e306850794b/examples/Question_answering_using_embeddings.ipynb
+    prompt = f"Answer the question as truthfully as possible using the provided context, and if the answer is not contained within the text below, say \"I don't know.\"\n\nContext:\n{context} \n\nQuestion:\n{query}\n\nAnswer:"
+    return get_completion(prompt)
+
 def ask(query, context_query = None, embeddings_file = None):
     if not context_query: context_query = query
     embeddings = load_embeddings(embeddings_file) if embeddings_file else load_default_embeddings()
@@ -107,8 +112,4 @@ def ask(query, context_query = None, embeddings_file = None):
     (context, issue_ids) = get_context(similiarities)
 
     issues = get_issues(issue_ids, embeddings["issue_info"])
-
-    # Borrowed from https://github.com/openai/openai-cookbook/blob/838f000935d9df03e75e181cbcea2e306850794b/examples/Question_answering_using_embeddings.ipynb
-    prompt = f"Answer the question as truthfully as possible using the provided context, and if the answer is not contained within the text below, say \"I don't know.\"\n\nContext:\n{context} \n\nQuestion:\n{query}\n\nAnswer:"
-
-    return get_completion(prompt), issues
+    return get_completion_with_context(query, context), issues

@@ -22,6 +22,7 @@ args = parser.parse_args()
 embeddings_filename = args.filename
 port = args.port
 
+DEFAULT_TOKEN_COUNT = 1000
 
 app = Flask(__name__)
 
@@ -33,6 +34,7 @@ openai.api_key = os.getenv("OPENAI_API_KEY")
 def start():
     try:
         query = request.form["query"]
+        token_count = request.form.get("token_count", DEFAULT_TOKEN_COUNT, type=int)
         if not query:
             return jsonify({
                 "error": "Query is required"
@@ -41,7 +43,7 @@ def start():
         query_embedding = get_embedding(query)
         similiarities = get_similarities(
             query_embedding, embeddings["embeddings"])
-        (context, issue_ids) = get_context(similiarities)
+        (context, issue_ids) = get_context(similiarities, token_count)
         issues = get_issues(issue_ids, embeddings["issue_info"])
         print(issues)
         return jsonify({

@@ -55,6 +55,20 @@ Then run `python3 -m converter <FILENAME>`. It will create a new file with the s
 
 To start the host server, run `python3 -m host.server`. It will start a Flask app as a local server. Go to `http://127.0.0.1:8080/api/query` to see the API endpoint.
 
+### Server/Client experiment
+
+To experiment with client/server setup, you will need multiple terminal instances: one for each server and one the client.
+
+In each server terminal instance, start the server:
+
+`python3 -m host.server <path/to/pickle/containing/embeddings> <port_number>`
+
+Now, run the client, specifying the query and servers that you just started. For example:
+
+`python3 -m sample.client "tell me about miracles" --server 127.0.0.1:8080 --server 127.0.0.1:8090`
+
+The output should be a completion on the combined context of both servers.
+
 ### Developing
 
 It's recommended to use `virtualenv` to manage your python environment for this project.
