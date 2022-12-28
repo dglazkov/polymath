@@ -99,9 +99,10 @@ def get_completion(prompt):
     return response.choices[0].text.strip()
 
 
-def ask(query, embeddings_file = None):
+def ask(query, context_query = None, embeddings_file = None):
+    if not context_query: context_query = query
     embeddings = load_embeddings(embeddings_file) if embeddings_file else load_default_embeddings()
-    query_embedding = get_embedding(query)
+    query_embedding = get_embedding(context_query)
     similiarities = get_similarities(query_embedding, embeddings["embeddings"])
     (context, issue_ids) = get_context(similiarities)
 
