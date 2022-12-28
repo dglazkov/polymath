@@ -59,14 +59,14 @@ def get_similarities(query_embedding, embeddings):
         in embeddings], reverse=True)
 
 
-def load_default_embeddings():
+def load_default_libraries():
     files = glob.glob(os.path.join(EMBEDDINGS_DIR, '*.pkl')) + glob.glob(os.path.join(EMBEDDINGS_DIR, '*.json'))
     if len(files):
-        return load_multiple_embeddings(files)
+        return load_multiple_libraries(files)
     return load_library(SAMPLE_EMBEDDINGS_FILE)
 
 
-def load_multiple_embeddings(embeddings_file_names):
+def load_multiple_libraries(embeddings_file_names):
     embeddings = []
     issue_info = {}
     for file in embeddings_file_names:
@@ -142,7 +142,7 @@ def ask(query, context_query=None, embeddings_file=None):
     if not context_query:
         context_query = query
     embeddings = load_library(
-        embeddings_file) if embeddings_file else load_default_embeddings()
+        embeddings_file) if embeddings_file else load_default_libraries()
     query_embedding = get_embedding(context_query)
     similiarities = get_similarities(query_embedding, embeddings["embeddings"])
     (context, issue_ids) = get_context(similiarities)
