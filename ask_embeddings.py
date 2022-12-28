@@ -3,6 +3,7 @@ import pickle
 from random import shuffle
 import os
 import glob
+import json
 
 import numpy as np
 import openai
@@ -59,7 +60,7 @@ def get_similarities(query_embedding, embeddings):
 
 
 def load_default_embeddings():
-    files = glob.glob(os.path.join(EMBEDDINGS_DIR, '*.pkl'))
+    files = glob.glob(os.path.join(EMBEDDINGS_DIR, '*.pkl')) + glob.glob(os.path.join(EMBEDDINGS_DIR, '*.json'))
     if len(files):
         return load_multiple_embeddings(files)
     return load_embeddings(SAMPLE_EMBEDDINGS_FILE)
@@ -79,8 +80,13 @@ def load_multiple_embeddings(embeddings_file_names):
 
 
 def load_embeddings(embeddings_file):
-    with open(embeddings_file, "rb") as f:
-        return pickle.load(f)
+    filetype = os.path.splitext(embeddings_file)[1].lower()
+    if filetype == '.json':
+        with open(embeddings_file, "r") as f:
+            return json.load(f)  
+    else:
+        with open(embeddings_file, "rb") as f:
+            return pickle.load(f)
 
 
 def get_token_length(text):
