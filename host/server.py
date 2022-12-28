@@ -45,7 +45,7 @@ def start():
         similiarities = get_similarities(
             query_embedding, library["embeddings"])
         (context, issue_ids) = get_context(similiarities, token_count)
-        issues = get_issues(issue_ids, library["issue_info"])
+        issues = get_issues(issue_ids, library)
         return jsonify({
             "context": context,
             "issues": issues
