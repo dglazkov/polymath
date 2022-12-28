@@ -54,11 +54,11 @@ def get_embedding(text):
     return result["data"][0]["embedding"]
 
 
-def get_similarities(query_embedding, embeddings):
+def get_similarities(query_embedding, library):
     return sorted([
         (vector_similarity(query_embedding, embedding), text, tokens, issue_id)
         for text, embedding, tokens, issue_id
-        in embeddings], reverse=True)
+        in library['embeddings']], reverse=True)
 
 
 def load_default_libraries():
@@ -163,7 +163,7 @@ def ask(query, context_query=None, library_file=None):
     library = load_library(
         library_file) if library_file else load_default_libraries()
     query_embedding = get_embedding(context_query)
-    similiarities = get_similarities(query_embedding, library["embeddings"])
+    similiarities = get_similarities(query_embedding, library)
     (context, issue_ids) = get_context(similiarities)
 
     issues = get_issues(issue_ids, library)

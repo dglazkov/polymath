@@ -43,7 +43,7 @@ def start():
         library = load_library(embeddings_filename)
         query_embedding = vector_from_base64(query)
         similiarities = get_similarities(
-            query_embedding, library["embeddings"])
+            query_embedding, library)
         (context, issue_ids) = get_context(similiarities, token_count)
         issues = get_issues(issue_ids, library)
         return jsonify({
