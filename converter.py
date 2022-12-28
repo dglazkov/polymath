@@ -9,10 +9,12 @@ import os
 parser = argparse.ArgumentParser()
 parser.add_argument('filename', help='The name of the input file to be processed')
 parser.add_argument('--max', help='The number of max lines to process. If negative, will process all.', default=-1, type=int)
+parser.add_argument('--overwrite', action='store_true', help='If set, will ignore any existing output and overwrite it instead of incrementally extending it')
 args = parser.parse_args()
 
 filename = args.filename
 max_lines = args.max
+overwrite = args.overwrite
 
 OUTPUT_DIRECTORY = 'out'
 
@@ -31,7 +33,7 @@ output_filename = os.path.join(OUTPUT_DIRECTORY, f'{base_filename}.pkl')
 embeddings = []
 issue_info = {}
 
-if os.path.exists(output_filename):
+if not overwrite and os.path.exists(output_filename):
     print(f'Found {output_filename}, loading it as a base to incrementally extend.')
     with open(output_filename, 'rb') as f:
         existing_data = pickle.load(f)
