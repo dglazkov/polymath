@@ -75,7 +75,7 @@ def load_multiple_libraries(library_file_names):
     return result
 
 
-def load_library(library_file):
+def _load_raw_library(library_file):
     filetype = os.path.splitext(library_file)[1].lower()
     if filetype == '.json':
         with open(library_file, "r") as f:
@@ -85,8 +85,19 @@ def load_library(library_file):
             return pickle.load(f)
 
 
+def load_library(library_file):
+    library = _load_raw_library(library_file)
+    if 'version' not in library:
+        #This is the OG format, where version is 0 and embedding model is the default
+        library['version'] = 0
+        library['embedding_model'] = 'text-embedding-ada-002'
+    return library
+
+
 def empty_library():
     return {
+        'version': 0,
+        'embedding_model': 'text-embedding-ada-002',
         'embeddings': [],
         'issue_info': {}
     }

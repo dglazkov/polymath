@@ -1,5 +1,7 @@
 The format of the library files is as follows:
 ```{
+  version: 0,
+  embedding_model: 'text-embedding-ada-002',
   embeddings: [
     (
       <text>,

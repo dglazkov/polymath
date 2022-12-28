@@ -35,14 +35,11 @@ if not output_filename:
 
 full_output_filename = os.path.join(ask_embeddings.LIBRARY_DIR, output_filename)
 
-embeddings = []
-issue_info = {}
+result = ask_embeddings.empty_library()
 
 if not overwrite and os.path.exists(full_output_filename):
     print(f'Found {full_output_filename}, loading it as a base to incrementally extend.')
-    existing_data = ask_embeddings.load_library(full_output_filename)
-    embeddings = existing_data['embeddings']
-    issue_info = existing_data['issue_info']
+    result = ask_embeddings.load_library(full_output_filename)
 
 count = 0
 total = len(chunks) if max_lines < 0 else max_lines
@@ -57,25 +54,20 @@ for chunk in chunks:
     if not id:
         print('Skipping chunk missing an ID')
         continue
-    if id in issue_info:
+    if id in result['issue_info']:
         continue
     print(f'Processing new chunk {id} ({count + 1}/{total})')
     text = chunk.get('text')
     if not text:
         print('Skipping a row with id ' + id + ' that was missing text')
         continue
-    issue_info[id] = (chunk.get(property_name, '') for property_name in ['url', 'image_url', 'title', 'description'])
+    result['issue_info'][id] = (chunk.get(property_name, '') for property_name in ['url', 'image_url', 'title', 'description'])
     embedding = ask_embeddings.get_embedding(text)
     token_length = ask_embeddings.get_token_length(text)
-    embeddings.append((text, embedding, token_length, id))
+    result['embeddings'].append((text, embedding, token_length, id))
     count += 1
 
 print(f'Loaded {count} new lines')
-
-result = {
-    'embeddings': embeddings,
-    'issue_info': issue_info
-}
 
 if not os.path.exists(ask_embeddings.LIBRARY_DIR):
     os.mkdir(ask_embeddings.LIBRARY_DIR)
