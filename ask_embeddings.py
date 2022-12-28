@@ -92,12 +92,21 @@ def _load_raw_library(library_file):
             return pickle.load(f)
 
 
+def validate_library(library):
+    if library.get('version', -1) != CURRENT_VERSION:
+        raise Exception('Version invalid')
+    if library.get('embedding_model', '') != EMBEDDINGS_MODEL_NAME:
+        raise Exception('Invalid model name')
+    #TODO: also validate the shape of each item
+
+
 def load_library(library_file):
     library = _load_raw_library(library_file)
     if 'version' not in library or library['version'] == -1:
         #This is the OG format, where version is 0 and embedding model is the default
         library['version'] = CURRENT_VERSION
-        library['embedding_model'] = 'text-embedding-ada-002'
+        library['embedding_model'] = EMBEDDINGS_MODEL_NAME
+    validate_library(library)
     return library
 
 
