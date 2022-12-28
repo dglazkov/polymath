@@ -6,7 +6,8 @@ import openai
 import urllib3
 from dotenv import load_dotenv
 
-import ask_embeddings
+from ask_embeddings import (base64_from_vector, get_completion_with_context,
+                            get_embedding)
 
 # TODO: Make this computed from the number of servers.
 CONTEXT_TOKEN_COUNT = 1500
@@ -34,10 +35,14 @@ openai.api_key = os.getenv("OPENAI_API_KEY")
 query = args.query
 server_list = args.server
 
+print(f"Getting embedding for \"{query}\" ...")
+query_vector = base64_from_vector(get_embedding(query))
+
 context = []
 for server in server_list:
     print(f"Querying {server} ...")
     # for now, just combine contexts
-    context.extend(query_server(query, server)["context"])
+    context.extend(query_server(query_vector, server)["context"])
 
-print(ask_embeddings.get_completion_with_context(query, context))
+print("Getting completion ...")
+print(get_completion_with_context(query, context))
