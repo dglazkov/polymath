@@ -34,7 +34,8 @@ openai.api_key = os.getenv("OPENAI_API_KEY")
 def start():
     try:
         query = request.form["query"]
-        token_count = request.form.get("token_count", DEFAULT_TOKEN_COUNT, type=int)
+        token_count = request.form.get(
+            "token_count", DEFAULT_TOKEN_COUNT, type=int)
         if not query:
             return jsonify({
                 "error": "Query is required"

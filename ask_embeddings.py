@@ -19,6 +19,8 @@ MAX_CONTEXT_LEN = 2048
 # btoa(String.fromCharCode(...(new Uint8Array(new Float32Array(data).buffer))));
 # ```
 # where `data` is an array of floats
+
+
 def vector_from_base64(str):
     return np.frombuffer(base64.b64decode(str), dtype=np.float32)
 
@@ -27,9 +29,12 @@ def vector_from_base64(str):
 # new Float32Array(new Uint8Array([...atob(encoded_data)].map(c => c.charCodeAt(0))).buffer);
 # ```
 # where `encoded_data` is a base64 string
+
+
 def base64_from_vector(vector):
     data = np.array(vector, dtype=np.float32)
     return base64.b64encode(data)
+
 
 def vector_similarity(x, y):
     return np.dot(np.array(x), np.array(y))
@@ -49,14 +54,17 @@ def get_similarities(query_embedding, embeddings):
         for text, embedding, tokens, issue_id
         in embeddings], reverse=True)
 
+
 EMBEDDINGS_DIR = 'out'
 SAMPLE_EMBEDDINGS_FILE = 'sample-import-content.pkl'
+
 
 def load_default_embeddings():
     files = glob.glob(os.path.join(EMBEDDINGS_DIR, '*.pkl'))
     if len(files):
         return load_multiple_embeddings(files)
     return load_embeddings(SAMPLE_EMBEDDINGS_FILE)
+
 
 def load_multiple_embeddings(embeddings_file_names):
     embeddings = []
@@ -70,6 +78,7 @@ def load_multiple_embeddings(embeddings_file_names):
         'issue_info': issue_info
     }
 
+
 def load_embeddings(embeddings_file):
     with open(embeddings_file, "rb") as f:
         return pickle.load(f)
@@ -78,6 +87,7 @@ def load_embeddings(embeddings_file):
 def get_token_length(text):
     tokenizer = GPT2TokenizerFast.from_pretrained("gpt2")
     return len(tokenizer.tokenize(text))
+
 
 def get_context(similiarities, token_count=MAX_CONTEXT_LEN):
     context = []
@@ -122,9 +132,12 @@ def get_completion_with_context(query, context):
     prompt = f"Answer the question as truthfully as possible using the provided context, and if the answer is not contained within the text below, say \"I don't know.\"\n\nContext:\n{context} \n\nQuestion:\n{query}\n\nAnswer:"
     return get_completion(prompt)
 
-def ask(query, context_query = None, embeddings_file = None):
-    if not context_query: context_query = query
-    embeddings = load_embeddings(embeddings_file) if embeddings_file else load_default_embeddings()
+
+def ask(query, context_query=None, embeddings_file=None):
+    if not context_query:
+        context_query = query
+    embeddings = load_embeddings(
+        embeddings_file) if embeddings_file else load_default_embeddings()
     query_embedding = get_embedding(context_query)
     similiarities = get_similarities(query_embedding, embeddings["embeddings"])
     (context, issue_ids) = get_context(similiarities)
