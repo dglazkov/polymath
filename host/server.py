@@ -1,3 +1,4 @@
+import argparse
 import os
 import traceback
 
@@ -6,10 +7,21 @@ from dotenv import load_dotenv
 from flask import Flask, jsonify, render_template, request
 
 from ask_embeddings import (get_context, get_embedding, get_issues,
-                                       get_similarities, load_default_embeddings)
+                            get_similarities, load_embeddings)
 
 WANDERING_MEMORY = 60 * 60 * 2  # 2 hours, why not
 WANDERING_VARIETY = 5
+
+parser = argparse.ArgumentParser()
+parser.add_argument(
+    'filename', help='Relative to the root of the project, the path to the embeddings file')
+parser.add_argument(
+    '--port', help='Number of the port to run the server on (8080 by default).', default=8080, type=int)
+args = parser.parse_args()
+
+embeddings_filename = args.filename
+port = args.port
+
 
 app = Flask(__name__)
 
@@ -25,7 +37,7 @@ def start():
             return jsonify({
                 "error": "Query is required"
             })
-        embeddings = load_default_embeddings()
+        embeddings = load_embeddings(embeddings_filename)
         query_embedding = get_embedding(query)
         similiarities = get_similarities(
             query_embedding, embeddings["embeddings"])
@@ -49,4 +61,4 @@ def start_sample():
 
 
 if __name__ == "__main__":
-    app.run(host='127.0.0.1', port=8080, debug=True)
+    app.run(host='127.0.0.1', port=port, debug=True)
