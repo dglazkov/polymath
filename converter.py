@@ -6,12 +6,10 @@ import sys
 import pickle
 import os
 
-OUTPUT_DIRECTORY = 'out'
-
 parser = argparse.ArgumentParser()
 parser.add_argument('filename', help='The name of the input file to be processed')
 parser.add_argument('--format', help='The format to use', choices=['pkl', 'json'], default='pkl')
-parser.add_argument('--output', help=f'The name of the file to store in {OUTPUT_DIRECTORY}/. If not provided, will default to the input file with a new extension', default='')
+parser.add_argument('--output', help=f'The name of the file to store in {ask_embeddings.EMBEDDINGS_DIR}/. If not provided, will default to the input file with a new extension', default='')
 parser.add_argument('--max', help='The number of max lines to process. If negative, will process all.', default=-1, type=int)
 parser.add_argument('--overwrite', action='store_true', help='If set, will ignore any existing output and overwrite it instead of incrementally extending it')
 args = parser.parse_args()
@@ -35,7 +33,7 @@ if not output_filename:
     base_filename, file_extension = os.path.splitext(filename)
     output_filename = f'{base_filename}.{output_format}'
 
-full_output_filename = os.path.join(OUTPUT_DIRECTORY, output_filename)
+full_output_filename = os.path.join(ask_embeddings.EMBEDDINGS_DIR, output_filename)
 
 embeddings = []
 issue_info = {}
@@ -86,8 +84,8 @@ result = {
     'issue_info': issue_info
 }
 
-if not os.path.exists(OUTPUT_DIRECTORY):
-    os.mkdir(OUTPUT_DIRECTORY)
+if not os.path.exists(ask_embeddings.EMBEDDINGS_DIR):
+    os.mkdir(ask_embeddings.EMBEDDINGS_DIR)
 
 if output_format == 'json':
     with open(full_output_filename, 'w') as f:
