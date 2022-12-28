@@ -76,6 +76,8 @@ def load_multiple_libraries(library_file_names):
             model = content['embedding_model']
             raise Exception(f'Embedding model {model} in {file} did not match')
         result['embeddings'].extend(content['embeddings'])
+        #TODO: handle key collisions; keys are only guaranteed to be unique
+        #within a single library.
         result['issue_info'].update(content['issue_info'])
     return result
 
