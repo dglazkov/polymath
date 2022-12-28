@@ -19,3 +19,5 @@ Some noodlings on the format. The current pickle format for embeddings for [wand
   }
 }
 ```
+
+The file may be represented as either a Python pickle (with extension `.pkl`) or as JSON (with extension `.json`)
