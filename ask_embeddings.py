@@ -138,14 +138,14 @@ def get_completion_with_context(query, context):
     return get_completion(prompt)
 
 
-def ask(query, context_query=None, embeddings_file=None):
+def ask(query, context_query=None, library_file=None):
     if not context_query:
         context_query = query
-    embeddings = load_library(
-        embeddings_file) if embeddings_file else load_default_libraries()
+    library = load_library(
+        library_file) if library_file else load_default_libraries()
     query_embedding = get_embedding(context_query)
-    similiarities = get_similarities(query_embedding, embeddings["embeddings"])
+    similiarities = get_similarities(query_embedding, library["embeddings"])
     (context, issue_ids) = get_context(similiarities)
 
-    issues = get_issues(issue_ids, embeddings["issue_info"])
+    issues = get_issues(issue_ids, library["issue_info"])
     return get_completion_with_context(query, context), issues
