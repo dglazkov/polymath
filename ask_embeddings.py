@@ -15,7 +15,7 @@ COMPLETION_MODEL_NAME = "text-davinci-003"
 SEPARATOR = "\n"
 MAX_CONTEXT_LEN = 2048
 
-EMBEDDINGS_DIR = 'out'
+LIBRARY_DIR = 'out'
 SAMPLE_LIBARRIES_FILE = 'sample-import-content.pkl'
 
 # In JS, the argument can be produced with with:
@@ -60,7 +60,7 @@ def get_similarities(query_embedding, embeddings):
 
 
 def load_default_libraries():
-    files = glob.glob(os.path.join(EMBEDDINGS_DIR, '*.pkl')) + glob.glob(os.path.join(EMBEDDINGS_DIR, '*.json'))
+    files = glob.glob(os.path.join(LIBRARY_DIR, '*.pkl')) + glob.glob(os.path.join(LIBRARY_DIR, '*.json'))
     if len(files):
         return load_multiple_libraries(files)
     return load_library(SAMPLE_LIBARRIES_FILE)
