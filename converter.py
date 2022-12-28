@@ -8,6 +8,7 @@ import os
 
 parser = argparse.ArgumentParser()
 parser.add_argument('filename', help='The name of the input file to be processed')
+parser.add_argument('--output', help='The name of the file to store in {OUTPUT_DIRECTORY}/. If not provided, will default to the input file with a new extension', default='')
 parser.add_argument('--max', help='The number of max lines to process. If negative, will process all.', default=-1, type=int)
 parser.add_argument('--overwrite', action='store_true', help='If set, will ignore any existing output and overwrite it instead of incrementally extending it')
 args = parser.parse_args()
@@ -15,6 +16,7 @@ args = parser.parse_args()
 filename = args.filename
 max_lines = args.max
 overwrite = args.overwrite
+output_filename = args.output
 
 OUTPUT_DIRECTORY = 'out'
 
@@ -27,15 +29,18 @@ if not chunks:
     print('Data did not have chunks as expected')
     sys.exit(1)
 
-base_filename, file_extension = os.path.splitext(filename)
-output_filename = os.path.join(OUTPUT_DIRECTORY, f'{base_filename}.pkl')
+if not output_filename:
+    base_filename, file_extension = os.path.splitext(filename)
+    output_filename = f'{base_filename}.pkl'
+
+full_output_filename = os.path.join(OUTPUT_DIRECTORY, output_filename)
 
 embeddings = []
 issue_info = {}
 
-if not overwrite and os.path.exists(output_filename):
-    print(f'Found {output_filename}, loading it as a base to incrementally extend.')
-    with open(output_filename, 'rb') as f:
+if not overwrite and os.path.exists(full_output_filename):
+    print(f'Found {full_output_filename}, loading it as a base to incrementally extend.')
+    with open(full_output_filename, 'rb') as f:
         existing_data = pickle.load(f)
     embeddings = existing_data['embeddings']
     issue_info = existing_data['issue_info']
@@ -78,5 +83,5 @@ result = {
 if not os.path.exists(OUTPUT_DIRECTORY):
     os.mkdir(OUTPUT_DIRECTORY)
 
-with open(output_filename, 'wb') as f:
+with open(full_output_filename, 'wb') as f:
     pickle.dump(result, f)
