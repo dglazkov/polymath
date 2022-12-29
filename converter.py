@@ -62,14 +62,14 @@ for chunk in chunks:
         print('Skipping a row with id ' + id + ' that was missing text')
         continue
     embedding = ask_embeddings.get_embedding(text)
-    token_length = ask_embeddings.get_token_length(text)
+    token_count = ask_embeddings.get_token_count(text)
     info = {'url': chunk.get('url', '')}
     for property_name in ['image_url', 'title', 'description']:
         if property_name in chunk: info[property_name] = chunk.get(property_name, '')
     result['content'][id] = {
             'text': text,
             'embedding': embedding,
-            'token_count': token_length,
+            'token_count': token_count,
             'info': info
     }
     count += 1

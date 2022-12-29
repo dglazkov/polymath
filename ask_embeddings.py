@@ -156,7 +156,7 @@ def empty_library():
     }
 
 
-def get_token_length(text):
+def get_token_count(text):
     tokenizer = GPT2TokenizerFast.from_pretrained("gpt2")
     return len(tokenizer.tokenize(text))
 
