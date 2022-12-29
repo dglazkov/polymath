@@ -120,10 +120,10 @@ def _convert_library_from_version_og(og_library):
 
         #Multiple embedding rows might have the same issue_id, so append a
         #counter if necessary to not overshadow any items.
-        chunk_id = issue_id
+        chunk_id = str(issue_id)
         count = 0
         while chunk_id in library['content']:
-            chunk_id = issue_id + '_' + str(count)
+            chunk_id = str(issue_id) + '_' + str(count)
             count += 1
 
         url, image_url, title, description = og_library['issue_info'].get(issue_id, ('', '', '', ''))
