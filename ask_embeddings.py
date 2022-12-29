@@ -96,7 +96,12 @@ def validate_library(library):
         raise Exception('Version invalid')
     if library.get('embedding_model', '') != EMBEDDINGS_MODEL_NAME:
         raise Exception('Invalid model name')
-    #TODO: also validate the shape of each item
+    for chunk_id, chunk in library['content'].items():
+        if 'text' not in chunk:
+            raise Exception(f'{chunk_id} is missing text')
+        if 'embedding' not in chunk:
+            raise Exception(f'{chunk_id} is missing embedding')
+        #TODO: test the embedding length is the expected number of floats.
 
 
 def _convert_library_from_version_og(og_library):
