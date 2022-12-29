@@ -142,8 +142,12 @@ def _convert_library_from_version_og(og_library):
 
 def load_library(library_file):
     library = _load_raw_library(library_file)
-    if library.get('version', -1) == -1:
-        library = _convert_library_from_version_og(library)
+    version = library.get('version', -1)
+    if version != CURRENT_VERSION:
+        if version < 0:
+            library = _convert_library_from_version_og(library)
+        else:
+            raise Exception(f'Unsupported version {version} in {library_file}')
     validate_library(library)
     return library
 
