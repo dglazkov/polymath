@@ -103,9 +103,17 @@ def _convert_library_from_version_og(og_library):
     library = empty_library()
     for embedding in og_library['embeddings']:
         text, embedding, token_count, issue_id = embedding
+
+        #Multiple embedding rows might have the same issue_id, so append a
+        #counter if necessary to not overshadow any items.
+        chunk_id = issue_id
+        count = 0
+        while chunk_id in library['content']:
+            chunk_id = issue_id + '_' + str(count)
+            count += 1
+
         url, image_url, title, description = og_library['issue_info'].get(issue_id, ('', '', '', ''))
-        #TODO: handle cases where the OG file has multiple embedding lines with the same content.
-        library['content'][issue_id] = {
+        library['content'][chunk_id] = {
             'text': text,
             'embedding': embedding,
             'token_count': token_count,
