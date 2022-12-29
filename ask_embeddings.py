@@ -60,13 +60,15 @@ def get_embedding(text):
 
 def get_similarities(query_embedding, library):
     return sorted([
-        (vector_similarity(query_embedding, item['embedding']), item['text'], item['token_count'], issue_id)
+        (vector_similarity(query_embedding,
+         item['embedding']), item['text'], item['token_count'], issue_id)
         for issue_id, item
         in library['content'].items()], reverse=True)
 
 
 def load_default_libraries():
-    files = glob.glob(os.path.join(LIBRARY_DIR, '*.pkl')) + glob.glob(os.path.join(LIBRARY_DIR, '*.json'))
+    files = glob.glob(os.path.join(LIBRARY_DIR, '*.pkl')) + \
+        glob.glob(os.path.join(LIBRARY_DIR, '*.json'))
     if len(files):
         return load_multiple_libraries(files)
     return load_library(SAMPLE_LIBARRIES_FILE)
@@ -79,8 +81,8 @@ def load_multiple_libraries(library_file_names):
         if result['embedding_model'] != content['embedding_model']:
             model = content['embedding_model']
             raise Exception(f'Embedding model {model} in {file} did not match')
-        #TODO: handle key collisions; keys are only guaranteed to be unique
-        #within a single library.
+        # TODO: handle key collisions; keys are only guaranteed to be unique
+        # within a single library.
         result['content'].update(content['content'])
     return result
 
@@ -89,7 +91,7 @@ def _load_raw_library(library_file):
     filetype = os.path.splitext(library_file)[1].lower()
     if filetype == '.json':
         with open(library_file, "r") as f:
-            return json.load(f)  
+            return json.load(f)
     else:
         with open(library_file, "rb") as f:
             return pickle.load(f)
@@ -100,17 +102,19 @@ def validate_library(library):
         raise Exception('Version invalid')
     if library.get('embedding_model', '') != EMBEDDINGS_MODEL_NAME:
         raise Exception('Invalid model name')
-    expected_embedding_length = EXPECTED_EMBEDDING_LENGTH.get(library.get('embedding_model', ''), 0)
+    expected_embedding_length = EXPECTED_EMBEDDING_LENGTH.get(
+        library.get('embedding_model', ''), 0)
     for chunk_id, chunk in library['content'].items():
         if 'text' not in chunk:
             raise Exception(f'{chunk_id} is missing text')
         if 'embedding' not in chunk:
             raise Exception(f'{chunk_id} is missing embedding')
         if len(chunk['embedding']) != expected_embedding_length:
-            raise Exception(f'{chunk_id} had the wrong length of embedding, expected {expected_embedding_length}')
+            raise Exception(
+                f'{chunk_id} had the wrong length of embedding, expected {expected_embedding_length}')
         if 'token_count' not in chunk:
             raise Exception(f'{chunk_id} is missing token_count')
-        #TODO: verify token_count is a reasonable length.
+        # TODO: verify token_count is a reasonable length.
         if 'info' not in chunk:
             raise Exception(f'{chunk_id} is missing info')
         info = chunk['info']
@@ -123,15 +127,16 @@ def _convert_library_from_version_og(og_library):
     for embedding in og_library['embeddings']:
         text, embedding, token_count, issue_id = embedding
 
-        #Multiple embedding rows might have the same issue_id, so append a
-        #counter if necessary to not overshadow any items.
+        # Multiple embedding rows might have the same issue_id, so append a
+        # counter if necessary to not overshadow any items.
         chunk_id = str(issue_id)
         count = 0
         while chunk_id in library['content']:
             chunk_id = str(issue_id) + '_' + str(count)
             count += 1
 
-        url, image_url, title, description = og_library['issue_info'].get(issue_id, ('', '', '', ''))
+        url, image_url, title, description = og_library['issue_info'].get(
+            issue_id, ('', '', '', ''))
         library['content'][chunk_id] = {
             'text': text,
             'embedding': embedding,
@@ -175,16 +180,14 @@ def get_context(similiarities, token_count=MAX_CONTEXT_LEN):
     context = []
     context_len = 0
 
-    tokenizer = GPT2TokenizerFast.from_pretrained("gpt2")
-    separator_len = len(tokenizer.tokenize(SEPARATOR))
-
     issue_ids = set()
 
+    # TODO: Account for separator tokens, but do so without invoking a tokenizer in this method.
     for id, (_, text, tokens, issue_id) in enumerate(similiarities):
-        context_len += tokens + separator_len
+        context_len += tokens
         if context_len > token_count:
             if len(context) == 0:
-                context.append(text[:(token_count - separator_len)])
+                context.append(text[:(token_count)])
             break
         context.append(text)
         if id < 4:

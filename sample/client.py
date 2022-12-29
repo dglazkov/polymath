@@ -45,7 +45,7 @@ for server in server_list:
     # for now, just combine contexts
     server_response = query_server(query_vector, server)
     context.extend(server_response["context"])
-    sources.extend([ chunk["url"] for chunk in server_response["chunks"]])
+    sources.extend([chunk["url"] for chunk in server_response["chunks"]])
 
 sources = "\n  ".join(sources)
 
