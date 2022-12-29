@@ -94,6 +94,7 @@ def _load_raw_library(library_file):
         with open(library_file, "rb") as f:
             return pickle.load(f)
 
+
 def validate_library(library):
     if library.get('version', -1) != CURRENT_VERSION:
         raise Exception('Version invalid')
