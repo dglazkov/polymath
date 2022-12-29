@@ -102,6 +102,15 @@ def validate_library(library):
         if 'embedding' not in chunk:
             raise Exception(f'{chunk_id} is missing embedding')
         #TODO: test the embedding length is the expected number of floats.
+        if 'token_count' not in chunk:
+            raise Exception(f'{chunk_id} is missing token_count')
+        if chunk['token_count'] != get_token_length(chunk['text']):
+            raise Exception(f'{chunk_id} has the incorrect token_count')
+        if 'info' not in chunk:
+            raise Exception(f'{chunk_id} is missing info')
+        info = chunk['info']
+        if 'url' not in info:
+            raise Exception(f'{chunk_id} info is missing required url')
 
 
 def _convert_library_from_version_og(og_library):
