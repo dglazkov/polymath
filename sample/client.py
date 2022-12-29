@@ -39,10 +39,16 @@ print(f"Getting embedding for \"{query}\" ...")
 query_vector = base64_from_vector(get_embedding(query))
 
 context = []
+sources = []
 for server in server_list:
     print(f"Querying {server} ...")
     # for now, just combine contexts
-    context.extend(query_server(query_vector, server)["context"])
+    server_response = query_server(query_vector, server)
+    context.extend(server_response["context"])
+    sources.extend([ chunk["url"] for chunk in server_response["chunks"]])
+
+sources = "\n  ".join(sources)
 
 print("Getting completion ...")
-print(get_completion_with_context(query, context))
+print(f"\nAnswer:\n{get_completion_with_context(query, context)}")
+print(f"\nSources:\n  {sources}")
