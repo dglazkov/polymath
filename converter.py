@@ -6,6 +6,43 @@ import sys
 import pickle
 import os
 
+class NakedLibraryImporter:
+    def get_chunks(self, filename, existing_library, max_lines = -1):
+        # Will return a dict of chunks, possibly missing embedding and token_count.
+        with open(filename, 'r') as f:
+            data = json.load(f)
+
+        chunks = data.get('content')
+        if not chunks:
+            raise Exception('Data did not have content as expected')
+        count = 0
+        total = len(chunks) if max_lines < 0 else max_lines
+        result = {}
+        for id, chunk in chunks.items():
+            if max_lines >= 0 and count >= max_lines:
+                print('Reached max lines')
+                break
+            if id in existing_library['content']:
+                continue
+            print(f'Processing new chunk {id} ({count + 1}/{total})')
+            text = chunk.get('text')
+            if not text:
+                print('Skipping a row with id ' + id + ' that was missing text')
+                continue
+            result['content'][id] = {
+                    'text': text,
+                    'info': chunk.get('info')
+            }
+            count += 1
+        return result
+    def output_base_filename(self, input_filename):
+        base_filename, file_extension = os.path.splitext(input_filename)
+        return base_filename
+
+IMPORTERS = {
+    'library': NakedLibraryImporter()
+}
+
 parser = argparse.ArgumentParser()
 parser.add_argument('filename', help='The name of the input file to be processed')
 parser.add_argument('--format', help='The format to use', choices=['pkl', 'json'], default='pkl')
@@ -20,17 +57,11 @@ overwrite = args.overwrite
 output_filename = args.output
 output_format = args.format
 
-with open(filename, 'r') as f:
-    data = json.load(f)
-
-chunks = data.get('content')
-
-if not chunks:
-    print('Data did not have content as expected')
-    sys.exit(1)
+#TODO: allow selecting a different one via an argument.
+importer = IMPORTERS['library']
 
 if not output_filename:
-    base_filename, file_extension = os.path.splitext(filename)
+    base_filename = importer.output_base_filename(filename)
     output_filename = f'{base_filename}.{output_format}'
 
 full_output_filename = os.path.join(ask_embeddings.LIBRARY_DIR, output_filename)
@@ -41,30 +72,17 @@ if not overwrite and os.path.exists(full_output_filename):
     print(f'Found {full_output_filename}, loading it as a base to incrementally extend.')
     result = ask_embeddings.load_library(full_output_filename)
 
-count = 0
-total = len(chunks) if max_lines < 0 else max_lines
-
 print('Will process ' + ('all' if max_lines < 0 else str(max_lines)) + ' lines')
 
-for id, chunk in chunks.items():
-    if max_lines >= 0 and count >= max_lines:
-        print('Reached max lines')
-        break
-    if id in result['content']:
-        continue
-    print(f'Processing new chunk {id} ({count + 1}/{total})')
-    text = chunk.get('text')
-    if not text:
-        print('Skipping a row with id ' + id + ' that was missing text')
-        continue
-    embedding = ask_embeddings.get_embedding(text)
-    token_count = ask_embeddings.get_token_count(text)
-    result['content'][id] = {
-            'text': text,
-            'embedding': embedding,
-            'token_count': token_count,
-            'info': chunk.get('info')
-    }
+count = 0
+
+for id, chunk in importer.get_chunks(filename, result, max_lines).items():
+    text = chunk.get('text', '')
+    if 'embedding' not in chunk:
+        chunk['embedding'] = ask_embeddings.get_embedding(text)
+    if 'token_count' not in chunk:
+        chunk['token_count'] = ask_embeddings.get_token_count(text)
+    result['content'][id] = chunk
     count += 1
 
 print(f'Loaded {count} new lines')
