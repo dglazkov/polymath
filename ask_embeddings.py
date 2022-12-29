@@ -193,7 +193,7 @@ def get_context(similiarities, token_count=MAX_CONTEXT_LEN):
 
 
 def get_chunks(chunk_ids, library):
-    return [library[chunk_id]['info'] for chunk_id in chunk_ids]
+    return [library['content'][chunk_id]['info'] for chunk_id in chunk_ids]
 
 
 def get_completion(prompt):
