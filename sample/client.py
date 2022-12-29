@@ -16,7 +16,7 @@ CONTEXT_TOKEN_COUNT = 1500
 def query_server(query, server):
     http = urllib3.PoolManager()
     response = http.request(
-        'POST', f"{server}/api/query", fields={
+        'POST', server, fields={
             "query": query,
             "token_count": CONTEXT_TOKEN_COUNT}).data
     return json.loads(response)

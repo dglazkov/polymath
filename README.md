@@ -73,6 +73,20 @@ Now, run the client, specifying the query and servers that you just started. For
 
 The output should be a completion on the combined context of both servers.
 
+### Standing up a polymath endpoint
+
+This project can be used to stand up your own polymath endpoint on Google App Engine.
+
+1) Follow [these instrustions](https://cloud.google.com/appengine/docs/standard/python3/building-app/creating-gcp-project) to set up a Google App Engine (GAE) instance. If you already have a GAE instance elsewhere on your machine, don't forget to change the name of the project before running `gcloud app create`. You can change the name of the project by invoking `gcloud config set project <gae-project-name>` first.
+
+2) In the `.env` file, add the `LIBRARY_FILENAME` entry specifying path to the library that will be used by the server. For example:
+```
+LIBRARY_FILENAME=out/my-substack-posts.pkl
+```
+3) Place your library file on this path.
+4) Run `gcloud app deploy` to deploy the app.
+
+
 ### Developing
 
 It's recommended to use `virtualenv` to manage your python environment for this project.
