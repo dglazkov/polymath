@@ -9,9 +9,6 @@ from flask import Flask, jsonify, render_template, request
 from ask_embeddings import (get_context, get_chunks,
                             get_similarities, load_library, vector_from_base64)
 
-WANDERING_MEMORY = 60 * 60 * 2  # 2 hours, why not
-WANDERING_VARIETY = 5
-
 parser = argparse.ArgumentParser()
 parser.add_argument(
     'filename', help='Relative to the root of the project, the path to the embeddings file')
