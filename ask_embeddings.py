@@ -12,6 +12,10 @@ from transformers import GPT2TokenizerFast
 EMBEDDINGS_MODEL_NAME = "text-embedding-ada-002"
 COMPLETION_MODEL_NAME = "text-davinci-003"
 
+EXPECTED_EMBEDDING_LENGTH = {
+    'text-embedding-ada-002': 1536
+}
+
 SEPARATOR = "\n"
 MAX_CONTEXT_LEN = 2048
 
@@ -90,18 +94,19 @@ def _load_raw_library(library_file):
         with open(library_file, "rb") as f:
             return pickle.load(f)
 
-
 def validate_library(library):
     if library.get('version', -1) != CURRENT_VERSION:
         raise Exception('Version invalid')
     if library.get('embedding_model', '') != EMBEDDINGS_MODEL_NAME:
         raise Exception('Invalid model name')
+    expected_embedding_length = EXPECTED_EMBEDDING_LENGTH.get(library.get('embedding_model', ''), 0)
     for chunk_id, chunk in library['content'].items():
         if 'text' not in chunk:
             raise Exception(f'{chunk_id} is missing text')
         if 'embedding' not in chunk:
             raise Exception(f'{chunk_id} is missing embedding')
-        #TODO: test the embedding length is the expected number of floats.
+        if len(chunk['embedding']) != expected_embedding_length:
+            raise Exception(f'{chunk_id} had the wrong length of embedding, expected {expected_embedding_length}')
         if 'token_count' not in chunk:
             raise Exception(f'{chunk_id} is missing token_count')
         #TODO: verify token_count is a reasonable length.
