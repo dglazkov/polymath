@@ -186,8 +186,8 @@ def get_context(similiarities, token_count=MAX_CONTEXT_LEN):
     return context, issue_ids
 
 
-def get_issues(issue_ids, library):
-    return [library[issue_id]['info'] for issue_id in issue_ids]
+def get_chunks(chunk_ids, library):
+    return [library[chunk_id]['info'] for chunk_id in chunk_ids]
 
 
 def get_completion(prompt):
@@ -216,7 +216,7 @@ def ask(query, context_query=None, library_file=None):
         library_file) if library_file else load_default_libraries()
     query_embedding = get_embedding(context_query)
     similiarities = get_similarities(query_embedding, library)
-    (context, issue_ids) = get_context(similiarities)
+    (context, chunk_ids) = get_context(similiarities)
 
-    issues = get_issues(issue_ids, library)
-    return get_completion_with_context(query, context), issues
+    chunks = get_chunks(chunk_ids, library)
+    return get_completion_with_context(query, context), chunks
