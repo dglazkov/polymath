@@ -38,16 +38,20 @@ To create a new pkl file for a source, first, create a json object like this:
 
 ```
 {
-  chunks: [
+  content: {
     text: '<raw text>',
-    //all of the following are optional
-    url: '<URL>',
-    image_url: '<IMAGE_URL>',
-    title: '<TITLE>',
-    description: '<DESCRIPTION>',
-  ]
+    info: {
+      url: '<URL>',
+      //All of the following are optional
+      image_url: '<IMAGE_URL>',
+      title: '<TITLE>',
+      description: '<DESCRIPTION>',
+    }
+  }
 }
 ```
+
+This format is effectively the library format but missing a version, embedding_model, and each chunk missing embedding and token_count.
 
 Then run `python3 -m converter <FILENAME>`. It will create a new file with the same name but a `.pkl` extension in the `out/` directory.
 

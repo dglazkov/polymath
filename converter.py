@@ -23,10 +23,10 @@ output_format = args.format
 with open(filename, 'r') as f:
     data = json.load(f)
 
-chunks = data.get('chunks')
+chunks = data.get('content')
 
 if not chunks:
-    print('Data did not have chunks as expected')
+    print('Data did not have content as expected')
     sys.exit(1)
 
 if not output_filename:
@@ -46,14 +46,10 @@ total = len(chunks) if max_lines < 0 else max_lines
 
 print('Will process ' + ('all' if max_lines < 0 else str(max_lines)) + ' lines')
 
-for chunk in chunks:
+for id, chunk in chunks.items():
     if max_lines >= 0 and count >= max_lines:
         print('Reached max lines')
         break
-    id = chunk.get('id')
-    if not id:
-        print('Skipping chunk missing an ID')
-        continue
     if id in result['content']:
         continue
     print(f'Processing new chunk {id} ({count + 1}/{total})')
@@ -63,14 +59,11 @@ for chunk in chunks:
         continue
     embedding = ask_embeddings.get_embedding(text)
     token_count = ask_embeddings.get_token_count(text)
-    info = {'url': chunk.get('url', '')}
-    for property_name in ['image_url', 'title', 'description']:
-        if property_name in chunk: info[property_name] = chunk.get(property_name, '')
     result['content'][id] = {
             'text': text,
             'embedding': embedding,
             'token_count': token_count,
-            'info': info
+            'info': chunk.get('info')
     }
     count += 1
 
