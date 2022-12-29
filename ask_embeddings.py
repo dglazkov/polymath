@@ -104,8 +104,7 @@ def validate_library(library):
         #TODO: test the embedding length is the expected number of floats.
         if 'token_count' not in chunk:
             raise Exception(f'{chunk_id} is missing token_count')
-        if chunk['token_count'] != get_token_length(chunk['text']):
-            raise Exception(f'{chunk_id} has the incorrect token_count')
+        #TODO: verify token_count is a reasonable length.
         if 'info' not in chunk:
             raise Exception(f'{chunk_id} is missing info')
         info = chunk['info']
