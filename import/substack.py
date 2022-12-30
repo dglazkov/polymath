@@ -68,12 +68,10 @@ class SubstackImporter:
     def get_chunks(self, filename, existing_library, max_lines=-1):
         issue_slug = get_issue_slug(filename)
         issue_info = self.get_issue_info(issue_slug)
-        result = {}
         with open(filename, 'r') as file:
             soup = BeautifulSoup(file, "html.parser")
             for id, sibling in enumerate(soup.children):
-                result["content"][f"{issue_slug}-{id}"] = {
+                yield(f"{issue_slug}-{id}", {
                     "text": strip_emoji(sibling.get_text(" ", strip=True)),
                     "info": issue_info
-                }
-        return result
+                })

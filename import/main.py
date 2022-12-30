@@ -50,7 +50,7 @@ print('Will process ' + ('all' if max_lines < 0 else str(max_lines)) + ' lines')
 
 count = 0
 
-for id, chunk in importer.get_chunks(filename, result, max_lines).items():
+for id, chunk in importer.get_chunks(filename, result, max_lines):
     text = chunk.get('text', '')
     if 'embedding' not in chunk:
         print(f'Fetching embedding for {id}')
