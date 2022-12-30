@@ -8,7 +8,8 @@ from flask import Flask, jsonify, render_template, request
 from flask_compress import Compress
 
 from ask_embeddings import (get_context, get_chunks,
-                            get_similarities, load_library, vector_from_base64)
+                            get_similarities, load_library,
+                            load_default_libraries, vector_from_base64)
 
 DEFAULT_TOKEN_COUNT = 1000
 
@@ -19,7 +20,7 @@ load_dotenv()
 openai.api_key = os.getenv("OPENAI_API_KEY")
 library_filename = os.getenv("LIBRARY_FILENAME")
 
-library = load_library(library_filename)
+library = load_library(library_filename) if library_filename else load_default_libraries(True)
 
 @app.route("/", methods=["POST"])
 def start():
