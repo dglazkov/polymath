@@ -34,7 +34,7 @@ def strip_emoji(text: str) -> str:
 
 
 class SubstackImporter:
-    def __init__(self, substack_url: str):
+    def __init__(self, substack_url: str = SUBSTACK_URL):
         self.substack_url = substack_url
         self.substack_name = get_substack_name(substack_url)
 
