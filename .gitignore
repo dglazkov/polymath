@@ -6,3 +6,6 @@ libraries/
 __pycache__
 *.code-workspace
 .DS_Store
+
+# local-only dir as a scratch space
+scratch/
