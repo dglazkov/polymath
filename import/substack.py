@@ -22,18 +22,6 @@ def get_substack_name(substack_url: str) -> str:
     return host.replace(".", "-")
 
 
-def strip_emoji(text: str) -> str:
-    """
-    Removes all emojis from a string."""
-    emoji_pattern = re.compile("["
-                               u"\U0001F600-\U0001F64F"  # emoticons
-                               u"\U0001F300-\U0001F5FF"  # symbols & pictographs
-                               u"\U0001F680-\U0001F6FF"  # transport & map symbols
-                               u"\U0001F1E0-\U0001F1FF"  # flags (iOS)
-                               "]+", flags=re.UNICODE)
-    return emoji_pattern.sub(r'', text)
-
-
 class SubstackImporter:
     def __init__(self, substack_url: str = SUBSTACK_URL):
         self.substack_url = substack_url
@@ -72,6 +60,6 @@ class SubstackImporter:
             soup = BeautifulSoup(file, "html.parser")
             for id, sibling in enumerate(soup.children):
                 yield(f"{issue_slug}-{id}", {
-                    "text": strip_emoji(sibling.get_text(" ", strip=True)),
+                    "text": sibling.get_text(" ", strip=True),
                     "info": issue_info
                 })

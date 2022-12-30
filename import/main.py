@@ -4,6 +4,7 @@ import argparse
 import json
 import pickle
 import os
+import re
 
 from .nakedlibrary import NakedLibraryImporter
 from .substack import SubstackImporter
@@ -12,6 +13,18 @@ IMPORTERS = {
     'library': NakedLibraryImporter(),
     'substack': SubstackImporter()
 }
+
+def strip_emoji(text: str) -> str:
+    """
+    Removes all emojis from a string."""
+    emoji_pattern = re.compile("["
+                               u"\U0001F600-\U0001F64F"  # emoticons
+                               u"\U0001F300-\U0001F5FF"  # symbols & pictographs
+                               u"\U0001F680-\U0001F6FF"  # transport & map symbols
+                               u"\U0001F1E0-\U0001F1FF"  # flags (iOS)
+                               "]+", flags=re.UNICODE)
+    return emoji_pattern.sub(r'', text)
+
 
 parser = argparse.ArgumentParser()
 parser.add_argument('filename', help='The name of the input file to be processed')
@@ -54,10 +67,10 @@ for id, chunk in importer.get_chunks(filename):
     if max_lines >= 0 and count >= max_lines:
         print('Reached max lines')
         break
-    text = chunk.get('text', '')
     if id in result['content']:
         continue
     print(f'Processing new chunk {id} ({count + 1})')
+    text = strip_emoji(chunk.get('text', ''))
     if 'embedding' not in chunk:
         print(f'Fetching embedding for {id}')
         chunk['embedding'] = ask_embeddings.get_embedding(text)
