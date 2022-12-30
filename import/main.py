@@ -16,7 +16,7 @@ IMPORTERS = {
 parser = argparse.ArgumentParser()
 parser.add_argument('filename', help='The name of the input file to be processed')
 parser.add_argument('--importer', help='The importer to use', choices=IMPORTERS.keys(), default='library')
-parser.add_argument('--output-format', help='The format to use', choices=['pkl', 'json'], default='pkl')
+parser.add_argument('--output-format', help='The format to use', choices=['pkl', 'json'], default='json')
 parser.add_argument('--output', help=f'The name of the file to store in {ask_embeddings.LIBRARY_DIR}/. If not provided, will default to the input file with a new extension', default='')
 parser.add_argument('--base', help='The library file to base the final library on, unless overwrite is true. Defaults to --output if not specified.', default='')
 parser.add_argument('--max', help='The number of max lines to process. If negative, will process all.', default=-1, type=int)
