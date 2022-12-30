@@ -53,8 +53,10 @@ count = 0
 for id, chunk in importer.get_chunks(filename, result, max_lines).items():
     text = chunk.get('text', '')
     if 'embedding' not in chunk:
+        print(f'Fetching embedding for {id}')
         chunk['embedding'] = ask_embeddings.get_embedding(text)
     if 'token_count' not in chunk:
+        print(f'Fetching token_count for {id}')
         chunk['token_count'] = ask_embeddings.get_token_count(text)
     result['content'][id] = chunk
     count += 1
