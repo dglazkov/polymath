@@ -9,11 +9,11 @@ import numpy as np
 import openai
 from transformers import GPT2TokenizerFast
 
-EMBEDDINGS_MODEL_NAME = "text-embedding-ada-002"
+EMBEDDINGS_MODEL_ID = "openai.com:text-embedding-ada-002"
 COMPLETION_MODEL_NAME = "text-davinci-003"
 
 EXPECTED_EMBEDDING_LENGTH = {
-    'text-embedding-ada-002': 1536
+    'openai.com:text-embedding-ada-002': 1536
 }
 
 SEPARATOR = "\n"
@@ -50,9 +50,12 @@ def vector_similarity(x, y):
     return np.dot(np.array(x), np.array(y))
 
 
-def get_embedding(text):
+def get_embedding_model_name_from_id(model_id):
+    return model_id.split(':')[1]
+
+def get_embedding(text, model_id = EMBEDDINGS_MODEL_ID):
     result = openai.Embedding.create(
-        model=EMBEDDINGS_MODEL_NAME,
+        model=get_embedding_model_name_from_id(model_id),
         input=text
     )
     return result["data"][0]["embedding"]
@@ -108,7 +111,7 @@ def load_data_file(file):
 def validate_library(library):
     if library.get('version', -1) != CURRENT_VERSION:
         raise Exception('Version invalid')
-    if library.get('embedding_model', '') != EMBEDDINGS_MODEL_NAME:
+    if library.get('embedding_model', '') != EMBEDDINGS_MODEL_ID:
         raise Exception('Invalid model name')
     expected_embedding_length = EXPECTED_EMBEDDING_LENGTH.get(
         library.get('embedding_model', ''), 0)
@@ -174,7 +177,7 @@ def load_library(library_file):
 def empty_library():
     return {
         'version': CURRENT_VERSION,
-        'embedding_model': 'text-embedding-ada-002',
+        'embedding_model': EMBEDDINGS_MODEL_ID,
         'content': {}
     }
 
