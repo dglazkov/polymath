@@ -20,7 +20,7 @@ SEPARATOR = "\n"
 MAX_CONTEXT_LEN = 2048
 
 LIBRARY_DIR = 'out'
-SAMPLE_LIBARRIES_FILE = 'sample-import-content.pkl'
+SAMPLE_LIBRARIES_FILE = 'sample-import-content.pkl'
 
 CURRENT_VERSION = 0
 
@@ -71,7 +71,7 @@ def load_default_libraries():
         glob.glob(os.path.join(LIBRARY_DIR, '*.json'))
     if len(files):
         return load_multiple_libraries(files)
-    return load_library(SAMPLE_LIBARRIES_FILE)
+    return load_library(SAMPLE_LIBRARIES_FILE)
 
 
 def load_libraries_in_directory(directory):
