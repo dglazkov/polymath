@@ -53,7 +53,7 @@ To create a new pkl file for a source, first, create a json object like this:
 
 This format is effectively the library format but missing a version, embedding_model, and each chunk missing embedding and token_count.
 
-Then run `python3 -m converter <FILENAME>`. It will create a new file with the same name but a `.pkl` extension in the `out/` directory.
+Then run `python3 -m import.main <FILENAME>`. It will create a new file with the same name but a `.pkl` extension in the `out/` directory.
 
 ### Running the server
 
