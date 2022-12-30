@@ -9,8 +9,7 @@ import os
 class NakedLibraryImporter:
     def get_chunks(self, filename, existing_library, max_lines = -1):
         # Will return a dict of chunks, possibly missing embedding and token_count.
-        with open(filename, 'r') as f:
-            data = json.load(f)
+        data = ask_embeddings.load_data_file(filename)
 
         chunks = data.get('content')
         if not chunks:
