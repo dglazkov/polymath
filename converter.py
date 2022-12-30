@@ -28,7 +28,7 @@ class NakedLibraryImporter:
             if not text:
                 print('Skipping a row with id ' + id + ' that was missing text')
                 continue
-            result['content'][id] = {
+            result[id] = {
                     'text': text,
                     'info': chunk.get('info')
             }
