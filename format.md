@@ -1,5 +1,6 @@
 The format of the library files is as follows:
-```{
+```
+{
   version: 0,
   //Currently the only supported model is 'text-embedding-ada-002'. That might change in the future.
   embedding_model: 'text-embedding-ada-002',
@@ -22,3 +23,17 @@ The format of the library files is as follows:
 ```
 
 The file may be represented as either a Python pickle (with extension `.pkl`) or as JSON (with extension `.json`)
+
+The format of the API endpoint is currently:
+
+```
+{
+  context: [ <text> ],
+  chunks: {
+    url: <url>,
+    image_url: <image_url>,
+    title: <title>,
+    description: <description>
+  }
+}
+```
