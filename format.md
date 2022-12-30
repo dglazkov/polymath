@@ -29,11 +29,11 @@ The format of the API endpoint is currently:
 ```
 {
   context: [ <text> ],
-  chunks: {
+  chunks: [{
     url: <url>,
     image_url: <image_url>,
     title: <title>,
     description: <description>
-  }
+  }]
 }
 ```
