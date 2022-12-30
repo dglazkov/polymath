@@ -66,11 +66,13 @@ def get_similarities(query_embedding, library):
         in library['content'].items()], reverse=True)
 
 
-def load_default_libraries():
+def load_default_libraries(fail_on_empty = False):
     files = glob.glob(os.path.join(LIBRARY_DIR, '*.pkl')) + \
         glob.glob(os.path.join(LIBRARY_DIR, '*.json'))
     if len(files):
         return load_multiple_libraries(files)
+    if fail_on_empty:
+        raise Exception('No libraries were in the default library directory.')
     return load_library(SAMPLE_LIBRARIES_FILE)
 
 
