@@ -65,7 +65,7 @@ class SubstackImporter:
     def output_base_filename(self, _):
         return self.substack_name
 
-    def get_chunks(self, filename, existing_library, max_lines=-1):
+    def get_chunks(self, filename):
         issue_slug = get_issue_slug(filename)
         issue_info = self.get_issue_info(issue_slug)
         with open(filename, 'r') as file:
