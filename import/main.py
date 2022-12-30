@@ -6,9 +6,11 @@ import pickle
 import os
 
 from .nakedlibrary import NakedLibraryImporter
+from .substack import SubstackImporter
 
 IMPORTERS = {
-    'library': NakedLibraryImporter()
+    'library': NakedLibraryImporter(),
+    'substack': SubstackImporter()
 }
 
 parser = argparse.ArgumentParser()
@@ -27,7 +29,6 @@ output_filename = args.output
 base_filename = args.base
 output_format = args.output_format
 
-#TODO: allow selecting a different one via an argument.
 importer = IMPORTERS['library']
 
 if not output_filename:

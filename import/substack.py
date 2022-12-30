@@ -2,7 +2,7 @@ import glob
 import json
 import os
 import re
-from og import get_og_data
+from .og import get_og_data
 import urllib3
 from bs4 import BeautifulSoup
 
