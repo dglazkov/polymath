@@ -18,7 +18,8 @@ def get_issue_slug(file_name: str) -> str:
 
 def get_substack_name(substack_url: str) -> str:
     parsed_url = urllib3.util.parse_url(substack_url)
-    return parsed_url.host.replace(".", "-")
+    host = parsed_url.host or ''
+    return host.replace(".", "-")
 
 
 def strip_emoji(text: str) -> str:
