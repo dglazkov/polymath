@@ -28,7 +28,7 @@ TRANSFORMERS_VERBOSITY=error
 
 (The last line will suppress the `None of PyTorch, TensorFlow >= 2.0, or Flax have been found` warning you may get when running the code)
 
-Any embeddings pkl files you have in `out/` will be used as the content. If none exist, it will use the `sample-import-content.pkl`.
+Any embeddings pkl files you have in `libraries/` will be used as the content. If none exist, it will use the `sample-import-content.pkl`.
 
 Then run `python3 -m sample.main "How does building a platform differ from building a product?"`
 
@@ -53,7 +53,7 @@ To create a new pkl file for a source, first, create a json object like this:
 
 This format is effectively the library format but missing a version, embedding_model, and each chunk missing embedding and token_count.
 
-Then run `python3 -m import.main <FILENAME>`. It will create a new file with the same name but a `.pkl` extension in the `out/` directory.
+Then run `python3 -m import.main <FILENAME>`. It will create a new file with the same name but a `.pkl` extension in the `libraries/` directory.
 
 ### Running the server
 
@@ -79,7 +79,7 @@ This project can be used to stand up your own polymath endpoint on Google App En
 
 1) Follow [these instrustions](https://cloud.google.com/appengine/docs/standard/python3/building-app/creating-gcp-project) to set up a Google App Engine (GAE) instance. If you already have a GAE instance elsewhere on your machine, don't forget to change the name of the project before running `gcloud app create`. You can change the name of the project by invoking `gcloud config set project <gae-project-name>` first.
 
-2) Place the libraries you want to use in the `out/` directory. If you have multiple libraries in that directory but only want to serve one, you can add a line like `LIBRARY_FILENAME=out/my-substack-posts.pkl` to your `.env` file.
+2) Place the libraries you want to use in the `libraries/` directory. If you have multiple libraries in that directory but only want to serve one, you can add a line like `LIBRARY_FILENAME=libraries/my-substack-posts.pkl` to your `.env` file.
 
 3) Run `gcloud app deploy` to deploy the app.
 

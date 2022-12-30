@@ -2,6 +2,7 @@
 env/
 in/
 out/
+libraries/
 __pycache__
 *.code-workspace
 .DS_Store
