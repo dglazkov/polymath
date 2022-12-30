@@ -27,6 +27,10 @@ class MediumImporter:
             return ''
         return img.get('src')
 
+    def extract_title_from_soup(self, soup : BeautifulSoup):
+        h1 = soup.find('h1', class_='p-name')
+        return h1.get_text(strip=True) if h1 else ''
+
     def get_chunks(self, filename):
         filenames = glob.glob(f"{filename}/posts/*.html")
         for file in filenames:
@@ -35,5 +39,6 @@ class MediumImporter:
                 soup = BeautifulSoup(f, "html.parser")
                 url = self.extract_url_from_soup(base_filename, soup)
                 image_url = self.extract_image_url_from_soup(soup)
-                print(url, image_url)
+                title = self.extract_title_from_soup(soup)
+                print(url, image_url, title)
         print('Actual importing not yet implemented')
