@@ -8,10 +8,12 @@ import re
 
 from .nakedlibrary import NakedLibraryImporter
 from .substack import SubstackImporter
+from .medium import MediumImporter
 
 IMPORTERS = {
     'library': NakedLibraryImporter(),
-    'substack': SubstackImporter()
+    'substack': SubstackImporter(),
+    'medium': MediumImporter()
 }
 
 def strip_emoji(text: str) -> str:
