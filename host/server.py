@@ -5,6 +5,7 @@ import traceback
 import openai
 from dotenv import load_dotenv
 from flask import Flask, jsonify, render_template, request
+from flask_compress import Compress
 
 from ask_embeddings import (get_context, get_chunks,
                             get_similarities, load_library, vector_from_base64)
@@ -12,6 +13,7 @@ from ask_embeddings import (get_context, get_chunks,
 DEFAULT_TOKEN_COUNT = 1000
 
 app = Flask(__name__)
+Compress(app)
 
 load_dotenv()
 openai.api_key = os.getenv("OPENAI_API_KEY")
