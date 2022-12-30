@@ -74,6 +74,12 @@ def load_default_libraries():
     return load_library(SAMPLE_LIBARRIES_FILE)
 
 
+def load_libraries_in_directory(directory):
+    files = glob.glob(os.path.join(directory, '*.pkl')) + \
+        glob.glob(os.path.join(directory, '*.json'))
+    return load_multiple_libraries(files)
+
+
 def load_multiple_libraries(library_file_names):
     result = empty_library()
     for file in library_file_names:
