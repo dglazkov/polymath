@@ -87,13 +87,13 @@ def load_multiple_libraries(library_file_names):
     return result
 
 
-def _load_raw_library(library_file):
-    filetype = os.path.splitext(library_file)[1].lower()
+def load_data_file(file):
+    filetype = os.path.splitext(file)[1].lower()
     if filetype == '.json':
-        with open(library_file, "r") as f:
+        with open(file, "r") as f:
             return json.load(f)
     else:
-        with open(library_file, "rb") as f:
+        with open(file, "rb") as f:
             return pickle.load(f)
 
 
@@ -152,7 +152,7 @@ def _convert_library_from_version_og(og_library):
 
 
 def load_library(library_file):
-    library = _load_raw_library(library_file)
+    library = load_data_file(library_file)
     version = library.get('version', -1)
     if version != CURRENT_VERSION:
         if version < 0:
