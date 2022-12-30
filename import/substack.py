@@ -6,7 +6,7 @@ from .og import get_og_data
 import urllib3
 from bs4 import BeautifulSoup
 
-SUBSTACK_URL = os.environ["SUBSTACK_URL"]
+SUBSTACK_URL = os.environ.get("SUBSTACK_URL", '')
 
 
 def get_issue_slug(file_name: str) -> str:
