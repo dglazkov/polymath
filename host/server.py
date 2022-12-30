@@ -17,6 +17,7 @@ load_dotenv()
 openai.api_key = os.getenv("OPENAI_API_KEY")
 library_filename = os.getenv("LIBRARY_FILENAME")
 
+library = load_library(library_filename)
 
 @app.route("/", methods=["POST"])
 def start():
@@ -28,7 +29,6 @@ def start():
             return jsonify({
                 "error": "Query is required"
             })
-        library = load_library(library_filename)
         query_embedding = vector_from_base64(query)
         similiarities = get_similarities(
             query_embedding, library)
