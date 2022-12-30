@@ -5,9 +5,9 @@ import re
 from .og import get_og_data
 import urllib3
 from bs4 import BeautifulSoup
+from typing import Tuple
 
 SUBSTACK_URL = os.environ.get("SUBSTACK_URL", '')
-
 
 def get_issue_slug(file_name: str) -> str:
     match = re.search(r"(?<=\.)[^.]*(?=\.)", file_name)
@@ -38,7 +38,7 @@ class SubstackImporter:
         self.substack_url = substack_url
         self.substack_name = get_substack_name(substack_url)
 
-    def get_issue_info(self, issue_slug: str) -> tuple(str, str, str, str):
+    def get_issue_info(self, issue_slug: str) -> Tuple[str, str, str, str]:
         """"
         Returns issue metadata as a dict following the `info` format,
         specified in https://github.com/dglazkov/polymath/blob/main/format.md
