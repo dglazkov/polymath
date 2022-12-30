@@ -15,6 +15,7 @@ IMPORTERS = {
 
 parser = argparse.ArgumentParser()
 parser.add_argument('filename', help='The name of the input file to be processed')
+parser.add_argument('--importer', help='The importer to use', choices=IMPORTERS.keys(), default='library')
 parser.add_argument('--output-format', help='The format to use', choices=['pkl', 'json'], default='pkl')
 parser.add_argument('--output', help=f'The name of the file to store in {ask_embeddings.LIBRARY_DIR}/. If not provided, will default to the input file with a new extension', default='')
 parser.add_argument('--base', help='The library file to base the final library on, unless overwrite is true. Defaults to --output if not specified.', default='')
@@ -29,7 +30,7 @@ output_filename = args.output
 base_filename = args.base
 output_format = args.output_format
 
-importer = IMPORTERS['library']
+importer = IMPORTERS[args.importer]
 
 if not output_filename:
     filename_without_extension = importer.output_base_filename(filename)
