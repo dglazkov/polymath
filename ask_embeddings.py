@@ -260,7 +260,12 @@ def library_for_query(library, query_embedding=None, count=None):
     # TODO: refactor get_similarities to just return a dict of chunk_id to
     # similarity.
     similiarities = get_similarities(embedding, library)
+
     # TODO: support an infinite count
+
+    # TODO: get_context supported trimming context of a chunk if necessary to
+    # fit, which we currently don't do.
+
     (_, chunk_ids) = get_context(similiarities, count)
     similarities_dict = {id: similarity for (similarity, _, _, id) in similiarities}
     for chunk_id in chunk_ids:
