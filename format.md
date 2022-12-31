@@ -11,6 +11,8 @@ The format of the library files is as follows:
       // The full vector of floats representing the embedding, as base64-encoded string. The number of floats will depend on which embedding_model is in use.
       embedding: <embedding>,
       token_count: <tokens_count>,
+      //Similarity is included in libraries that were given a query_embedding.
+      similarity: <float>,
       info: {
         url: <url>,
         //All of the following properties are optional
