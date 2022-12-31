@@ -168,6 +168,11 @@ def embeddings_to_arrays(library):
         chunk['embedding'] = vector_from_base64(chunk['embedding'])
 
 
+def arrays_to_embeddings(library):
+    for _, chunk in library['content'].items():
+        chunk['embedding'] = base64_from_vector(chunk['embedding']).decode('ascii')
+
+
 def load_library(library_file):
     library = load_data_file(library_file)
     version = library.get('version', -1)
