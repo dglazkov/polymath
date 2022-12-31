@@ -53,7 +53,8 @@ def vector_similarity(x, y):
 def get_embedding_model_name_from_id(model_id):
     return model_id.split(':')[1]
 
-def get_embedding(text, model_id = EMBEDDINGS_MODEL_ID):
+
+def get_embedding(text, model_id=EMBEDDINGS_MODEL_ID):
     result = openai.Embedding.create(
         model=get_embedding_model_name_from_id(model_id),
         input=text
@@ -69,7 +70,7 @@ def get_similarities(query_embedding, library):
         in library['content'].items()], reverse=True)
 
 
-def load_default_libraries(fail_on_empty = False):
+def load_default_libraries(fail_on_empty=False):
     files = glob.glob(os.path.join(LIBRARY_DIR, '*.pkl')) + \
         glob.glob(os.path.join(LIBRARY_DIR, '*.json'))
     if len(files):
@@ -162,6 +163,11 @@ def _convert_library_from_version_og(og_library):
     return library
 
 
+def embeddings_to_arrays(library):
+    for _, chunk in library['content'].items():
+        chunk['embedding'] = vector_from_base64(chunk['embedding'])
+
+
 def load_library(library_file):
     library = load_data_file(library_file)
     version = library.get('version', -1)
@@ -170,6 +176,7 @@ def load_library(library_file):
             library = _convert_library_from_version_og(library)
         else:
             raise Exception(f'Unsupported version {version} in {library_file}')
+    embeddings_to_arrays(library)
     validate_library(library)
     return library
 

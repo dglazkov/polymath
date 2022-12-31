@@ -8,7 +8,7 @@ The format of the library files is as follows:
     //A chunk_id is any string unique within this index to address your content. It could be a post's slug, a URL, or a monotonically-increasing integer formatted as a string.
     <chunk_id>: {
       text: <text>,
-      //The full vector of floats representing the embedding. The number of floats will depend on which embedding_model is in use.
+      // The full vector of floats representing the embedding, as base64-encoded string. The number of floats will depend on which embedding_model is in use.
       embedding: <embedding>,
       token_count: <tokens_count>,
       info: {
