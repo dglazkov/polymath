@@ -75,7 +75,7 @@ for id, chunk in importer.get_chunks(filename):
     text = strip_emoji(chunk.get('text', ''))
     if 'embedding' not in chunk:
         print(f'Fetching embedding for {id}')
-        chunk['embedding'] = ask_embeddings.get_embedding(text)
+        chunk['embedding'] = ask_embeddings.base64_from_vector(ask_embeddings.get_embedding(text)).decode("ascii") 
     if 'token_count' not in chunk:
         print(f'Fetching token_count for {id}')
         chunk['token_count'] = ask_embeddings.get_token_count(text)
