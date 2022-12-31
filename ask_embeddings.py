@@ -215,22 +215,21 @@ def get_token_count(text):
 
 
 def get_context(similiarities, token_count=MAX_CONTEXT_LEN):
-    context = []
+    """
+    Returns a dict of chunk_id to possibly_truncated_chunk_text
+    """
+    result = {}
     context_len = 0
-
-    issue_ids = set()
 
     # TODO: Account for separator tokens, but do so without invoking a tokenizer in this method.
     for id, (_, text, tokens, issue_id) in enumerate(similiarities):
         context_len += tokens
         if context_len > token_count:
-            if len(context) == 0:
-                context.append(text[:(token_count)])
+            if len(result) == 0:
+                result[id] = text[:(token_count)]
             break
-        context.append(text)
-        if id < 4:
-            issue_ids.add(issue_id)
-    return context, issue_ids
+        result[id] = text
+    return result
 
 
 def get_chunks(chunk_ids, library):
@@ -266,10 +265,13 @@ def library_for_query(library, query_embedding=None, count=None):
     # TODO: get_context supported trimming context of a chunk if necessary to
     # fit, which we currently don't do.
 
-    (_, chunk_ids) = get_context(similiarities, count)
+    chunk_dict = get_context(similiarities, count)
     similarities_dict = {id: similarity for (similarity, _, _, id) in similiarities}
-    for chunk_id in chunk_ids:
+    for chunk_id, chunk_text in chunk_dict.items():
         result['content'][chunk_id] = copy.deepcopy(library['content'][chunk_id])
+        # Note: if the text was truncated then technically the embedding isn't
+        # necessarily right anymore. But, like, whatever.
+        result['content'][chunk_id]['text'] = chunk_text
         result['content'][chunk_id]['similarity'] = similarities_dict[chunk_id]
     return result
 
@@ -300,7 +302,10 @@ def ask(query, context_query=None, library_file=None):
         library_file) if library_file else load_default_libraries()
     query_embedding = get_embedding(context_query)
     similiarities = get_similarities(query_embedding, library)
-    (context, chunk_ids) = get_context(similiarities)
+    context_dict = get_context(similiarities)
+
+    context = [value for value in context_dict.values()]
+    chunk_ids = [id for id in context_dict.keys()]
 
     chunks = get_chunks(chunk_ids, library)
     return get_completion_with_context(query, context), chunks
