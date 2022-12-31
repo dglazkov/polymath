@@ -277,10 +277,13 @@ def library_for_query(library, version = None, query_embedding=None, query_embed
 
     # count_type is currently implicitly `token`
     result = empty_library()
-    # TODO: support query_embedding being base64 encoded or a raw vector of
-    # floats
-    embedding = vector_from_base64(query_embedding)
-    similarities_dict = get_similarities(embedding, library)
+
+    similarities_dict = None
+    if query_embedding:
+        # TODO: support query_embedding being base64 encoded or a raw vector of
+        # floats
+        embedding = vector_from_base64(query_embedding)
+        similarities_dict = get_similarities(embedding, library)
 
     # TODO: support an infinite count
 
@@ -290,7 +293,8 @@ def library_for_query(library, version = None, query_embedding=None, query_embed
         # Note: if the text was truncated then technically the embedding isn't
         # necessarily right anymore. But, like, whatever.
         result['content'][chunk_id]['text'] = chunk_text
-        result['content'][chunk_id]['similarity'] = similarities_dict[chunk_id]
+        if similarities_dict:
+            result['content'][chunk_id]['similarity'] = similarities_dict[chunk_id]
     return result
 
 
