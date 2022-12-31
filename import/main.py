@@ -1,7 +1,5 @@
 import argparse
-import json
 import os
-import pickle
 import re
 
 import openai
@@ -106,11 +104,4 @@ print(f'Loaded {count} new lines')
 if not os.path.exists(ask_embeddings.LIBRARY_DIR):
     os.mkdir(ask_embeddings.LIBRARY_DIR)
 
-ask_embeddings.arrays_to_embeddings(result)
-
-if output_format == 'json':
-    with open(full_output_filename, 'w') as f:
-        json.dump(result, f, indent='\t')
-else:
-    with open(full_output_filename, 'wb') as f:
-        pickle.dump(result, f)
+ask_embeddings.save_library(result, full_output_filename, output_format)

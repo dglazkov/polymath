@@ -4,6 +4,7 @@ from random import shuffle
 import os
 import glob
 import json
+import copy
 
 import numpy as np
 import openai
@@ -172,6 +173,20 @@ def arrays_to_embeddings(library):
     for _, chunk in library['content'].items():
         chunk['embedding'] = base64_from_vector(chunk['embedding']).decode('ascii')
 
+
+def save_library(library, filename, format=None):
+    result = copy.deepcopy(library)
+    arrays_to_embeddings(result)
+
+    if not format:
+        format = os.path.splitext(filename)[1].lower()[1:]
+
+    if format == 'json':
+        with open(filename, 'w') as f:
+            json.dump(result, f, indent='\t')
+    else:
+        with open(filename, 'wb') as f:
+            pickle.dump(result, f)
 
 def load_library(library_file):
     library = load_data_file(library_file)
