@@ -36,8 +36,7 @@ class MediumImporter:
 
     def extract_description_from_soup(self, soup: BeautifulSoup):
         section = soup.find('section', class_='p-summary')
-        # TODO: if no section, then return the first paragraph of the file
-        return section.get_text(strip=True) if section else ''
+        return section.get_text(strip=True) if section else self.extract_chunks_from_soup(soup)[0]
 
 
     def extract_slug_from_filename(self, base_filename):
