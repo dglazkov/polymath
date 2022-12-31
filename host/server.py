@@ -20,7 +20,9 @@ load_dotenv()
 openai.api_key = os.getenv("OPENAI_API_KEY")
 library_filename = os.getenv("LIBRARY_FILENAME")
 
-library = load_library(library_filename) if library_filename else load_default_libraries(True)
+library = load_library(
+    library_filename) if library_filename else load_default_libraries(True)
+
 
 @app.route("/", methods=["POST"])
 def start():
@@ -56,12 +58,6 @@ def start_sample():
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
     parser.add_argument(
-        'filename', help='Relative to the root of the project, the path to the embeddings file')
-    parser.add_argument(
         '--port', help='Number of the port to run the server on (8080 by default).', default=8080, type=int)
     args = parser.parse_args()
-
-    library_filename = args.filename
-    port = args.port
-
-    app.run(host='127.0.0.1', port=port, debug=True)
+    app.run(host='127.0.0.1', port=args.port, debug=True)

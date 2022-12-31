@@ -65,7 +65,7 @@ To experiment with client/server setup, you will need multiple terminal instance
 
 In each server terminal instance, start the server:
 
-`python3 -m host.server <path/to/pickle/containing/embeddings> <port_number>`
+`LIBRARY_FILENAME=<path/to/library> python3 -m host.server --port <port_number>`
 
 Now, run the client, specifying the query and servers that you just started. For example:
 
