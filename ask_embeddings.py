@@ -239,9 +239,9 @@ def get_chunks(chunk_ids, library):
 
 def get_context_for_library(library):
     """
-    Returns a concatenation of all text for every chunk in library
+    Returns an array of all text for every chunk in library
     """
-    return ''.join([chunk['text'] for chunk in library['content'].values()])
+    return [chunk['text'] for chunk in library['content'].values()]
 
 
 def get_chunk_infos_for_library(library):
