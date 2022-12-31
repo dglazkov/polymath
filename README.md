@@ -32,7 +32,15 @@ Any embeddings pkl files you have in `libraries/` will be used as the content. I
 
 Then run `python3 -m sample.main "How does building a platform differ from building a product?"`
 
-## Creating a new pkl
+## Creating a new library
+
+You can create a library from many different input sources using the `python3 -m import.main` script.
+
+It comes with a number of different importers, specified with `--importer TYPE`
+
+### `library`: A raw library
+
+You can create a naked library (only containing some parts of the required object) to import
 
 To create a new pkl file for a source, first, create a json object like this:
 
@@ -53,7 +61,21 @@ To create a new pkl file for a source, first, create a json object like this:
 
 This format is effectively the library format but missing a version, embedding_model, and each chunk missing embedding and token_count.
 
-Then run `python3 -m import.main <FILENAME>`. It will create a new file with the same name but a `.pkl` extension in the `libraries/` directory.
+Then run `python3 -m import.main --importer library <FILENAME>`. It will create a new file with the same name but a `.json` extension in the `libraries/` directory.
+
+### `medium` : An import of a medium snapshot
+
+First, generate a snapshot of your medium account by going to `https://medium.com/me/settings/security` and choosing `Download your information`. This will generate a snapshot and email you a link when it's ready.
+
+When you have the snapshot, download it and unzip it. Then run:
+
+`python3 -m import.main --importer medium path/to/medium/root/`
+
+Drafts will be excluded by default. If you want to include them, add `--medium-include-drafts` to the command.
+
+### `substack` : An import of a substack snapshot
+
+`#TODO: document`
 
 ### Running the server
 
