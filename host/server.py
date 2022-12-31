@@ -26,15 +26,15 @@ library = load_library(
 @app.route("/", methods=["POST"])
 def start():
     try:
-        query = request.form["query"]
+        query_embedding = request.form["query_embedding"]
         token_count = request.form.get(
             "token_count", DEFAULT_TOKEN_COUNT, type=int)
-        if not query:
+        if not query_embedding:
             return jsonify({
-                "error": "Query is required"
+                "error": "query_embedding is required"
             })
         version = request.form.get('version', -1, type=int)
-        result = library_for_query(library, version=version, query_embedding=query, count=token_count)
+        result = library_for_query(library, version=version, query_embedding=query_embedding, count=token_count)
         return jsonify(serializable_library(result))
 
     except Exception as e:

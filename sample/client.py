@@ -15,12 +15,12 @@ from ask_embeddings import (base64_from_vector, get_completion_with_context,
 CONTEXT_TOKEN_COUNT = 1500
 
 
-def query_server(query, server):
+def query_server(query_embedding, server):
     http = urllib3.PoolManager()
     response = http.request(
         'POST', server, fields={
             "version": CURRENT_VERSION,
-            "query": query,
+            "query_embedding": query_embedding,
             "token_count": CONTEXT_TOKEN_COUNT}).data
     return load_library_from_json_blob(response)
 
