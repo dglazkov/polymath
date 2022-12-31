@@ -110,6 +110,11 @@ def load_data_file(file):
             return pickle.load(f)
 
 
+def load_library_from_json_blob(blob):
+    raw_library = json.loads(blob)
+    return _hydrate_library(raw_library)
+
+
 def validate_library(library):
     if library.get('version', -1) != CURRENT_VERSION:
         raise Exception('Version invalid')
@@ -193,17 +198,22 @@ def save_library(library, filename, format=None):
         with open(filename, 'wb') as f:
             pickle.dump(result, f)
 
-def load_library(library_file):
-    library = load_data_file(library_file)
+
+def _hydrate_library(library):
     version = library.get('version', -1)
     if version != CURRENT_VERSION:
         if version < 0:
             library = _convert_library_from_version_og(library)
         else:
-            raise Exception(f'Unsupported version {version} in {library_file}')
+            raise Exception(f'Unsupported version {version}')
     embeddings_to_arrays(library)
     validate_library(library)
     return library
+
+
+def load_library(library_file):
+    library = load_data_file(library_file)
+    return _hydrate_library(library)
 
 
 def empty_library():
