@@ -291,7 +291,12 @@ def get_completion(prompt):
 
 def get_completion_with_context(query, context):
     # Borrowed from https://github.com/openai/openai-cookbook/blob/838f000935d9df03e75e181cbcea2e306850794b/examples/Question_answering_using_embeddings.ipynb
-    prompt = f"Answer the question as truthfully as possible using the provided context, and if the answer is not contained within the text below, say \"I don't know.\"\n\nContext:\n{context} \n\nQuestion:\n{query}\n\nAnswer:"
+
+    # The context is a list of strings. We can't guarantee it's short enough to
+    # fit because e.g. library_for_query might be the full library, so as a
+    # check ensure it's short enough.
+    concatenated_context = f"{context}"[:MAX_CONTEXT_LEN]
+    prompt = f"Answer the question as truthfully as possible using the provided context, and if the answer is not contained within the text below, say \"I don't know.\"\n\nContext:\n{concatenated_context} \n\nQuestion:\n{query}\n\nAnswer:"
     return get_completion(prompt)
 
 
