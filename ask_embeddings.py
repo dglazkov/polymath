@@ -287,7 +287,8 @@ def library_for_query(library, version = None, query_embedding=None, query_embed
 
     # TODO: support an infinite count
 
-    chunk_dict = get_context(similarities_dict.keys(), library, count)
+    chunk_ids = similarities_dict.keys() if similarities_dict else library['content'].keys()
+    chunk_dict = get_context(chunk_ids, library, count)
     for chunk_id, chunk_text in chunk_dict.items():
         result['content'][chunk_id] = copy.deepcopy(library['content'][chunk_id])
         # Note: if the text was truncated then technically the embedding isn't
