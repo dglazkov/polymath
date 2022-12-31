@@ -1,9 +1,30 @@
 import glob
 import os
 from bs4 import BeautifulSoup
+from argparse import (ArgumentParser, Namespace)
 
 
 class MediumImporter:
+
+    def __init__(self):
+        self._skip_drafts = False
+
+    def install_arguments(self, parser : ArgumentParser):
+        """
+        An opportunity to install arguments on the parser.
+
+        Arguments should be in a new group, start with a `--{importer_name}-`
+        and have a default.
+        """
+        medium_group = parser.add_argument_group('medium')
+        medium_group.add_argument('--medium-skip-drafts', help='If provided and the importer is medium, will skip drafts', action='store_true')
+
+    def retrieve_arguments(self, args : Namespace):
+        """
+        An opportunity to retrieve arguments configured via install_arguments.
+        """
+        self._skip_drafts = args.medium_skip_drafts
+
     def output_base_filename(self, filename):
         profile_path = f"{filename}/profile/profile.html"
         with open(profile_path, "r") as f:
@@ -59,6 +80,9 @@ class MediumImporter:
         for file in filenames:
             with open(file, 'r') as f:
                 base_filename = os.path.basename(file)
+                if self._skip_drafts and base_filename.startswith('draft_'):
+                    print('Skipping draft ' + base_filename)
+                    continue
                 soup = BeautifulSoup(f, "html.parser")
                 url = self.extract_url_from_soup(base_filename, soup)
                 image_url = self.extract_image_url_from_soup(soup)

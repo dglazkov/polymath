@@ -48,6 +48,9 @@ parser.add_argument(
     '--max', help='The number of max lines to process. If negative, will process all.', default=-1, type=int)
 parser.add_argument('--overwrite', action='store_true',
                     help='If set, will ignore any existing output and overwrite it instead of incrementally extending it')
+for importer in IMPORTERS.values():
+    if 'install_arguments' in dir(importer):
+        importer.install_arguments(parser)
 args = parser.parse_args()
 
 filename = args.filename
@@ -61,6 +64,9 @@ importer = IMPORTERS[args.importer]
 
 if "initialize" in dir(importer):
     importer.initialize(filename)
+
+if 'retrieve_arguments' in dir(importer):
+    importer.retrieve_arguments(args)
 
 if not output_filename:
     filename_without_extension = importer.output_base_filename(filename)
