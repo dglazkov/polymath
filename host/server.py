@@ -34,7 +34,7 @@ def start():
                 "error": "Query is required"
             })
         version = request.form.get('version', -1, type=int)
-        result = library_for_query(library, version=version, query=query, count=token_count)
+        result = library_for_query(library, version=version, query_embedding=query, count=token_count)
         return jsonify(serializable_library(result))
 
     except Exception as e:
