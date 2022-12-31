@@ -34,7 +34,8 @@ def start():
             return jsonify({
                 "error": "Query is required"
             })
-        result = library_for_query(library, query=query, count=token_count)
+        version = request.form.get('version', -1, type=int)
+        result = library_for_query(library, version=version, query=query, count=token_count)
         return jsonify({
             "context": get_context_for_library(result),
             "chunks": get_chunk_infos_for_library(result)

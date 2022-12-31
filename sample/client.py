@@ -7,7 +7,7 @@ import urllib3
 from dotenv import load_dotenv
 
 from ask_embeddings import (base64_from_vector, get_completion_with_context,
-                            get_embedding)
+                            get_embedding, CURRENT_VERSION)
 
 # TODO: Make this computed from the number of servers.
 CONTEXT_TOKEN_COUNT = 1500
@@ -17,6 +17,7 @@ def query_server(query, server):
     http = urllib3.PoolManager()
     response = http.request(
         'POST', server, fields={
+            "version": CURRENT_VERSION,
             "query": query,
             "token_count": CONTEXT_TOKEN_COUNT}).data
     return json.loads(response)
