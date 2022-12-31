@@ -229,7 +229,7 @@ def get_token_count(text):
     return len(tokenizer.tokenize(text))
 
 
-def get_context(similiarities, library, token_count=MAX_CONTEXT_LEN):
+def get_context(chunk_ids, library, token_count=MAX_CONTEXT_LEN):
     """
     Returns a dict of chunk_id to possibly_truncated_chunk_text
     """
@@ -237,7 +237,7 @@ def get_context(similiarities, library, token_count=MAX_CONTEXT_LEN):
     context_len = 0
 
     # TODO: Account for separator tokens, but do so without invoking a tokenizer in this method.
-    for id in similiarities.keys():
+    for id in chunk_ids:
         tokens = library['content'][id]['token_count']
         text = library['content'][id]['text']
         context_len += tokens
@@ -284,7 +284,7 @@ def library_for_query(library, version = None, query_embedding=None, query_embed
 
     # TODO: support an infinite count
 
-    chunk_dict = get_context(similarities_dict, library, count)
+    chunk_dict = get_context(similarities_dict.keys(), library, count)
     for chunk_id, chunk_text in chunk_dict.items():
         result['content'][chunk_id] = copy.deepcopy(library['content'][chunk_id])
         # Note: if the text was truncated then technically the embedding isn't
@@ -325,7 +325,7 @@ def ask(query, context_query=None, library_file=None):
         library_file) if library_file else load_default_libraries()
     query_embedding = get_embedding(context_query)
     similiarities_dict = get_similarities(query_embedding, library)
-    context_dict = get_context(similiarities_dict, library)
+    context_dict = get_context(similiarities_dict.keys(), library)
 
     context = list(context_dict.values())
     chunk_ids = list(context_dict.keys())
