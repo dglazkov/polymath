@@ -21,24 +21,36 @@ class MediumImporter:
             ele = soup.find('a', class_='p-canonical')
         return ele.get('href')
 
+
     def extract_image_url_from_soup(self, soup : BeautifulSoup):
         img = soup.find('img', class_='graf-image')
         if not img:
             return ''
         return img.get('src')
 
+
     def extract_title_from_soup(self, soup : BeautifulSoup):
         h1 = soup.find('h1', class_='p-name')
         return h1.get_text(strip=True) if h1 else ''
+
 
     def extract_description_from_soup(self, soup: BeautifulSoup):
         section = soup.find('section', class_='p-summary')
         # TODO: if no section, then return the first paragraph of the file
         return section.get_text(strip=True) if section else ''
 
+
     def extract_slug_from_filename(self, base_filename):
         base, _ = os.path.splitext(base_filename)
         return base.split('-')[-1]
+
+
+    def extract_chunks_from_soup(self, soup: BeautifulSoup):
+        body = soup.find('section', class_='e-content')
+        ps = body.find_all('p')
+        text = [p.get_text(strip=True) for p in ps]
+        return [item for item in text if len(item) > 50]
+
 
     def get_chunks(self, filename):
         filenames = glob.glob(f"{filename}/posts/*.html")
@@ -51,5 +63,16 @@ class MediumImporter:
                 title = self.extract_title_from_soup(soup)
                 description = self.extract_description_from_soup(soup)
                 slug = self.extract_slug_from_filename(base_filename)
-                print(slug, base_filename, url, image_url, title, description)
-        print('Actual importing not yet implemented')
+                info = {
+                    'url': url,
+                    'image_url': image_url,
+                    'title': title,
+                    'description': description
+                }
+                count = 0
+                for chunk in self.extract_chunks_from_soup(soup):
+                    yield (f"{slug}_{count}", {
+                        "text": chunk,
+                        "info": info
+                    })
+                    count += 1
