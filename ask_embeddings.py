@@ -300,8 +300,8 @@ def ask(query, context_query=None, library_file=None):
     similiarities_dict = get_similarities(query_embedding, library)
     context_dict = get_context(similiarities_dict, library)
 
-    context = [value for value in context_dict.values()]
-    chunk_ids = [id for id in context_dict.keys()]
+    context = list(context_dict.values())
+    chunk_ids = list(context_dict.keys())
 
     chunks = get_chunks(chunk_ids, library)
     return get_completion_with_context(query, context), chunks
