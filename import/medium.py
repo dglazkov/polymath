@@ -9,6 +9,7 @@ class MediumImporter:
     def __init__(self):
         self._include_drafts = False
 
+
     def install_arguments(self, parser : ArgumentParser):
         """
         An opportunity to install arguments on the parser.
@@ -19,11 +20,13 @@ class MediumImporter:
         medium_group = parser.add_argument_group('medium')
         medium_group.add_argument('--medium-include-drafts', help='If provided and the importer is medium, will include drafts', action='store_true')
 
+
     def retrieve_arguments(self, args : Namespace):
         """
         An opportunity to retrieve arguments configured via install_arguments.
         """
         self._include_drafts = args.medium_include_drafts
+
 
     def output_base_filename(self, filename):
         profile_path = f"{filename}/profile/profile.html"
