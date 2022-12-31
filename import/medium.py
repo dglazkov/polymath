@@ -7,7 +7,7 @@ from argparse import (ArgumentParser, Namespace)
 class MediumImporter:
 
     def __init__(self):
-        self._skip_drafts = False
+        self._include_drafts = False
 
     def install_arguments(self, parser : ArgumentParser):
         """
@@ -17,13 +17,13 @@ class MediumImporter:
         and have a default.
         """
         medium_group = parser.add_argument_group('medium')
-        medium_group.add_argument('--medium-skip-drafts', help='If provided and the importer is medium, will skip drafts', action='store_true')
+        medium_group.add_argument('--medium-include-drafts', help='If provided and the importer is medium, will include drafts', action='store_true')
 
     def retrieve_arguments(self, args : Namespace):
         """
         An opportunity to retrieve arguments configured via install_arguments.
         """
-        self._skip_drafts = args.medium_skip_drafts
+        self._include_drafts = args.medium_include_drafts
 
     def output_base_filename(self, filename):
         profile_path = f"{filename}/profile/profile.html"
@@ -80,7 +80,7 @@ class MediumImporter:
         for file in filenames:
             with open(file, 'r') as f:
                 base_filename = os.path.basename(file)
-                if self._skip_drafts and base_filename.startswith('draft_'):
+                if base_filename.startswith('draft_') and not self._include_drafts:
                     print('Skipping draft ' + base_filename)
                     continue
                 soup = BeautifulSoup(f, "html.parser")
