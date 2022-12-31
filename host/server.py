@@ -30,10 +30,6 @@ def start():
         query_embedding_model = request.form.get("query_embedding_model")
         token_count = request.form.get(
             "token_count", DEFAULT_TOKEN_COUNT, type=int)
-        if not query_embedding:
-            return jsonify({
-                "error": "query_embedding is required"
-            })
         version = request.form.get('version', -1, type=int)
         result = library_for_query(library, version=version, query_embedding=query_embedding,
                                     query_embedding_model=query_embedding_model, count=token_count)
