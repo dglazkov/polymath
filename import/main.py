@@ -62,9 +62,6 @@ output_format = args.output_format
 
 importer = IMPORTERS[args.importer]
 
-if "initialize" in dir(importer):
-    importer.initialize(filename)
-
 if 'retrieve_arguments' in dir(importer):
     importer.retrieve_arguments(args)
 

@@ -1,11 +1,11 @@
 import glob
 import json
-import os
 import re
 from .og import get_og_data
 import urllib3
 from bs4 import BeautifulSoup
 from typing import Tuple
+from argparse import (ArgumentParser, Namespace)
 
 
 def get_issue_slug(file_name: str) -> str:
@@ -23,18 +23,25 @@ def get_substack_name(substack_url: str) -> str:
 
 class SubstackImporter:
     def __init__(self):
-        self.substack_url = None
-        self._output_base_filename = None
+        self._substack_url = None
 
-    def initialize(self, filename):
-        config = json.load(open(f"{filename}/config.json"))
-        self.substack_url = config["substack_url"]
-        if not self.substack_url:
-            raise ValueError("Substack URL not found in config.json")
-        self._output_base_filename = config["output_base_filename"]
-        if not self._output_base_filename:
-            raise ValueError(
-                "Output base filename not found in config.json")
+    def install_arguments(self, parser : ArgumentParser):
+        """
+        An opportunity to install arguments on the parser.
+
+        Arguments should be in a new group, start with a `--{importer_name}-`
+        and have a default.
+        """
+        substack_group = parser.add_argument_group('substack')
+        substack_group.add_argument('--substack-url', help='If importer type is substack, this url is required. Example: https://read.fluxcollective.org', default='')
+
+    def retrieve_arguments(self, args : Namespace):
+        """
+        An opportunity to retrieve arguments configured via install_arguments.
+        """
+        self._substack_url = args.subtack_url
+        if not self._substack_url:
+            raise Exception('--substack-url is required')
 
     def get_issue_info(self, issue_slug: str) -> Tuple[str, str, str, str]:
         """"
@@ -57,7 +64,7 @@ class SubstackImporter:
         }
 
     def output_base_filename(self, _) -> str:
-        return self._output_base_filename
+        return self._substack_url.replace('https://', '').replace('http://', '').replace('.', '_')
 
     def get_chunks(self, filename: str):
         filenames = glob.glob(f"{filename}/posts/*.html")
