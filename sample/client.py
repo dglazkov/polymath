@@ -7,7 +7,9 @@ import urllib3
 from dotenv import load_dotenv
 
 from ask_embeddings import (base64_from_vector, get_completion_with_context,
-                            get_embedding, CURRENT_VERSION)
+                            get_embedding, load_library_from_json_blob,
+                            get_context_for_library, get_chunk_infos_for_library,
+                            CURRENT_VERSION)
 
 # TODO: Make this computed from the number of servers.
 CONTEXT_TOKEN_COUNT = 1500
@@ -20,7 +22,7 @@ def query_server(query, server):
             "version": CURRENT_VERSION,
             "query": query,
             "token_count": CONTEXT_TOKEN_COUNT}).data
-    return json.loads(response)
+    return load_library_from_json_blob(response)
 
 
 parser = argparse.ArgumentParser()
@@ -44,9 +46,9 @@ sources = []
 for server in server_list:
     print(f"Querying {server} ...")
     # for now, just combine contexts
-    server_response = query_server(query_vector, server)
-    context.extend(server_response["context"])
-    sources.extend([chunk["url"] for chunk in server_response["chunks"]])
+    library = query_server(query_vector, server)
+    context.extend(get_context_for_library(library))
+    sources.extend([chunk["url"] for chunk in get_chunk_infos_for_library(library)])
 
 sources = "\n  ".join(sources)
 
