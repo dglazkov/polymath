@@ -7,9 +7,9 @@ from dotenv import load_dotenv
 from flask import Flask, jsonify, render_template, request
 from flask_compress import Compress
 
-from ask_embeddings import (get_context, get_chunks,
-                            get_similarities, load_library,
-                            load_default_libraries, vector_from_base64)
+from ask_embeddings import (library_for_query, load_library,
+                            get_context_for_library, get_chunk_infos_for_library,
+                            load_default_libraries)
 
 DEFAULT_TOKEN_COUNT = 1000
 
@@ -34,14 +34,10 @@ def start():
             return jsonify({
                 "error": "Query is required"
             })
-        query_embedding = vector_from_base64(query)
-        similiarities = get_similarities(
-            query_embedding, library)
-        (context, chunk_ids) = get_context(similiarities, token_count)
-        chunks = get_chunks(chunk_ids, library)
+        result = library_for_query(library, query=query, count=token_count)
         return jsonify({
-            "context": context,
-            "chunks": chunks
+            "context": get_context_for_library(result),
+            "chunks": get_chunk_infos_for_library(result)
         })
 
     except Exception as e:

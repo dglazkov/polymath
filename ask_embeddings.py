@@ -237,6 +237,38 @@ def get_chunks(chunk_ids, library):
     return [library['content'][chunk_id]['info'] for chunk_id in chunk_ids]
 
 
+def get_context_for_library(library):
+    """
+    Returns a concatenation of all text for every chunk in library
+    """
+    return ''.join([chunk['text'] for chunk in library['content'].values()])
+
+
+def get_chunk_infos_for_library(library):
+    """
+    Returns all infos for all chunks in library
+    """
+    return [chunk['info'] for chunk in library['content'].values()]
+
+
+def library_for_query(library, query_embedding=None, count=None):
+    # count_type is currently implicitly `token`
+    result = empty_library()
+    # TODO: support query_embedding being base64 encoded or a raw vector of
+    # floats
+    embedding = vector_from_base64(query_embedding)
+    # TODO: refactor get_similarities to just return a dict of chunk_id to
+    # similarity.
+    similiarities = get_similarities(embedding, library)
+    # TODO: support an infinite count
+    (_, chunk_ids) = get_context(similiarities, count)
+    similarities_dict = {id: similarity for (similarity, _, _, id) in similiarities}
+    for chunk_id in chunk_ids:
+        result['content'][chunk_id] = copy.deepcopy(library['content'][chunk_id])
+        result['content'][chunk_id]['similarity'] = similarities_dict[chunk_id]
+    return result
+
+
 def get_completion(prompt):
     response = openai.Completion.create(
         model=COMPLETION_MODEL_NAME,
