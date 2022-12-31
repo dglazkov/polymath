@@ -34,7 +34,7 @@ Then run `python3 -m sample.main "How does building a platform differ from build
 
 ## Creating a new library
 
-You can create a library from many different input sources using the `python3 -m import.main` script.
+You can create a library from many different input sources using the `python3 -m convert.main` script.
 
 It comes with a number of different importers, specified with `--importer TYPE`
 
@@ -61,7 +61,7 @@ To create a new pkl file for a source, first, create a json object like this:
 
 This format is effectively the library format but missing a version, embedding_model, and each chunk missing embedding and token_count.
 
-Then run `python3 -m import.main --importer library <FILENAME>`. It will create a new file with the same name but a `.json` extension in the `libraries/` directory.
+Then run `python3 -m convert.main --importer library <FILENAME>`. It will create a new file with the same name but a `.json` extension in the `libraries/` directory.
 
 ### `medium` : An import of a medium snapshot
 
@@ -69,7 +69,7 @@ First, generate a snapshot of your medium account by going to `https://medium.co
 
 When you have the snapshot, download it and unzip it. Then run:
 
-`python3 -m import.main --importer medium path/to/medium/root/`
+`python3 -m convert.main --importer medium path/to/medium/root/`
 
 Drafts will be excluded by default. If you want to include them, add `--medium-include-drafts` to the command.
 
@@ -79,7 +79,7 @@ First, generate a snapshot of your substack account by going to the Exports part
 
 Download and unzip your snapshot. Then run:
 
-`python3 -m import.main --importer substack --substack-url=https://read.fluxcollective.org path/to/substack/root/`
+`python3 -m convert.main --importer substack --substack-url=https://read.fluxcollective.org path/to/substack/root/`
 
 Replacing the url with your base url.
 
