@@ -174,9 +174,14 @@ def arrays_to_embeddings(library):
         chunk['embedding'] = base64_from_vector(chunk['embedding']).decode('ascii')
 
 
-def save_library(library, filename, format=None):
+def serializable_library(library):
     result = copy.deepcopy(library)
     arrays_to_embeddings(result)
+    return result
+
+
+def save_library(library, filename, format=None):
+    result = serializable_library(library)
 
     if not format:
         format = os.path.splitext(filename)[1].lower()[1:]
