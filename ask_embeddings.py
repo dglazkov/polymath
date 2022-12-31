@@ -64,11 +64,11 @@ def get_embedding(text, model_id=EMBEDDINGS_MODEL_ID):
 
 
 def get_similarities(query_embedding, library):
-    return sorted([
-        (vector_similarity(query_embedding,
-         item['embedding']), item['text'], item['token_count'], issue_id)
+    items = sorted([
+        (vector_similarity(query_embedding, item['embedding']), issue_id)
         for issue_id, item
         in library['content'].items()], reverse=True)
+    return {key: value for value, key in items}
 
 
 def load_default_libraries(fail_on_empty=False):
@@ -214,7 +214,7 @@ def get_token_count(text):
     return len(tokenizer.tokenize(text))
 
 
-def get_context(similiarities, token_count=MAX_CONTEXT_LEN):
+def get_context(similiarities, library, token_count=MAX_CONTEXT_LEN):
     """
     Returns a dict of chunk_id to possibly_truncated_chunk_text
     """
@@ -222,7 +222,9 @@ def get_context(similiarities, token_count=MAX_CONTEXT_LEN):
     context_len = 0
 
     # TODO: Account for separator tokens, but do so without invoking a tokenizer in this method.
-    for id, (_, text, tokens, issue_id) in enumerate(similiarities):
+    for id in similiarities.keys():
+        tokens = library['content'][id]['token_count']
+        text = library['content'][id]['text']
         context_len += tokens
         if context_len > token_count:
             if len(result) == 0:
@@ -256,14 +258,11 @@ def library_for_query(library, query_embedding=None, count=None):
     # TODO: support query_embedding being base64 encoded or a raw vector of
     # floats
     embedding = vector_from_base64(query_embedding)
-    # TODO: refactor get_similarities to just return a dict of chunk_id to
-    # similarity.
-    similiarities = get_similarities(embedding, library)
+    similarities_dict = get_similarities(embedding, library)
 
     # TODO: support an infinite count
 
-    chunk_dict = get_context(similiarities, count)
-    similarities_dict = {id: similarity for (similarity, _, _, id) in similiarities}
+    chunk_dict = get_context(similarities_dict, library, count)
     for chunk_id, chunk_text in chunk_dict.items():
         result['content'][chunk_id] = copy.deepcopy(library['content'][chunk_id])
         # Note: if the text was truncated then technically the embedding isn't
@@ -298,8 +297,8 @@ def ask(query, context_query=None, library_file=None):
     library = load_library(
         library_file) if library_file else load_default_libraries()
     query_embedding = get_embedding(context_query)
-    similiarities = get_similarities(query_embedding, library)
-    context_dict = get_context(similiarities)
+    similiarities_dict = get_similarities(query_embedding, library)
+    context_dict = get_context(similiarities_dict, library)
 
     context = [value for value in context_dict.values()]
     chunk_ids = [id for id in context_dict.keys()]
