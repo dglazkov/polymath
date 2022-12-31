@@ -1,20 +1,27 @@
-import ask_embeddings
-
 import argparse
 import json
-import pickle
 import os
+import pickle
 import re
 
+import openai
+from dotenv import load_dotenv
+
+import ask_embeddings
+
+from .medium import MediumImporter
 from .nakedlibrary import NakedLibraryImporter
 from .substack import SubstackImporter
-from .medium import MediumImporter
 
 IMPORTERS = {
     'library': NakedLibraryImporter(),
     'substack': SubstackImporter(),
     'medium': MediumImporter()
 }
+
+load_dotenv()
+openai.api_key = os.getenv("OPENAI_API_KEY")
+
 
 def strip_emoji(text: str) -> str:
     """
@@ -29,13 +36,20 @@ def strip_emoji(text: str) -> str:
 
 
 parser = argparse.ArgumentParser()
-parser.add_argument('filename', help='The name of the input file to be processed')
-parser.add_argument('--importer', help='The importer to use', choices=IMPORTERS.keys(), default='library')
-parser.add_argument('--output-format', help='The format to use', choices=['pkl', 'json'], default='json')
-parser.add_argument('--output', help=f'The name of the file to store in {ask_embeddings.LIBRARY_DIR}/. If not provided, will default to the input file with a new extension', default='')
-parser.add_argument('--base', help='The library file to base the final library on, unless overwrite is true. Defaults to --output if not specified.', default='')
-parser.add_argument('--max', help='The number of max lines to process. If negative, will process all.', default=-1, type=int)
-parser.add_argument('--overwrite', action='store_true', help='If set, will ignore any existing output and overwrite it instead of incrementally extending it')
+parser.add_argument(
+    'filename', help='The name of the input file to be processed')
+parser.add_argument('--importer', help='The importer to use',
+                    choices=IMPORTERS.keys(), default='library')
+parser.add_argument('--output-format', help='The format to use',
+                    choices=['pkl', 'json'], default='json')
+parser.add_argument(
+    '--output', help=f'The name of the file to store in {ask_embeddings.LIBRARY_DIR}/. If not provided, will default to the input file with a new extension', default='')
+parser.add_argument(
+    '--base', help='The library file to base the final library on, unless overwrite is true. Defaults to --output if not specified.', default='')
+parser.add_argument(
+    '--max', help='The number of max lines to process. If negative, will process all.', default=-1, type=int)
+parser.add_argument('--overwrite', action='store_true',
+                    help='If set, will ignore any existing output and overwrite it instead of incrementally extending it')
 args = parser.parse_args()
 
 filename = args.filename
@@ -47,18 +61,23 @@ output_format = args.output_format
 
 importer = IMPORTERS[args.importer]
 
+if "initialize" in dir(importer):
+    importer.initialize(filename)
+
 if not output_filename:
     filename_without_extension = importer.output_base_filename(filename)
     output_filename = f'{filename_without_extension}.{output_format}'
 
-full_output_filename = os.path.join(ask_embeddings.LIBRARY_DIR, output_filename)
+full_output_filename = os.path.join(
+    ask_embeddings.LIBRARY_DIR, output_filename)
 if not base_filename:
     base_filename = full_output_filename
 
 result = ask_embeddings.empty_library()
 
 if not overwrite and os.path.exists(base_filename):
-    print(f'Found {full_output_filename}, loading it as a base to incrementally extend.')
+    print(
+        f'Found {full_output_filename}, loading it as a base to incrementally extend.')
     result = ask_embeddings.load_library(base_filename)
 
 print('Will process ' + ('all' if max_lines < 0 else str(max_lines)) + ' lines')
@@ -75,7 +94,8 @@ for id, chunk in importer.get_chunks(filename):
     text = strip_emoji(chunk.get('text', ''))
     if 'embedding' not in chunk:
         print(f'Fetching embedding for {id}')
-        chunk['embedding'] = ask_embeddings.base64_from_vector(ask_embeddings.get_embedding(text)).decode("ascii") 
+        chunk['embedding'] = ask_embeddings.base64_from_vector(
+            ask_embeddings.get_embedding(text)).decode("ascii")
     if 'token_count' not in chunk:
         print(f'Fetching token_count for {id}')
         chunk['token_count'] = ask_embeddings.get_token_count(text)

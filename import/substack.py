@@ -7,7 +7,6 @@ import urllib3
 from bs4 import BeautifulSoup
 from typing import Tuple
 
-SUBSTACK_URL = os.environ.get("SUBSTACK_URL", '')
 
 def get_issue_slug(file_name: str) -> str:
     match = re.search(r"(?<=\.)[^.]*(?=\.)", file_name)
@@ -23,9 +22,19 @@ def get_substack_name(substack_url: str) -> str:
 
 
 class SubstackImporter:
-    def __init__(self, substack_url: str = SUBSTACK_URL):
-        self.substack_url = substack_url
-        self.substack_name = get_substack_name(substack_url)
+    def __init__(self):
+        self.substack_url = None
+        self._output_base_filename = None
+
+    def initialize(self, filename):
+        config = json.load(open(f"{filename}/config.json"))
+        self.substack_url = config["substack_url"]
+        if not self.substack_url:
+            raise ValueError("Substack URL not found in config.json")
+        self._output_base_filename = config["output_base_filename"]
+        if not self._output_base_filename:
+            raise ValueError(
+                "Output base filename not found in config.json")
 
     def get_issue_info(self, issue_slug: str) -> Tuple[str, str, str, str]:
         """"
@@ -47,19 +56,18 @@ class SubstackImporter:
             "description": og_data.get("og:description")
         }
 
-    def get_filenames(self, path: str) -> list:
-        return glob.glob(f"{path}/posts/*.html")
+    def output_base_filename(self, _) -> str:
+        return self._output_base_filename
 
-    def output_base_filename(self, _):
-        return self.substack_name
-
-    def get_chunks(self, filename):
-        issue_slug = get_issue_slug(filename)
-        issue_info = self.get_issue_info(issue_slug)
-        with open(filename, 'r') as file:
-            soup = BeautifulSoup(file, "html.parser")
-            for id, sibling in enumerate(soup.children):
-                yield(f"{issue_slug}-{id}", {
-                    "text": sibling.get_text(" ", strip=True),
-                    "info": issue_info
-                })
+    def get_chunks(self, filename: str):
+        filenames = glob.glob(f"{filename}/posts/*.html")
+        for file in filenames:
+            issue_slug = get_issue_slug(file)
+            issue_info = self.get_issue_info(issue_slug)
+            with open(file, 'r') as file:
+                soup = BeautifulSoup(file, "html.parser")
+                for id, sibling in enumerate(soup.children):
+                    yield (f"{issue_slug}-{id}", {
+                        "text": sibling.get_text(" ", strip=True),
+                        "info": issue_info
+                    })
