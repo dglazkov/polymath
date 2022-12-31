@@ -9,7 +9,7 @@ from dotenv import load_dotenv
 from ask_embeddings import (base64_from_vector, get_completion_with_context,
                             get_embedding, load_library_from_json_blob,
                             get_context_for_library, get_chunk_infos_for_library,
-                            CURRENT_VERSION)
+                            CURRENT_VERSION, EMBEDDINGS_MODEL_ID)
 
 # TODO: Make this computed from the number of servers.
 CONTEXT_TOKEN_COUNT = 1500
@@ -21,6 +21,7 @@ def query_server(query_embedding, server):
         'POST', server, fields={
             "version": CURRENT_VERSION,
             "query_embedding": query_embedding,
+            "query_embedding_model": EMBEDDINGS_MODEL_ID,
             "token_count": CONTEXT_TOKEN_COUNT}).data
     return load_library_from_json_blob(response)
 

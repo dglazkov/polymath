@@ -267,10 +267,13 @@ def get_chunk_infos_for_library(library):
     return [chunk['info'] for chunk in library['content'].values()]
 
 
-def library_for_query(library, version = None, query_embedding=None, count=None):
+def library_for_query(library, version = None, query_embedding=None, query_embedding_model=None, count=None):
 
     if not version or version != CURRENT_VERSION:
         raise Exception(f'version must be set to {CURRENT_VERSION}')
+
+    if query_embedding and query_embedding_model != EMBEDDINGS_MODEL_ID:
+        raise Exception(f'If query_embedding is passed, query_embedding_model must be {EMBEDDINGS_MODEL_ID} but it was {query_embedding_model}')
 
     # count_type is currently implicitly `token`
     result = empty_library()
