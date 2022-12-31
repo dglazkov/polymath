@@ -36,6 +36,10 @@ class MediumImporter:
         # TODO: if no section, then return the first paragraph of the file
         return section.get_text(strip=True) if section else ''
 
+    def extract_slug_from_filename(self, base_filename):
+        base, _ = os.path.splitext(base_filename)
+        return base.split('-')[-1]
+
     def get_chunks(self, filename):
         filenames = glob.glob(f"{filename}/posts/*.html")
         for file in filenames:
@@ -46,5 +50,6 @@ class MediumImporter:
                 image_url = self.extract_image_url_from_soup(soup)
                 title = self.extract_title_from_soup(soup)
                 description = self.extract_description_from_soup(soup)
-                print(base_filename, url, image_url, title, description)
+                slug = self.extract_slug_from_filename(base_filename)
+                print(slug, base_filename, url, image_url, title, description)
         print('Actual importing not yet implemented')
