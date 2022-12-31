@@ -10,7 +10,7 @@ class MediumImporter:
             soup = BeautifulSoup(f, "html.parser")
             ele = soup.find('a', class_='u-url')
             username = ele.get_text(strip=True)
-            return username.replace('@','')
+            return 'medium-' + username.replace('@','')
 
 
     def extract_url_from_soup(self, base_filename : str, soup : BeautifulSoup):
