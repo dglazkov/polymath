@@ -75,7 +75,13 @@ Drafts will be excluded by default. If you want to include them, add `--medium-i
 
 ### `substack` : An import of a substack snapshot
 
-`#TODO: document`
+First, generate a snapshot of your substack account by going to the Exports part of your substack settings and choosing `Create new export`.
+
+Download and unzip your snapshot. Then run:
+
+`python3 -m import.main --importer substack --substack-url=https://read.fluxcollective.org path/to/substack/root/`
+
+Replacing the url with your base url.
 
 ### Running the server
 
