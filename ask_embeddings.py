@@ -5,6 +5,7 @@ import os
 import glob
 import json
 import copy
+import random
 
 import numpy as np
 import openai
@@ -266,7 +267,7 @@ def get_chunk_infos_for_library(library):
     """
     return [chunk['info'] for chunk in library['content'].values()]
 
-LEGAL_SORTS = set(['similarity', 'any'])
+LEGAL_SORTS = set(['similarity', 'any', 'random'])
 
 def library_for_query(library, version = None, query_embedding=None, query_embedding_model=None, count=None, sort='similarity'):
 
@@ -292,9 +293,12 @@ def library_for_query(library, version = None, query_embedding=None, query_embed
     # TODO: support an infinite count
 
     # The defeault sort for 'any' or 'similarity' if there was no query set.
-    chunk_ids = library['content'].keys()
+    chunk_ids = list(library['content'].keys())
     if sort == 'similarity' and similarities_dict:
-        chunk_ids = similarities_dict.keys()
+        chunk_ids = list(similarities_dict.keys())
+    if sort == 'random':
+        rng = random.Random()
+        rng.shuffle(chunk_ids)
 
     chunk_dict = get_context(chunk_ids, library, count)
     for chunk_id, chunk_text in chunk_dict.items():
