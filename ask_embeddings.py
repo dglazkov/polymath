@@ -230,23 +230,27 @@ def get_token_count(text):
     return len(tokenizer.tokenize(text))
 
 
-def get_context(chunk_ids, library, token_count=MAX_CONTEXT_LEN):
+def get_context(chunk_ids, library, count=MAX_CONTEXT_LEN, count_type_is_chunk=False):
     """
     Returns a dict of chunk_id to possibly_truncated_chunk_text
     """
     result = {}
     context_len = 0
+    counter = 0
 
     # TODO: Account for separator tokens, but do so without invoking a tokenizer in this method.
     for id in chunk_ids:
+        if count_type_is_chunk and counter >= count:
+            break
         tokens = library['content'][id]['token_count']
         text = library['content'][id]['text']
         context_len += tokens
-        if context_len > token_count:
+        if not count_type_is_chunk and context_len > count:
             if len(result) == 0:
-                result[id] = text[:(token_count)]
+                result[id] = text[:(count)]
             break
         result[id] = text
+        counter += 1
     return result
 
 
