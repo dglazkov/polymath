@@ -282,13 +282,15 @@ LEGAL_SORTS = set(['similarity', 'any', 'random'])
 LEGAL_COUNT_TYPES = set(['token', 'chunk'])
 LEGAL_OMIT_KEYS = set(['*', '', 'similarity', 'embedding', 'info'])
 
-def keys_to_omit(configuration = ['']):
+def keys_to_omit(configuration=''):
     """
     Takes a configuration, either None, a single string, or a list of strings
     and returns a tuple of (omit_whole_chunk, [keys_to_omit], canonical_configuration).
 
     If a string is provided, it will be split on ',' to create the list.
     """
+    if configuration == None:
+        configuration = ''
     if isinstance(configuration, str):
         configuration = configuration.split(',')
     if len(configuration) == 0:
@@ -340,7 +342,9 @@ def library_for_query(library, version = None, query_embedding=None, query_embed
 
     result = empty_library()
 
-    omit_whole_chunk, omit_keys = keys_to_omit(omit)
+    omit_whole_chunk, omit_keys, canonical_omit_configuration = keys_to_omit(omit)
+
+    result['omit'] = canonical_omit_configuration
 
     similarities_dict = None
     if query_embedding:
