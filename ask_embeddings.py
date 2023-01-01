@@ -272,8 +272,9 @@ def get_chunk_infos_for_library(library):
     return [chunk['info'] for chunk in library['content'].values()]
 
 LEGAL_SORTS = set(['similarity', 'any', 'random'])
+LEGAL_COUNT_TYPES = set(['token', 'chunk'])
 
-def library_for_query(library, version = None, query_embedding=None, query_embedding_model=None, count=None, sort='similarity', sort_reversed=False, seed=None):
+def library_for_query(library, version = None, query_embedding=None, query_embedding_model=None, count=None, count_type='token', sort='similarity', sort_reversed=False, seed=None):
 
     if not version or version != CURRENT_VERSION:
         raise Exception(f'version must be set to {CURRENT_VERSION}')
@@ -283,6 +284,9 @@ def library_for_query(library, version = None, query_embedding=None, query_embed
 
     if sort not in LEGAL_SORTS:
         raise Exception(f'sort {sort} is not one of the legal options: {LEGAL_SORTS}')
+
+    if count_type not in LEGAL_COUNT_TYPES:
+        raise Exception(f'count_type {count_type} is not one of the legal options: {LEGAL_COUNT_TYPES}')
 
     # count_type is currently implicitly `token`
     result = empty_library()
@@ -308,7 +312,9 @@ def library_for_query(library, version = None, query_embedding=None, query_embed
     if sort_reversed:
         chunk_ids.reverse()
 
-    chunk_dict = get_context(chunk_ids, library, count)
+    count_type_is_chunk = count_type == 'chunk'
+
+    chunk_dict = get_context(chunk_ids, library, count, count_type_is_chunk=count_type_is_chunk)
     for chunk_id, chunk_text in chunk_dict.items():
         result['content'][chunk_id] = copy.deepcopy(library['content'][chunk_id])
         # Note: if the text was truncated then technically the embedding isn't
