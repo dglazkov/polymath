@@ -27,7 +27,7 @@ def query_server(query_embedding, server):
     if 'error' in obj:
         error = obj['error']
         raise Exception(f"Server returned an error: {error}")
-    return load_library_from_json(response)
+    return load_library_from_json(obj)
 
 
 parser = argparse.ArgumentParser()
