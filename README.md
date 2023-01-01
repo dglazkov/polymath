@@ -49,13 +49,15 @@ To create a new pkl file for a source, first, create a json object like this:
 ```
 {
   content: {
-    text: '<raw text>',
-    info: {
-      url: '<URL>',
-      //All of the following are optional
-      image_url: '<IMAGE_URL>',
-      title: '<TITLE>',
-      description: '<DESCRIPTION>',
+    <chunk_id>: {
+      text: '<raw text>',
+      info: {
+        url: '<URL>',
+        //All of the following are optional
+        image_url: '<IMAGE_URL>',
+        title: '<TITLE>',
+        description: '<DESCRIPTION>',
+      }
     }
   }
 }
