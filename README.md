@@ -127,6 +127,14 @@ This project can be used to stand up your own polymath endpoint on Google App En
 
 3) Run `gcloud app deploy` to deploy the app.
 
+You can configure a subdomain of one of your domains to point to your polymath app engine instance. Follow [these instructions](https://cloud.google.com/appengine/docs/standard/mapping-custom-domains). If you manage the domain with Google Domains, a summary of steps:
+
+1) Run `gcloud app domain-mappings create 'polymath.example.com' --certificate-management=AUTOMATIC`, replacing 'example.com' with your domain.
+
+2) Go to `https://domains.google.com/registrar/example.com/dns` (replacing `example.com` with your domain) and click `Manage Custom Records`. Then click `Create new record`, choose type `CNAME`, host of `polymath`, and `data` of `ghs.googlehosted.com.` (or whatever the command above told you the data should be). Save your changes.
+
+It might take a few minutes for your cert to be issued and DNS to update. Your automatically issued cert is ready when `gcloud app domain-mappings list` will show a number for SSL_CERTIFICATE_ID and no number for PENDING_AUTO_CERT.
+
 
 ### Developing
 
