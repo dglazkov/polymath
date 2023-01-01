@@ -9,17 +9,12 @@ from argparse import (ArgumentParser, Namespace)
 
 HEADERS = ["h1", "h2", "h3", "h4", "h5", "h6"]
 
+
 def get_issue_slug(file_name: str) -> str:
     match = re.search(r"(?<=\.)[^.]*(?=\.)", file_name)
     if match:
         return match.group()
     return None
-
-
-def get_substack_name(substack_url: str) -> str:
-    parsed_url = urllib3.util.parse_url(substack_url)
-    host = parsed_url.host or ''
-    return host.replace(".", "-")
 
 
 def get_issue_info(substack_url, issue_slug: str) -> Tuple[str, str, str, str]:
@@ -102,7 +97,7 @@ def get_sections(filename: str, exclude: list):
 
 def get_pages(filename: str, config: dict):
     page_filenames = glob.glob(f"{filename}/posts/*.html")
-    for id, page_filename in enumerate(page_filenames):
+    for page_filename in page_filenames:
         print(f"Processing \"{page_filename}\"")
         issue_slug = get_issue_slug(page_filename)
         issue_info = get_issue_info(config["substack_url"], issue_slug)
