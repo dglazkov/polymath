@@ -199,18 +199,10 @@ def serializable_library(library):
     return result
 
 
-def save_library(library, filename, format=None):
+def save_library(library, filename):
     result = serializable_library(library)
-
-    if not format:
-        format = os.path.splitext(filename)[1].lower()[1:]
-
-    if format == 'json':
-        with open(filename, 'w') as f:
-            json.dump(result, f, indent='\t')
-    else:
-        with open(filename, 'wb') as f:
-            pickle.dump(result, f)
+    with open(filename, 'w') as f:
+        json.dump(result, f, indent='\t')
 
 
 def _hydrate_library(library):

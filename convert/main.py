@@ -38,8 +38,6 @@ parser.add_argument(
     'filename', help='The name of the input file to be processed')
 parser.add_argument('--importer', help='The importer to use',
                     choices=IMPORTERS.keys(), default='library')
-parser.add_argument('--output-format', help='The format to use',
-                    choices=['pkl', 'json'], default='json')
 parser.add_argument(
     '--output', help=f'The name of the file to store in {ask_embeddings.LIBRARY_DIR}/. If not provided, will default to the input file with a new extension', default='')
 parser.add_argument(
@@ -58,7 +56,6 @@ max_lines = args.max
 overwrite = args.overwrite
 output_filename = args.output
 base_filename = args.base
-output_format = args.output_format
 
 importer = IMPORTERS[args.importer]
 
@@ -67,7 +64,7 @@ if 'retrieve_arguments' in dir(importer):
 
 if not output_filename:
     filename_without_extension = importer.output_base_filename(filename)
-    output_filename = f'{filename_without_extension}.{output_format}'
+    output_filename = f'{filename_without_extension}.json'
 
 full_output_filename = os.path.join(
     ask_embeddings.LIBRARY_DIR, output_filename)
@@ -107,4 +104,4 @@ print(f'Loaded {count} new lines')
 if not os.path.exists(ask_embeddings.LIBRARY_DIR):
     os.mkdir(ask_embeddings.LIBRARY_DIR)
 
-ask_embeddings.save_library(result, full_output_filename, output_format)
+ask_embeddings.save_library(result, full_output_filename)
