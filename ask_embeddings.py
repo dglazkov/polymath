@@ -277,6 +277,7 @@ def get_chunk_infos_for_library(library):
     """
     return [chunk['info'] for chunk in library['content'].values()]
 
+
 LEGAL_SORTS = set(['similarity', 'any', 'random'])
 LEGAL_COUNT_TYPES = set(['token', 'chunk'])
 LEGAL_OMIT_KEYS = set(['*', '', 'similarity', 'embedding', 'info'])
