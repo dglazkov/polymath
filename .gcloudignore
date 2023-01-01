@@ -1,6 +1,7 @@
 .gcloudignore
 .git
 .gitignore
+libraries/third_party/
 env/
 __pycache__/
 /setup.cfg
