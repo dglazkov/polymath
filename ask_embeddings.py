@@ -303,7 +303,7 @@ def keys_to_omit(configuration = ['']):
     return (omit_whole_chunk, result)
         
 
-def library_for_query(library, version = None, query_embedding=None, query_embedding_model=None, count=None, count_type='token', sort='similarity', sort_reversed=False, seed=None):
+def library_for_query(library, version = None, query_embedding=None, query_embedding_model=None, count=None, count_type='token', sort='similarity', sort_reversed=False, seed=None, omit='embedding'):
 
     if not version or version != CURRENT_VERSION:
         raise Exception(f'version must be set to {CURRENT_VERSION}')
@@ -318,6 +318,8 @@ def library_for_query(library, version = None, query_embedding=None, query_embed
         raise Exception(f'count_type {count_type} is not one of the legal options: {LEGAL_COUNT_TYPES}')
 
     result = empty_library()
+
+    omit_whole_chunk, omit_keys = keys_to_omit(omit)
 
     similarities_dict = None
     if query_embedding:
@@ -341,13 +343,16 @@ def library_for_query(library, version = None, query_embedding=None, query_embed
     count_type_is_chunk = count_type == 'chunk'
 
     chunk_dict = get_context(chunk_ids, library, count, count_type_is_chunk=count_type_is_chunk)
-    for chunk_id, chunk_text in chunk_dict.items():
-        result['content'][chunk_id] = copy.deepcopy(library['content'][chunk_id])
-        # Note: if the text was truncated then technically the embedding isn't
-        # necessarily right anymore. But, like, whatever.
-        result['content'][chunk_id]['text'] = chunk_text
-        if similarities_dict:
-            result['content'][chunk_id]['similarity'] = similarities_dict[chunk_id]
+    if not omit_whole_chunk:
+        for chunk_id, chunk_text in chunk_dict.items():
+            result['content'][chunk_id] = copy.deepcopy(library['content'][chunk_id])
+            # Note: if the text was truncated then technically the embedding isn't
+            # necessarily right anymore. But, like, whatever.
+            result['content'][chunk_id]['text'] = chunk_text
+            if similarities_dict:
+                result['content'][chunk_id]['similarity'] = similarities_dict[chunk_id]
+            for key in omit_keys:
+                del result['content'][chunk_id][key]
     return result
 
 
