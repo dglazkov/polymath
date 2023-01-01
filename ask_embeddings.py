@@ -290,7 +290,6 @@ def library_for_query(library, version = None, query_embedding=None, query_embed
     if count_type not in LEGAL_COUNT_TYPES:
         raise Exception(f'count_type {count_type} is not one of the legal options: {LEGAL_COUNT_TYPES}')
 
-    # count_type is currently implicitly `token`
     result = empty_library()
 
     similarities_dict = None
@@ -299,8 +298,6 @@ def library_for_query(library, version = None, query_embedding=None, query_embed
         # floats
         embedding = vector_from_base64(query_embedding)
         similarities_dict = get_similarities(embedding, library)
-
-    # TODO: support an infinite count
 
     # The defeault sort for 'any' or 'similarity' if there was no query set.
     chunk_ids = list(library['content'].keys())
