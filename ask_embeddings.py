@@ -22,7 +22,7 @@ SEPARATOR = "\n"
 MAX_CONTEXT_LEN = 2048
 
 LIBRARY_DIR = 'libraries'
-SAMPLE_LIBRARIES_FILE = 'sample-import-content.pkl'
+SAMPLE_LIBRARIES_FILE = 'sample-content.json'
 
 CURRENT_VERSION = 0
 
