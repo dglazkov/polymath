@@ -27,16 +27,4 @@ The format of the library files is as follows:
 
 The file may be represented as either a Python pickle (with extension `.pkl`) or as JSON (with extension `.json`). The json version is the default, since the files are easier to inspect and tweak by hand. However, the pkl format is still supported because they tend to be ~3x smaller in size than the equivalent json file.
 
-The format of the API endpoint is currently:
-
-```
-{
-  context: [ <text> ],
-  chunks: [{
-    url: <url>,
-    image_url: <image_url>,
-    title: <title>,
-    description: <description>
-  }]
-}
-```
+The host API endpoint returns a library.
