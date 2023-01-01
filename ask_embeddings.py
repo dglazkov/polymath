@@ -123,22 +123,30 @@ def validate_library(library):
         raise Exception('Invalid model name')
     expected_embedding_length = EXPECTED_EMBEDDING_LENGTH.get(
         library.get('embedding_model', ''), 0)
+    omit_whole_chunks, fields_to_omit, _ = keys_to_omit(library.get('omit', ''))
+    if omit_whole_chunks and len(library['content']):
+        raise Exception('omit configured to omit all chunks but they were present')
     for chunk_id, chunk in library['content'].items():
-        if 'text' not in chunk:
+        for field in fields_to_omit:
+            if field in chunk:
+                raise Exception(f"Expected {field} to be omitted but it was included")
+        if 'text' not in fields_to_omit and 'text' not in chunk:
             raise Exception(f'{chunk_id} is missing text')
-        if 'embedding' not in chunk:
-            raise Exception(f'{chunk_id} is missing embedding')
-        if len(chunk['embedding']) != expected_embedding_length:
-            raise Exception(
-                f'{chunk_id} had the wrong length of embedding, expected {expected_embedding_length}')
+        if 'embedding' not in fields_to_omit:
+            if 'embedding' not in chunk:
+                raise Exception(f'{chunk_id} is missing embedding')
+            if len(chunk['embedding']) != expected_embedding_length:
+                raise Exception(
+                    f'{chunk_id} had the wrong length of embedding, expected {expected_embedding_length}')
         if 'token_count' not in chunk:
             raise Exception(f'{chunk_id} is missing token_count')
         # TODO: verify token_count is a reasonable length.
-        if 'info' not in chunk:
-            raise Exception(f'{chunk_id} is missing info')
-        info = chunk['info']
-        if 'url' not in info:
-            raise Exception(f'{chunk_id} info is missing required url')
+        if 'info' not in fields_to_omit:
+            if 'info' not in chunk:
+                raise Exception(f'{chunk_id} is missing info')
+            info = chunk['info']
+            if 'url' not in info:
+                raise Exception(f'{chunk_id} info is missing required url')
 
 
 def _convert_library_from_version_og(og_library):
