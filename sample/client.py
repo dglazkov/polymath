@@ -22,7 +22,7 @@ def query_server(query_embedding, server):
             "version": CURRENT_VERSION,
             "query_embedding": query_embedding,
             "query_embedding_model": EMBEDDINGS_MODEL_ID,
-            "token_count": CONTEXT_TOKEN_COUNT}).data
+            "count": CONTEXT_TOKEN_COUNT}).data
     return load_library_from_json_blob(response)
 
 
