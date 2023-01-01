@@ -94,9 +94,11 @@ To start the host server, run `python3 -m host.server`. It will start a Flask ap
 It will automatically load up all libaries in `libraries/` and its subdirectories.
 
 Sometimes it's nice to have libraries from other people in your development
-server but don't want to upload those to production.
-
-To do that, create a directory called `third_party` and put the third party libraries in it. During development those libraries will be loaded up by the host by default, but they will not be uploaded to the production instance because they are in `.gcloudignore`.
+server but don't want to upload those to production. To do that, create a
+directory called `third_party` and put the third party libraries in it. During
+development those libraries will be loaded up by the host by default, but they
+will not be uploaded to the production instance because they are in
+`.gcloudignore`.
 
 ### Server/Client experiment
 
@@ -121,7 +123,7 @@ This project can be used to stand up your own polymath endpoint on Google App En
 
 1) Follow [these instrustions](https://cloud.google.com/appengine/docs/standard/python3/building-app/creating-gcp-project) to set up a Google App Engine (GAE) instance. If you already have a GAE instance elsewhere on your machine, don't forget to change the name of the project before running `gcloud app create`. You can change the name of the project by invoking `gcloud config set project <gae-project-name>` first.
 
-2) Place the libraries you want to use in the `libraries/` directory (anything in `libraries/third_party` will not be uploaded to the production server). If you have multiple libraries in that directory but only want to serve one, you can add a line like `LIBRARY_FILENAME=libraries/my-substack-posts.pkl` to your `.env` file.
+2) Place the libraries you want to use in the `libraries/` directory (anything in `libraries/third_party/` will not be uploaded to the production server). If you have multiple libraries in that directory but only want to serve one, you can add a line like `LIBRARY_FILENAME=libraries/my-substack-posts.pkl` to your `.env` file.
 
 3) Run `gcloud app deploy` to deploy the app.
 
