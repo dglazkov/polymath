@@ -8,6 +8,7 @@ from typing import Tuple
 from argparse import (ArgumentParser, Namespace)
 
 HEADERS = ["h1", "h2", "h3", "h4", "h5", "h6"]
+LISTS = ["ul", "ol"]
 
 
 def get_issue_slug(file_name: str) -> str:
@@ -78,34 +79,68 @@ class SubstackImporter:
                     })
 
 
+def get_text(node):
+    return node.get_text(" ", strip=True)
+
+
 def get_sections(filename: str, exclude: list):
     with open(filename, 'r') as file:
         soup = BeautifulSoup(file, "html.parser")
         section_content = []
         for sibling in soup.children:
-            text = sibling.get_text(" ", strip=True)
-            if any(item in text for item in exclude):
-                continue
-            if sibling.name in HEADERS:
-                if section_content:
-                    yield "\n".join(section_content)
-                section_content = []
-            section_content.append(text)
+            if sibling.name in LISTS:
+                section_content.extend([get_text(item) for item in sibling.children])
+            else:
+                text = get_text(sibling)
+                if not text:
+                    continue
+                skip = any(item in text for item in exclude)
+                if sibling.name in HEADERS:
+                    if section_content:
+                        yield section_content
+                    section_content = [ text ] if not skip else []
+                else:
+                    if not skip:
+                        section_content.append(text)
         if section_content:
-            yield "\n".join(section_content)
+            yield section_content
 
 
-def get_pages(filename: str, config: dict):
-    page_filenames = glob.glob(f"{filename}/posts/*.html")
+def get_pages(path: str, config: dict):
+    """
+    Main entry point for the Substack importer.
+
+    Returns a dict of pages. The key is a unique identifier of a page
+    and the value is of the following structure structure:
+        "sections": list of sections, each section is a list of strings,
+        represnting a text chunk
+        "info": dict of issue metadata, following the `info` format
+        as specified in https://github.com/dglazkov/polymath/blob/main/format.md
+
+    Arguments:
+        path {str} -- Path to the directory containing the Substack export
+        config {dict} -- Config file from the Substack export
+
+    Format of the config file:
+    {
+        "substack_url": url of the Substack site,
+        "exclude": [
+            list of strings to exclude from the import. 
+            Each string is a substring of the text to exclude from the import. 
+        ]
+    }
+    """
+    page_filenames = glob.glob(f"{path}/posts/*.html")
+    result = {}
     for page_filename in page_filenames:
         print(f"Processing \"{page_filename}\"")
         issue_slug = get_issue_slug(page_filename)
         issue_info = get_issue_info(config["substack_url"], issue_slug)
-        yield (f"{issue_slug}", {
-            "text": list(get_sections(page_filename, config["exclude"])),
-            "page_info": issue_info
-        })
-
+        result[f"{issue_slug}"] = {
+            "sections": list(get_sections(page_filename, config["exclude"])),
+            "info": issue_info
+        }
+    return result
 
 if __name__ == "__main__":
     parser = ArgumentParser()
@@ -117,5 +152,7 @@ if __name__ == "__main__":
 
     config = json.load(open(f"{args.path}/config.json"))
 
-    pages = list(get_pages(args.path, config))
+    pages = get_pages(args.path, config)
+    print(f"Writing output to {args.output} ...")
     json.dump(pages, open(args.output, "w"), indent="\t")
+    print("Done.")
