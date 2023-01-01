@@ -73,8 +73,7 @@ def get_similarities(query_embedding, library):
 
 
 def load_default_libraries(fail_on_empty=False):
-    files = glob.glob(os.path.join(LIBRARY_DIR, '**/*.pkl'), recursive=True) + \
-        glob.glob(os.path.join(LIBRARY_DIR, '**/*.json'), recursive=True)
+    files = glob.glob(os.path.join(LIBRARY_DIR, '**/*.json'), recursive=True)
     if len(files):
         return load_multiple_libraries(files)
     if fail_on_empty:
@@ -83,8 +82,7 @@ def load_default_libraries(fail_on_empty=False):
 
 
 def load_libraries_in_directory(directory):
-    files = glob.glob(os.path.join(directory, '**/*.pkl'), recursive=True) + \
-        glob.glob(os.path.join(directory, '**/*.json'), recursive=True)
+    files = glob.glob(os.path.join(directory, '**/*.json'), recursive=True)
     return load_multiple_libraries(files)
 
 
@@ -102,13 +100,8 @@ def load_multiple_libraries(library_file_names):
 
 
 def load_data_file(file):
-    filetype = os.path.splitext(file)[1].lower()
-    if filetype == '.json':
-        with open(file, "r") as f:
-            return json.load(f)
-    else:
-        with open(file, "rb") as f:
-            return pickle.load(f)
+    with open(file, "r") as f:
+        return json.load(f)
 
 
 def load_library_from_json(blob_or_obj):

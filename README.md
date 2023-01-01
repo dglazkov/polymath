@@ -34,7 +34,7 @@ Then run `python3 -m sample.main "How does building a platform differ from build
 
 ## Creating a new library
 
-Libraries are files that are either a `.pkl` or a `.json` and conform to the format defined in `format.md`.
+Libraries are files that are a `.json` and conform to the format defined in `format.md`.
 
 You can create a library from many different input sources using the `python3 -m convert.main` script.
 
