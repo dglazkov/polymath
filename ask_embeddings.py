@@ -266,14 +266,18 @@ def get_chunk_infos_for_library(library):
     """
     return [chunk['info'] for chunk in library['content'].values()]
 
+LEGAL_SORTS = set(['similarity', 'any'])
 
-def library_for_query(library, version = None, query_embedding=None, query_embedding_model=None, count=None):
+def library_for_query(library, version = None, query_embedding=None, query_embedding_model=None, count=None, sort='similarity'):
 
     if not version or version != CURRENT_VERSION:
         raise Exception(f'version must be set to {CURRENT_VERSION}')
 
     if query_embedding and query_embedding_model != EMBEDDINGS_MODEL_ID:
         raise Exception(f'If query_embedding is passed, query_embedding_model must be {EMBEDDINGS_MODEL_ID} but it was {query_embedding_model}')
+
+    if sort not in LEGAL_SORTS:
+        raise Exception(f'sort {sort} is not one of the legal options: {LEGAL_SORTS}')
 
     # count_type is currently implicitly `token`
     result = empty_library()
@@ -287,7 +291,13 @@ def library_for_query(library, version = None, query_embedding=None, query_embed
 
     # TODO: support an infinite count
 
-    chunk_ids = similarities_dict.keys() if similarities_dict else library['content'].keys()
+    chunk_ids = None
+    if sort == 'similarity':
+        chunk_ids = similarities_dict.keys() if similarities_dict else library['content'].keys()
+    # `any` or any unknown ones
+    else:
+        chunk_ids = library['content'].keys()
+
     chunk_dict = get_context(chunk_ids, library, count)
     for chunk_id, chunk_text in chunk_dict.items():
         result['content'][chunk_id] = copy.deepcopy(library['content'][chunk_id])
