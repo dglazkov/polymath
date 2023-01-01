@@ -269,7 +269,7 @@ def get_chunk_infos_for_library(library):
 
 LEGAL_SORTS = set(['similarity', 'any', 'random'])
 
-def library_for_query(library, version = None, query_embedding=None, query_embedding_model=None, count=None, sort='similarity'):
+def library_for_query(library, version = None, query_embedding=None, query_embedding_model=None, count=None, sort='similarity', seed=None):
 
     if not version or version != CURRENT_VERSION:
         raise Exception(f'version must be set to {CURRENT_VERSION}')
@@ -298,6 +298,7 @@ def library_for_query(library, version = None, query_embedding=None, query_embed
         chunk_ids = list(similarities_dict.keys())
     if sort == 'random':
         rng = random.Random()
+        rng.seed(seed)
         rng.shuffle(chunk_ids)
 
     chunk_dict = get_context(chunk_ids, library, count)
