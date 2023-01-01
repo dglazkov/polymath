@@ -7,7 +7,7 @@ import urllib3
 from dotenv import load_dotenv
 
 from ask_embeddings import (base64_from_vector, get_completion_with_context,
-                            get_embedding, load_library_from_json_blob,
+                            get_embedding, load_library_from_json,
                             get_context_for_library, get_chunk_infos_for_library,
                             CURRENT_VERSION, EMBEDDINGS_MODEL_ID)
 
@@ -27,7 +27,7 @@ def query_server(query_embedding, server):
     if 'error' in obj:
         error = obj['error']
         raise Exception(f"Server returned an error: {error}")
-    return load_library_from_json_blob(response)
+    return load_library_from_json(response)
 
 
 parser = argparse.ArgumentParser()

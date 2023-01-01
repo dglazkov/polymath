@@ -111,8 +111,9 @@ def load_data_file(file):
             return pickle.load(f)
 
 
-def load_library_from_json_blob(blob):
-    raw_library = json.loads(blob)
+def load_library_from_json(blob_or_obj):
+    raw_library = json.loads(blob_or_obj) if (isinstance(blob_or_obj, str) 
+                  or isinstance(blob_or_obj, bytes)) else blob_or_obj
     return _hydrate_library(raw_library)
 
 
