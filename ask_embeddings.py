@@ -291,12 +291,10 @@ def library_for_query(library, version = None, query_embedding=None, query_embed
 
     # TODO: support an infinite count
 
-    chunk_ids = None
-    if sort == 'similarity':
-        chunk_ids = similarities_dict.keys() if similarities_dict else library['content'].keys()
-    # `any` or any unknown ones
-    else:
-        chunk_ids = library['content'].keys()
+    # The defeault sort for 'any' or 'similarity' if there was no query set.
+    chunk_ids = library['content'].keys()
+    if sort == 'similarity' and similarities_dict:
+        chunk_ids = similarities_dict.keys()
 
     chunk_dict = get_context(chunk_ids, library, count)
     for chunk_id, chunk_text in chunk_dict.items():
