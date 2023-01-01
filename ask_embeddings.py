@@ -172,11 +172,15 @@ def _convert_library_from_version_og(og_library):
 
 def embeddings_to_arrays(library):
     for _, chunk in library['content'].items():
+        if 'embedding' not in chunk:
+            continue
         chunk['embedding'] = vector_from_base64(chunk['embedding'])
 
 
 def arrays_to_embeddings(library):
     for _, chunk in library['content'].items():
+        if 'embedding' not in chunk:
+            continue
         chunk['embedding'] = base64_from_vector(chunk['embedding']).decode('ascii')
 
 
