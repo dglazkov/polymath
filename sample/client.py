@@ -23,7 +23,7 @@ def query_server(query_embedding, server):
             "query_embedding": query_embedding,
             "query_embedding_model": EMBEDDINGS_MODEL_ID,
             "count": CONTEXT_TOKEN_COUNT}).data
-    obj =json.loads(response)
+    obj = json.loads(response)
     if 'error' in obj:
         error = obj['error']
         raise Exception(f"Server returned an error: {error}")
