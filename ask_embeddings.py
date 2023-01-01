@@ -275,6 +275,33 @@ def get_chunk_infos_for_library(library):
 
 LEGAL_SORTS = set(['similarity', 'any', 'random'])
 LEGAL_COUNT_TYPES = set(['token', 'chunk'])
+LEGAL_OMIT_KEYS = set(['*', '', 'similarity', 'embedding', 'info'])
+
+
+def keys_to_omit(configuration = ['']):
+    """
+    Takes a configuration, either None, a single string, or a list of strings
+    and returns a tuple of (omit_whole_chunk, [keys_to_omit]).
+
+    If a string is provided, it will be split on ',' to create the list.
+    """
+    if isinstance(configuration, str):
+        configuration = configuration.split(',')
+    result = []
+    omit_whole_chunk = False
+    for item in configuration:
+        if item not in LEGAL_OMIT_KEYS:
+            raise Exception(f'Illegal omit key type: {item}')
+        item = item.lower()
+        if item == '':
+            continue
+        elif item == '*':
+            omit_whole_chunk = True
+            continue
+        else:
+            result.append(item)
+    return (omit_whole_chunk, result)
+        
 
 def library_for_query(library, version = None, query_embedding=None, query_embedding_model=None, count=None, count_type='token', sort='similarity', sort_reversed=False, seed=None):
 
