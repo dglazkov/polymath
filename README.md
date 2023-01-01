@@ -28,11 +28,13 @@ TRANSFORMERS_VERBOSITY=error
 
 (The last line will suppress the `None of PyTorch, TensorFlow >= 2.0, or Flax have been found` warning you may get when running the code)
 
-Any embeddings pkl files you have in `libraries/` will be used as the content. If none exist, it will use the `sample-import-content.pkl`.
+Any library files you have in `libraries/` will be used as the content. If none exist, the sample will use `sample-import-content.pkl`.
 
 Then run `python3 -m sample.main "How does building a platform differ from building a product?"`
 
 ## Creating a new library
+
+Libraries are files that are either a `.pkl` or a `.json` and conform to the format defined in `format.md`.
 
 You can create a library from many different input sources using the `python3 -m convert.main` script.
 
