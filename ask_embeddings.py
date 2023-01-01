@@ -363,7 +363,8 @@ def library_for_query(library, version = None, query_embedding=None, query_embed
             # necessarily right anymore. But, like, whatever.
             result['content'][chunk_id]['text'] = chunk_text
             if similarities_dict:
-                result['content'][chunk_id]['similarity'] = similarities_dict[chunk_id]
+                # the similarity is float32, but only float64 is JSON serializable
+                result['content'][chunk_id]['similarity'] = float(similarities_dict[chunk_id])
             for key in omit_keys:
                 del result['content'][chunk_id][key]
     return result
