@@ -32,10 +32,11 @@ def start():
             "token_count", DEFAULT_TOKEN_COUNT, type=int)
         version = request.form.get('version', -1, type=int)
         sort = request.form.get('sort')
+        sort_reversed = request.form.get('sort_reversed') is not None
         seed = request.form.get('seed')
         result = library_for_query(library, version=version, query_embedding=query_embedding,
                                     query_embedding_model=query_embedding_model, count=token_count,
-                                    sort=sort, seed=seed)
+                                    sort=sort, sort_reversed=sort_reversed, seed=seed)
         return jsonify(serializable_library(result))
 
     except Exception as e:
