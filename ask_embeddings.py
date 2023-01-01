@@ -299,8 +299,12 @@ def keys_to_omit(configuration = ['']):
             raise Exception(f'Illegal omit key type: {item}')
         item = item.lower()
         if item == '':
+            if len(configuration) != 1:
+                raise Exception("If '' is provided, it must be the only item.")
             continue
         elif item == '*':
+            if len(configuration) != 1:
+                raise Exception("If '*' is provided, it must be the only item.")
             omit_whole_chunk = True
             continue
         else:
