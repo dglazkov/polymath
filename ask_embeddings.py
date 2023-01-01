@@ -314,7 +314,7 @@ def keys_to_omit(configuration=''):
             result.append(item)
     if len(configuration) == 1:
         configuration = configuration[0]
-    return (omit_whole_chunk, result, configuration)
+    return (omit_whole_chunk, set(result), configuration)
         
 
 def library_for_query(library, version = None, query_embedding=None, query_embedding_model=None, count=None, count_type='token', sort='similarity', sort_reversed=False, seed=None, omit='embedding'):
