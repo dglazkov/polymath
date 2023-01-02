@@ -209,6 +209,11 @@ class Library:
         result = copy.deepcopy(self._data)
         arrays_to_embeddings(result)
         return result
+    
+    def save(self, filename):
+        result = self.serializable()
+        with open(filename, 'w') as f:
+            json.dump(result, f, indent='\t')
 
 def embeddings_to_arrays(library):
     for _, chunk in library['content'].items():
