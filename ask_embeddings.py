@@ -108,9 +108,11 @@ def load_data_file(file):
 
 
 def load_library_from_json(blob_or_obj):
-    raw_library = json.loads(blob_or_obj) if (isinstance(blob_or_obj, str)
-                                              or isinstance(blob_or_obj, bytes)) else blob_or_obj
-    return _hydrate_library(raw_library)
+    if isinstance(blob_or_obj, str) or isinstance(blob_or_obj, bytes):
+        library = Library(blob=blob_or_obj)
+    else:
+        library = Library(data=blob_or_obj)
+    return library.data
 
 
 class Library:
@@ -120,9 +122,15 @@ class Library:
         if blob:
             data = json.loads(blob)
         if data:
-            self._data = _hydrate_library(data)
+            self._data = data
         else:
             self._data = empty_library()
+
+        for _, chunk in self._data['content'].items():
+            if 'embedding' not in chunk:
+                continue
+            chunk['embedding'] = vector_from_base64(chunk['embedding'])
+
         self.validate()
 
     def validate(self):
@@ -254,13 +262,6 @@ def get_similarities(query_embedding, library):
     return {key: value for value, key in items}
 
 
-def embeddings_to_arrays(library):
-    for _, chunk in library['content'].items():
-        if 'embedding' not in chunk:
-            continue
-        chunk['embedding'] = vector_from_base64(chunk['embedding'])
-
-
 def arrays_to_embeddings(library):
     for _, chunk in library['content'].items():
         if 'embedding' not in chunk:
@@ -281,17 +282,9 @@ def save_library(library, filename):
         json.dump(result, f, indent='\t')
 
 
-def _hydrate_library(library):
-    version = library.get('version', -1)
-    if version != CURRENT_VERSION:
-        raise Exception(f'Unsupported version {version}')
-    embeddings_to_arrays(library)
-    return library
-
-
 def load_library(library_file):
-    library = load_data_file(library_file)
-    return _hydrate_library(library)
+    library = Library(filename=library_file)
+    return library.data
 
 
 def empty_library():
