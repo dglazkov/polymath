@@ -201,6 +201,10 @@ class Library:
         # TODO: audit all use of this and move them to other getters/setters
         return self._data
 
+    @property
+    def version(self):
+        return self._data['version']
+
     def reset(self):
         self._data = empty_library()
 
