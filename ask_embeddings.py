@@ -214,6 +214,13 @@ class Library:
     def chunk(self, chunk_id):
         return self._data["content"][chunk_id]
 
+    @property
+    def chunks(self):
+        """
+        Returns an iterator of (chunk_id, chunk)
+        """
+        return self._data["content"].items()
+
     def serializable(self):
         """
         Returns a dict representing the data in the library that is suitable for
