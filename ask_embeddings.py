@@ -294,12 +294,6 @@ def serializable_library(library):
     return result.serializable()
 
 
-def save_library(library, filename):
-    result = serializable_library(library)
-    with open(filename, 'w') as f:
-        json.dump(result, f, indent='\t')
-
-
 def load_library(library_file):
     library = Library(filename=library_file)
     return library.data
