@@ -183,6 +183,12 @@ class Library:
     def embedding_model(self):
         return self._data['embedding_model']
 
+    @embedding_model.setter
+    def embedding_model(self, value):
+        if value != EMBEDDINGS_MODEL_ID:
+            raise TypeError(f'The only supported value for embedding model is {EMBEDDINGS_MODEL_ID}')
+        self._data['embedding_model'] = value
+
     @property
     def omit(self):
         """
