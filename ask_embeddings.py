@@ -340,18 +340,18 @@ def get_chunks(chunk_ids, library):
     return [library['content'][chunk_id]['info'] for chunk_id in chunk_ids]
 
 
-def get_context_for_library(library):
+def get_context_for_library(library : Library):
     """
     Returns an array of all text for every chunk in library
     """
-    return [chunk['text'] for chunk in library['content'].values()]
+    return [chunk['text'] for (_, chunk) in library.chunks]
 
 
-def get_chunk_infos_for_library(library):
+def get_chunk_infos_for_library(library : Library):
     """
     Returns all infos for all chunks in library
     """
-    return [chunk['info'] for chunk in library['content'].values()]
+    return [chunk['info'] for (_, chunk) in library.chunks]
 
 
 LEGAL_SORTS = set(['similarity', 'any', 'random'])
