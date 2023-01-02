@@ -196,6 +196,11 @@ class Library:
         """
         return self._data['omit']
 
+    @omit.setter
+    def omit(self, value):
+        _, _, canonical_value = keys_to_omit(value)
+        self._data['omit'] = canonical_value
+
     def extend(self, other : 'Library'):
         if other.embedding_model != self.embedding_model:
             raise Exception('The other library had a different embedding model')
