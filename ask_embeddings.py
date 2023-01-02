@@ -182,6 +182,13 @@ class Library:
     def embedding_model(self):
         return self._data['embedding_model']
 
+    def extend(self, other : 'Library'):
+        if other.embedding_model != self.embedding_model:
+            raise Exception('The other library had a different embedding model')
+        # TODO: handle key collisions; keys are only guaranteed to be unique
+        # within a single library.
+        self._data['content'].update(other._data['content'])
+
     def reset(self):
         self._data = empty_library()
 
