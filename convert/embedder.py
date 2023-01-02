@@ -1,5 +1,4 @@
 import argparse
-import json
 import os
 
 import openai
@@ -11,7 +10,7 @@ load_dotenv()
 openai.api_key = os.getenv("OPENAI_API_KEY")
 
 
-def add_embeddings(max_entries, library):
+def add_embeddings(max_entries, library : ask_embeddings.Library):
     """
     Main entry point for the Embedder.
 
@@ -25,7 +24,7 @@ def add_embeddings(max_entries, library):
     """
     count = 0
 
-    for id, chunk in library["content"].items():
+    for id, chunk in library.chunks:
         if max_entries >= 0 and count >= max_entries:
             print("Reached max entries")
             break
@@ -37,6 +36,7 @@ def add_embeddings(max_entries, library):
         if "token_count" not in chunk:
             print(f"Fetching token_count for {id}")
             chunk["token_count"] = ask_embeddings.get_token_count(text)
+        library.set_chunk(id, chunk)
         count += 1
 
 
@@ -51,9 +51,9 @@ if __name__ == "__main__":
 
     args = parser.parse_args()
 
-    library = ask_embeddings.load_library(args.path)
+    library = ask_embeddings.Library(filename=args.path)
     add_embeddings(args.max, library)
     print(f"Writing output to {args.output} ...")
 
-    ask_embeddings.save_library(library, args.output)
+    library.save(args.output)
     print("Done.")
