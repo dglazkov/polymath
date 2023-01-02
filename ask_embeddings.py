@@ -201,6 +201,9 @@ class Library:
         # TODO: audit all use of this and move them to other getters/setters
         return self._data
 
+    def reset(self):
+        self._data = empty_library()
+
     @property
     def chunk_ids(self):
         """
