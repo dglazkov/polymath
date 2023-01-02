@@ -119,7 +119,7 @@ class Library:
         if data:
             self._data = data
         else:
-            self._data = empty_library()
+            self._data = _empty_library()
 
         for _, chunk in self._data['content'].items():
             if 'embedding' not in chunk:
@@ -209,7 +209,7 @@ class Library:
         self._data['content'].update(other._data['content'])
 
     def reset(self):
-        self._data = empty_library()
+        self._data = _empty_library()
 
     @property
     def chunk_ids(self):
@@ -301,7 +301,7 @@ def load_library(library_file):
     return library.data
 
 
-def empty_library():
+def _empty_library():
     return {
         'version': CURRENT_VERSION,
         'embedding_model': EMBEDDINGS_MODEL_ID,
