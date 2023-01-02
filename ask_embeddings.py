@@ -20,7 +20,7 @@ EXPECTED_EMBEDDING_LENGTH = {
 }
 
 SEPARATOR = "\n"
-MAX_CONTEXT_LEN = 2048
+MAX_CONTEXT_LEN_IN_TOKENS = 2048
 
 LIBRARY_DIR = 'libraries'
 SAMPLE_LIBRARIES_FILE = 'sample-content.json'
@@ -245,7 +245,7 @@ def get_token_count(text):
     return len(tokenizer.tokenize(text))
 
 
-def get_context(chunk_ids, library, count=MAX_CONTEXT_LEN, count_type_is_chunk=False):
+def get_context(chunk_ids, library, count=MAX_CONTEXT_LEN_IN_TOKENS, count_type_is_chunk=False):
     """
     Returns a dict of chunk_id to possibly_truncated_chunk_text.
 
@@ -419,11 +419,7 @@ def get_completion(prompt):
 def get_completion_with_context(query, context):
     # Borrowed from https://github.com/openai/openai-cookbook/blob/838f000935d9df03e75e181cbcea2e306850794b/examples/Question_answering_using_embeddings.ipynb
 
-    # The context is a list of strings. We can't guarantee it's short enough to
-    # fit because e.g. library_for_query might be the full library, so as a
-    # check ensure it's short enough.
-    concatenated_context = f"{context}"[:MAX_CONTEXT_LEN]
-    prompt = f"Answer the question as truthfully as possible using the provided context, and if the answer is not contained within the text below, say \"I don't know.\"\n\nContext:\n{concatenated_context} \n\nQuestion:\n{query}\n\nAnswer:"
+    prompt = f"Answer the question as truthfully as possible using the provided context, and if the answer is not contained within the text below, say \"I don't know.\"\n\nContext:\n{context} \n\nQuestion:\n{query}\n\nAnswer:"
     return get_completion(prompt)
 
 
