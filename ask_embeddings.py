@@ -245,7 +245,11 @@ class Library:
         being serialized e.g. into JSON.
         """
         result = copy.deepcopy(self._data)
-        arrays_to_embeddings(result)
+        for _, chunk in result['content'].items():
+            if 'embedding' not in chunk:
+                continue
+            chunk['embedding'] = base64_from_vector(
+                chunk['embedding']).decode('ascii')
         return result
     
     def save(self, filename):
@@ -262,18 +266,9 @@ def get_similarities(query_embedding, library):
     return {key: value for value, key in items}
 
 
-def arrays_to_embeddings(library):
-    for _, chunk in library['content'].items():
-        if 'embedding' not in chunk:
-            continue
-        chunk['embedding'] = base64_from_vector(
-            chunk['embedding']).decode('ascii')
-
-
 def serializable_library(library):
-    result = copy.deepcopy(library)
-    arrays_to_embeddings(result)
-    return result
+    result = Library(data=library)
+    return result.serializable()
 
 
 def save_library(library, filename):
