@@ -336,10 +336,6 @@ def get_context(chunk_ids, library, count=MAX_CONTEXT_LEN_IN_TOKENS, count_type_
     return result
 
 
-def get_chunks(chunk_ids, library):
-    return [library['content'][chunk_id]['info'] for chunk_id in chunk_ids]
-
-
 def get_context_for_library(library : Library):
     """
     Returns an array of all text for every chunk in library
@@ -501,5 +497,5 @@ def ask(query, context_query=None, library_file=None):
     context = list(context_dict.values())
     chunk_ids = list(context_dict.keys())
 
-    chunks = get_chunks(chunk_ids, library)
-    return get_completion_with_context(query, context), chunks
+    infos = [library.chunk(chunk_id)['info'] for chunk_id in chunk_ids]
+    return get_completion_with_context(query, context), infos
