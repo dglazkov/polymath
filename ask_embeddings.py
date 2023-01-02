@@ -177,6 +177,13 @@ class Library:
     def embedding_model(self):
         return self._data['embedding_model']
 
+    @property
+    def omit(self):
+        """
+        Returns either a string or an array of strings all of which are legal omit keys.
+        """
+        return self._data['omit']
+
     def extend(self, other : 'Library'):
         if other.embedding_model != self.embedding_model:
             raise Exception('The other library had a different embedding model')
