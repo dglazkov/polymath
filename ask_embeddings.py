@@ -205,6 +205,10 @@ class Library:
     def version(self):
         return self._data['version']
 
+    @property
+    def embedding_model(self):
+        return self._data['embedding_model']
+
     def reset(self):
         self._data = empty_library()
 
