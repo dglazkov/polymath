@@ -208,6 +208,9 @@ class Library:
         """
         return self._data["content"].keys()
 
+    def chunk(self, chunk_id):
+        return self._data["content"][chunk_id]
+
     def serializable(self):
         """
         Returns a dict representing the data in the library that is suitable for
