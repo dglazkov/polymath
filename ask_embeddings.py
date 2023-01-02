@@ -201,6 +201,13 @@ class Library:
         # TODO: audit all use of this and move them to other getters/setters
         return self._data
 
+    @property
+    def chunk_ids(self):
+        """
+        Returns an iterator for the chunk_ids in the library in order.
+        """
+        return self._data["content"].keys()
+
     def serializable(self):
         """
         Returns a dict representing the data in the library that is suitable for
