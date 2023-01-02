@@ -188,7 +188,9 @@ def _convert_library_from_version_og(og_library):
     return library
 
 class Library:
-    def __init__(self, data=None):
+    def __init__(self, data=None, filename=None):
+        if filename:
+            data = load_data_file(filename)
         if data:
             self._data = _hydrate_library(data)
         else:
