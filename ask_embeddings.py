@@ -227,6 +227,17 @@ class Library:
             chunk["token_count"] = token_count
         if info != None:
             chunk["info"] = info
+    
+    def delete_chunk_field(self, chunk_id, fields=None):
+        if isinstance(fields, str):
+            fields = [fields]
+        if chunk_id not in self._data["content"]:
+            return
+        chunk = self._data["content"][chunk_id]
+        for field in fields:
+            del chunk[field]
+        if len(chunk) == 0:
+            self.delete_chunk(chunk_id)
 
     def serializable(self):
         """
