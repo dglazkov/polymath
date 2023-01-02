@@ -215,6 +215,19 @@ class Library:
     def set_chunk(self, chunk_id, chunk):
         self._data["content"][chunk_id] = chunk
 
+    def set_chunk_field(self, chunk_id, text=None, embedding=None, token_count=None, info = None):
+        if chunk_id not in self._data["content"]:
+            self._data["content"][chunk_id] = {}
+        chunk = self._data["content"][chunk_id]
+        if text != None:
+            chunk["text"] = text
+        if embedding != None:
+            chunk["embedding"] = embedding
+        if token_count != None:
+            chunk["token_count"] = token_count
+        if info != None:
+            chunk["info"] = info
+
     def serializable(self):
         """
         Returns a dict representing the data in the library that is suitable for
