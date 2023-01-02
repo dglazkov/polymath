@@ -474,14 +474,16 @@ def get_completion_with_context(query, context):
 def ask(query, context_query=None, library_file=None):
     if not context_query:
         context_query = query
-    library = load_library(
+    data = load_library(
         library_file) if library_file else load_default_libraries()
     query_embedding = get_embedding(context_query)
-    similiarities_dict = get_similarities(query_embedding, library)
-    context_dict = get_context(similiarities_dict.keys(), library)
+    similiarities_dict = get_similarities(query_embedding, data)
+    context_dict = get_context(similiarities_dict.keys(), data)
 
     context = list(context_dict.values())
     chunk_ids = list(context_dict.keys())
+
+    library = Library(data=data)
 
     infos = [library.chunk(chunk_id)['info'] for chunk_id in chunk_ids]
     return get_completion_with_context(query, context), infos
