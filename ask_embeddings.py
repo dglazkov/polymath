@@ -90,16 +90,11 @@ def load_libraries_in_directory(directory):
 
 
 def load_multiple_libraries(library_file_names):
-    result = empty_library()
+    result = Library()
     for file in library_file_names:
-        content = load_library(file)
-        if result['embedding_model'] != content['embedding_model']:
-            model = content['embedding_model']
-            raise Exception(f'Embedding model {model} in {file} did not match')
-        # TODO: handle key collisions; keys are only guaranteed to be unique
-        # within a single library.
-        result['content'].update(content['content'])
-    return result
+        library = Library(filename =file)
+        result.extend(library)
+    return result.data
 
 
 def load_data_file(file):
