@@ -209,6 +209,9 @@ class Library:
         """
         return self._data["content"].items()
 
+    def delete_chunk(self, chunk_id):
+        del self._data["content"][chunk_id]
+
     def serializable(self):
         """
         Returns a dict representing the data in the library that is suitable for
