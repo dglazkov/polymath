@@ -71,12 +71,12 @@ full_output_filename = os.path.join(
 if not base_filename:
     base_filename = full_output_filename
 
-result = ask_embeddings.empty_library()
+result = ask_embeddings.Library()
 
 if not overwrite and os.path.exists(base_filename):
     print(
         f'Found {full_output_filename}, loading it as a base to incrementally extend.')
-    result = ask_embeddings.load_library(base_filename)
+    result = ask_embeddings.Library(filename=base_filename)
 
 print('Will process ' + ('all' if max_lines < 0 else str(max_lines)) + ' lines')
 
@@ -86,7 +86,7 @@ for id, chunk in importer.get_chunks(filename):
     if max_lines >= 0 and count >= max_lines:
         print('Reached max lines')
         break
-    if id in result['content']:
+    if result.chunk(id):
         continue
     print(f'Processing new chunk {id} ({count + 1})')
     text = strip_emoji(chunk.get('text', ''))
@@ -96,7 +96,7 @@ for id, chunk in importer.get_chunks(filename):
     if 'token_count' not in chunk:
         print(f'Fetching token_count for {id}')
         chunk['token_count'] = ask_embeddings.get_token_count(text)
-    result['content'][id] = chunk
+    result.set_chunk(id, chunk)
     count += 1
 
 print(f'Loaded {count} new lines')
@@ -104,4 +104,4 @@ print(f'Loaded {count} new lines')
 if not os.path.exists(ask_embeddings.LIBRARY_DIR):
     os.mkdir(ask_embeddings.LIBRARY_DIR)
 
-ask_embeddings.save_library(result, full_output_filename)
+result.save(full_output_filename)
