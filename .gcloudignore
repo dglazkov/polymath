@@ -7,3 +7,9 @@ __pycache__/
 /setup.cfg
 sample/
 sample-*
+in/
+out/
+.DS_Store
+
+# local-only dir as a scratch space
+scratch/
