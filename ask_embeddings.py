@@ -75,14 +75,6 @@ def get_embedding(text, model_id=EMBEDDINGS_MODEL_ID):
     return result["data"][0]["embedding"]
 
 
-def get_similarities(query_embedding, library):
-    items = sorted([
-        (vector_similarity(query_embedding, item['embedding']), issue_id)
-        for issue_id, item
-        in library['content'].items()], reverse=True)
-    return {key: value for value, key in items}
-
-
 def load_default_libraries(fail_on_empty=False):
     files = glob.glob(os.path.join(LIBRARY_DIR, '**/*.json'), recursive=True)
     if len(files):
@@ -252,6 +244,15 @@ class Library:
         result = self.serializable()
         with open(filename, 'w') as f:
             json.dump(result, f, indent='\t')
+
+
+def get_similarities(query_embedding, library):
+    items = sorted([
+        (vector_similarity(query_embedding, item['embedding']), issue_id)
+        for issue_id, item
+        in library['content'].items()], reverse=True)
+    return {key: value for value, key in items}
+
 
 def embeddings_to_arrays(library):
     for _, chunk in library['content'].items():
