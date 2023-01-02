@@ -122,43 +122,6 @@ def load_library_from_json(blob_or_obj):
     return _hydrate_library(raw_library)
 
 
-def validate_library(library):
-    if library.get('version', -1) != CURRENT_VERSION:
-        raise Exception('Version invalid')
-    if library.get('embedding_model', '') != EMBEDDINGS_MODEL_ID:
-        raise Exception('Invalid model name')
-    expected_embedding_length = EXPECTED_EMBEDDING_LENGTH.get(
-        library.get('embedding_model', ''), 0)
-    omit_whole_chunks, fields_to_omit, _ = keys_to_omit(
-        library.get('omit', ''))
-    if omit_whole_chunks and len(library['content']):
-        raise Exception(
-            'omit configured to omit all chunks but they were present')
-    for chunk_id, chunk in library['content'].items():
-        for field in fields_to_omit:
-            if field in chunk:
-                raise Exception(
-                    f"Expected {field} to be omitted but it was included")
-        if 'text' not in fields_to_omit and 'text' not in chunk:
-            raise Exception(f'{chunk_id} is missing text')
-        if 'embedding' not in fields_to_omit:
-            if 'embedding' not in chunk:
-                raise Exception(f'{chunk_id} is missing embedding')
-            if len(chunk['embedding']) != expected_embedding_length:
-                raise Exception(
-                    f'{chunk_id} had the wrong length of embedding, expected {expected_embedding_length}')
-        if 'token_count' not in fields_to_omit:
-            if 'token_count' not in chunk:
-                raise Exception(f'{chunk_id} is missing token_count')
-        # TODO: verify token_count is a reasonable length.
-        if 'info' not in fields_to_omit:
-            if 'info' not in chunk:
-                raise Exception(f'{chunk_id} is missing info')
-            info = chunk['info']
-            if 'url' not in info:
-                raise Exception(f'{chunk_id} info is missing required url')
-
-
 class Library:
     def __init__(self, data=None, filename=None):
         if filename:
@@ -167,6 +130,43 @@ class Library:
             self._data = _hydrate_library(data)
         else:
             self._data = empty_library()
+        self.validate()
+
+    def validate(self):
+        if self._data.get('version', -1) != CURRENT_VERSION:
+            raise Exception('Version invalid')
+        if self._data.get('embedding_model', '') != EMBEDDINGS_MODEL_ID:
+            raise Exception('Invalid model name')
+        expected_embedding_length = EXPECTED_EMBEDDING_LENGTH.get(
+            self._data.get('embedding_model', ''), 0)
+        omit_whole_chunks, fields_to_omit, _ = keys_to_omit(
+            self._data.get('omit', ''))
+        if omit_whole_chunks and len(self._data['content']):
+            raise Exception(
+                'omit configured to omit all chunks but they were present')
+        for chunk_id, chunk in self._data['content'].items():
+            for field in fields_to_omit:
+                if field in chunk:
+                    raise Exception(
+                        f"Expected {field} to be omitted but it was included")
+            if 'text' not in fields_to_omit and 'text' not in chunk:
+                raise Exception(f'{chunk_id} is missing text')
+            if 'embedding' not in fields_to_omit:
+                if 'embedding' not in chunk:
+                    raise Exception(f'{chunk_id} is missing embedding')
+                if len(chunk['embedding']) != expected_embedding_length:
+                    raise Exception(
+                        f'{chunk_id} had the wrong length of embedding, expected {expected_embedding_length}')
+            if 'token_count' not in fields_to_omit:
+                if 'token_count' not in chunk:
+                    raise Exception(f'{chunk_id} is missing token_count')
+            # TODO: verify token_count is a reasonable length.
+            if 'info' not in fields_to_omit:
+                if 'info' not in chunk:
+                    raise Exception(f'{chunk_id} is missing info')
+                info = chunk['info']
+                if 'url' not in info:
+                    raise Exception(f'{chunk_id} info is missing required url')
 
     @property
     def data(self):
@@ -247,7 +247,6 @@ def _hydrate_library(library):
     if version != CURRENT_VERSION:
         raise Exception(f'Unsupported version {version}')
     embeddings_to_arrays(library)
-    validate_library(library)
     return library
 
 
