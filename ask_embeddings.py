@@ -159,34 +159,6 @@ def validate_library(library):
                 raise Exception(f'{chunk_id} info is missing required url')
 
 
-def _convert_library_from_version_og(og_library):
-    library = empty_library()
-    for embedding in og_library['embeddings']:
-        text, embedding, token_count, issue_id = embedding
-
-        # Multiple embedding rows might have the same issue_id, so append a
-        # counter if necessary to not overshadow any items.
-        chunk_id = str(issue_id)
-        count = 0
-        while chunk_id in library['content']:
-            chunk_id = str(issue_id) + '_' + str(count)
-            count += 1
-
-        url, image_url, title, description = og_library['issue_info'].get(
-            issue_id, ('', '', '', ''))
-        library['content'][chunk_id] = {
-            'text': text,
-            'embedding': embedding,
-            'token_count': token_count,
-            'info': {
-                'url': url,
-                'image_url': image_url,
-                'title': title,
-                'description': description
-            }
-        }
-    return library
-
 class Library:
     def __init__(self, data=None, filename=None):
         if filename:
@@ -273,10 +245,7 @@ def save_library(library, filename):
 def _hydrate_library(library):
     version = library.get('version', -1)
     if version != CURRENT_VERSION:
-        if version < 0:
-            library = _convert_library_from_version_og(library)
-        else:
-            raise Exception(f'Unsupported version {version}')
+        raise Exception(f'Unsupported version {version}')
     embeddings_to_arrays(library)
     validate_library(library)
     return library
