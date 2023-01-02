@@ -187,6 +187,17 @@ def _convert_library_from_version_og(og_library):
         }
     return library
 
+class Library:
+    def __init__(self, data=None):
+        if data:
+            self._data = _hydrate_library(data)
+        else:
+            self._data = empty_library()
+
+    @property
+    def data(self):
+        # TODO: audit all use of this and move them to other getters/setters
+        return self._data
 
 def embeddings_to_arrays(library):
     for _, chunk in library['content'].items():
