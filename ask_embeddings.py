@@ -123,9 +123,11 @@ def load_library_from_json(blob_or_obj):
 
 
 class Library:
-    def __init__(self, data=None, filename=None):
+    def __init__(self, data=None, blob=None, filename=None):
         if filename:
             data = load_data_file(filename)
+        if blob:
+            data = json.loads(blob)
         if data:
             self._data = _hydrate_library(data)
         else:
