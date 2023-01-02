@@ -201,6 +201,15 @@ class Library:
         # TODO: audit all use of this and move them to other getters/setters
         return self._data
 
+    def serializable(self):
+        """
+        Returns a dict representing the data in the library that is suitable for
+        being serialized e.g. into JSON.
+        """
+        result = copy.deepcopy(self._data)
+        arrays_to_embeddings(result)
+        return result
+
 def embeddings_to_arrays(library):
     for _, chunk in library['content'].items():
         if 'embedding' not in chunk:
