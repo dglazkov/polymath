@@ -6,6 +6,7 @@ import glob
 import json
 import copy
 import random
+from time import sleep
 
 import numpy as np
 import openai
@@ -57,10 +58,21 @@ def get_embedding_model_name_from_id(model_id):
 
 
 def get_embedding(text, model_id=EMBEDDINGS_MODEL_ID):
-    result = openai.Embedding.create(
-        model=get_embedding_model_name_from_id(model_id),
-        input=text
-    )
+    # Occasionally, API returns an error.
+    # Retry a few times before giving up.
+    retry_count = 10
+    while retry_count > 0:
+        try:
+            result = openai.Embedding.create(
+                model=get_embedding_model_name_from_id(model_id),
+                input=text
+            )
+            break
+        except Exception as e:
+            print(f'openai.Embedding.create error: {e}')
+            print("Retrying in 20 seconds ...")
+            sleep(20)
+            retry_count -= 1
     return result["data"][0]["embedding"]
 
 
@@ -105,8 +117,8 @@ def load_data_file(file):
 
 
 def load_library_from_json(blob_or_obj):
-    raw_library = json.loads(blob_or_obj) if (isinstance(blob_or_obj, str) 
-                  or isinstance(blob_or_obj, bytes)) else blob_or_obj
+    raw_library = json.loads(blob_or_obj) if (isinstance(blob_or_obj, str)
+                                              or isinstance(blob_or_obj, bytes)) else blob_or_obj
     return _hydrate_library(raw_library)
 
 
@@ -117,13 +129,16 @@ def validate_library(library):
         raise Exception('Invalid model name')
     expected_embedding_length = EXPECTED_EMBEDDING_LENGTH.get(
         library.get('embedding_model', ''), 0)
-    omit_whole_chunks, fields_to_omit, _ = keys_to_omit(library.get('omit', ''))
+    omit_whole_chunks, fields_to_omit, _ = keys_to_omit(
+        library.get('omit', ''))
     if omit_whole_chunks and len(library['content']):
-        raise Exception('omit configured to omit all chunks but they were present')
+        raise Exception(
+            'omit configured to omit all chunks but they were present')
     for chunk_id, chunk in library['content'].items():
         for field in fields_to_omit:
             if field in chunk:
-                raise Exception(f"Expected {field} to be omitted but it was included")
+                raise Exception(
+                    f"Expected {field} to be omitted but it was included")
         if 'text' not in fields_to_omit and 'text' not in chunk:
             raise Exception(f'{chunk_id} is missing text')
         if 'embedding' not in fields_to_omit:
@@ -132,8 +147,9 @@ def validate_library(library):
             if len(chunk['embedding']) != expected_embedding_length:
                 raise Exception(
                     f'{chunk_id} had the wrong length of embedding, expected {expected_embedding_length}')
-        if 'token_count' not in chunk:
-            raise Exception(f'{chunk_id} is missing token_count')
+        if 'token_count' not in fields_to_omit:
+            if 'token_count' not in chunk:
+                raise Exception(f'{chunk_id} is missing token_count')
         # TODO: verify token_count is a reasonable length.
         if 'info' not in fields_to_omit:
             if 'info' not in chunk:
@@ -183,7 +199,8 @@ def arrays_to_embeddings(library):
     for _, chunk in library['content'].items():
         if 'embedding' not in chunk:
             continue
-        chunk['embedding'] = base64_from_vector(chunk['embedding']).decode('ascii')
+        chunk['embedding'] = base64_from_vector(
+            chunk['embedding']).decode('ascii')
 
 
 def serializable_library(library):
@@ -274,7 +291,9 @@ def get_chunk_infos_for_library(library):
 
 LEGAL_SORTS = set(['similarity', 'any', 'random'])
 LEGAL_COUNT_TYPES = set(['token', 'chunk'])
-LEGAL_OMIT_KEYS = set(['*', '', 'similarity', 'embedding', 'info'])
+LEGAL_OMIT_KEYS = set(
+    ['*', '', 'similarity', 'embedding', 'token_count', 'info'])
+
 
 def keys_to_omit(configuration=''):
     """
@@ -301,7 +320,8 @@ def keys_to_omit(configuration=''):
             continue
         elif item == '*':
             if len(configuration) != 1:
-                raise Exception("If '*' is provided, it must be the only item.")
+                raise Exception(
+                    "If '*' is provided, it must be the only item.")
             omit_whole_chunk = True
             continue
         else:
@@ -309,9 +329,9 @@ def keys_to_omit(configuration=''):
     if len(configuration) == 1:
         configuration = configuration[0]
     return (omit_whole_chunk, set(result), configuration)
-        
 
-def library_for_query(library, version = None, query_embedding=None, query_embedding_model=None, count=None, count_type='token', sort='similarity', sort_reversed=False, seed=None, omit='embedding'):
+
+def library_for_query(library, version=None, query_embedding=None, query_embedding_model=None, count=None, count_type='token', sort='similarity', sort_reversed=False, seed=None, omit='embedding'):
 
     # We do our own defaulting so that servers that call us can pass the result
     # of request.get() directly and if it's None, we'll use the default.
@@ -326,17 +346,21 @@ def library_for_query(library, version = None, query_embedding=None, query_embed
         raise Exception(f'version must be set to {CURRENT_VERSION}')
 
     if query_embedding and query_embedding_model != EMBEDDINGS_MODEL_ID:
-        raise Exception(f'If query_embedding is passed, query_embedding_model must be {EMBEDDINGS_MODEL_ID} but it was {query_embedding_model}')
+        raise Exception(
+            f'If query_embedding is passed, query_embedding_model must be {EMBEDDINGS_MODEL_ID} but it was {query_embedding_model}')
 
     if sort not in LEGAL_SORTS:
-        raise Exception(f'sort {sort} is not one of the legal options: {LEGAL_SORTS}')
+        raise Exception(
+            f'sort {sort} is not one of the legal options: {LEGAL_SORTS}')
 
     if count_type not in LEGAL_COUNT_TYPES:
-        raise Exception(f'count_type {count_type} is not one of the legal options: {LEGAL_COUNT_TYPES}')
+        raise Exception(
+            f'count_type {count_type} is not one of the legal options: {LEGAL_COUNT_TYPES}')
 
     result = empty_library()
 
-    omit_whole_chunk, omit_keys, canonical_omit_configuration = keys_to_omit(omit)
+    omit_whole_chunk, omit_keys, canonical_omit_configuration = keys_to_omit(
+        omit)
 
     result['omit'] = canonical_omit_configuration
 
@@ -361,16 +385,19 @@ def library_for_query(library, version = None, query_embedding=None, query_embed
 
     count_type_is_chunk = count_type == 'chunk'
 
-    chunk_dict = get_context(chunk_ids, library, count, count_type_is_chunk=count_type_is_chunk)
+    chunk_dict = get_context(chunk_ids, library, count,
+                             count_type_is_chunk=count_type_is_chunk)
     if not omit_whole_chunk:
         for chunk_id, chunk_text in chunk_dict.items():
-            result['content'][chunk_id] = copy.deepcopy(library['content'][chunk_id])
+            result['content'][chunk_id] = copy.deepcopy(
+                library['content'][chunk_id])
             # Note: if the text was truncated then technically the embedding isn't
             # necessarily right anymore. But, like, whatever.
             result['content'][chunk_id]['text'] = chunk_text
             if similarities_dict:
                 # the similarity is float32, but only float64 is JSON serializable
-                result['content'][chunk_id]['similarity'] = float(similarities_dict[chunk_id])
+                result['content'][chunk_id]['similarity'] = float(
+                    similarities_dict[chunk_id])
             for key in omit_keys:
                 del result['content'][chunk_id][key]
     return result

@@ -3,8 +3,8 @@ import json
 
 from cleantext import clean
 
-MIN_CHUNK_SIZE = 50
-MAX_CHUNK_SIZE = 500
+MIN_CHUNK_SIZE = 500
+MAX_CHUNK_SIZE = 1500
 
 # The idea of a chunker is to take in a list of text strings and
 # chunk it into another list of text strings, where each string is
@@ -37,6 +37,7 @@ GOLDIELOCKS = {
 # In that case, it will be appended to the previous chunk.
 MEH_SIZE = GOLDIELOCKS["min"] / 2
 
+# TODO: Make this logic use GPT-2 tokenizer rather than character lengths.
 
 def get_clean_text(text: str):
     return clean(text,
