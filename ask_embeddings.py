@@ -102,14 +102,6 @@ def load_data_file(file):
         return json.load(f)
 
 
-def load_library_from_json(blob_or_obj):
-    if isinstance(blob_or_obj, str) or isinstance(blob_or_obj, bytes):
-        library = Library(blob=blob_or_obj)
-    else:
-        library = Library(data=blob_or_obj)
-    return library.data
-
-
 class Library:
     def __init__(self, data=None, blob=None, filename=None):
         if filename:
