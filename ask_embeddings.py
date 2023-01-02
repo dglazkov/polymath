@@ -466,7 +466,7 @@ def library_for_query(library, version=None, query_embedding=None, query_embeddi
             for key in omit_keys:
                 del chunk[key]
             result.set_chunk(chunk_id, chunk)
-    return result.data
+    return result
 
 
 def get_completion(prompt):

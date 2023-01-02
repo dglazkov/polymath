@@ -8,7 +8,7 @@ from flask import Flask, jsonify, render_template, request
 from flask_compress import Compress
 
 from ask_embeddings import (library_for_query, load_library,
-                            serializable_library, load_default_libraries)
+                            load_default_libraries)
 
 DEFAULT_TOKEN_COUNT = 1000
 
@@ -40,7 +40,7 @@ def start():
                                     query_embedding_model=query_embedding_model, count=count,
                                     count_type=count_type, sort=sort, sort_reversed=sort_reversed,
                                     seed=seed, omit=omit)
-        return jsonify(serializable_library(result))
+        return jsonify(result.serializable())
 
     except Exception as e:
         return jsonify({
