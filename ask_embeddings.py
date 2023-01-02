@@ -173,6 +173,12 @@ class Library:
     def version(self):
         return self._data['version']
 
+    @version.setter
+    def version(self, value):
+        if not isinstance(value, int):
+            raise TypeError('Version must be an integer')
+        self._data['version'] = value
+
     @property
     def embedding_model(self):
         return self._data['embedding_model']
