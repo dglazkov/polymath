@@ -1,5 +1,4 @@
 import base64
-import pickle
 from random import shuffle
 import os
 import glob
