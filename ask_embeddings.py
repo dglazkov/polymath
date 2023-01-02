@@ -426,12 +426,12 @@ def library_for_query(library, version=None, query_embedding=None, query_embeddi
         raise Exception(
             f'count_type {count_type} is not one of the legal options: {LEGAL_COUNT_TYPES}')
 
-    result = empty_library()
+    result = Library()
 
     omit_whole_chunk, omit_keys, canonical_omit_configuration = keys_to_omit(
         omit)
 
-    result['omit'] = canonical_omit_configuration
+    result.omit = canonical_omit_configuration
 
     similarities_dict = None
     if query_embedding:
@@ -441,7 +441,7 @@ def library_for_query(library, version=None, query_embedding=None, query_embeddi
         similarities_dict = get_similarities(embedding, library)
 
     # The defeault sort for 'any' or 'similarity' if there was no query set.
-    chunk_ids = list(library['content'].keys())
+    chunk_ids = result.chunk_ids
     if sort == 'similarity' and similarities_dict:
         chunk_ids = list(similarities_dict.keys())
     if sort == 'random':
@@ -458,18 +458,19 @@ def library_for_query(library, version=None, query_embedding=None, query_embeddi
                              count_type_is_chunk=count_type_is_chunk)
     if not omit_whole_chunk:
         for chunk_id, chunk_text in chunk_dict.items():
-            result['content'][chunk_id] = copy.deepcopy(
+            chunk = copy.deepcopy(
                 library['content'][chunk_id])
             # Note: if the text was truncated then technically the embedding isn't
             # necessarily right anymore. But, like, whatever.
-            result['content'][chunk_id]['text'] = chunk_text
+            chunk['text'] = chunk_text
             if similarities_dict:
                 # the similarity is float32, but only float64 is JSON serializable
-                result['content'][chunk_id]['similarity'] = float(
+                chunk['similarity'] = float(
                     similarities_dict[chunk_id])
             for key in omit_keys:
-                del result['content'][chunk_id][key]
-    return result
+                del chunk[key]
+            result.set_chunk(chunk_id, chunk)
+    return result.data
 
 
 def get_completion(prompt):
