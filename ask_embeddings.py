@@ -89,14 +89,6 @@ def load_libraries_in_directory(directory):
     return load_multiple_libraries(files)
 
 
-def load_multiple_libraries(library_file_names):
-    result = Library()
-    for file in library_file_names:
-        library = Library(filename =file)
-        result.extend(library)
-    return result.data
-
-
 def load_data_file(file):
     with open(file, "r") as f:
         return json.load(f)
@@ -290,6 +282,13 @@ def load_library(library_file):
     library = Library(filename=library_file)
     return library.data
 
+
+def load_multiple_libraries(library_file_names):
+    result = Library()
+    for file in library_file_names:
+        library = Library(filename =file)
+        result.extend(library)
+    return result.data
 
 def get_token_count(text):
     tokenizer = GPT2TokenizerFast.from_pretrained("gpt2")
