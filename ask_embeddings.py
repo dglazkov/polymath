@@ -442,8 +442,16 @@ def get_chunk_infos_for_library(library : Library):
     """
     Returns all infos for all chunks in library
     """
-    return [chunk['info'] for (_, chunk) in library.chunks]
-
+    infos = [(chunk["similarity"], chunk['info']) for (_, chunk) in library.chunks]
+    infos.sort(reverse=True)
+    unique_infos = []
+    urls = []
+    for _, info in infos:
+        url = info["url"]
+        if url not in urls:
+            unique_infos.append(info)
+            urls.append(info["url"])
+    return unique_infos
 
 LEGAL_SORTS = set(['similarity', 'any', 'random'])
 LEGAL_COUNT_TYPES = set(['token', 'chunk'])
