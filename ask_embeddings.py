@@ -302,7 +302,7 @@ class Library:
 
         result = Library()
 
-        omit_whole_chunk, omit_keys, canonical_omit_configuration = keys_to_omit(
+        omit_whole_chunk, _, canonical_omit_configuration = keys_to_omit(
             omit)
 
         result.omit = canonical_omit_configuration
@@ -340,8 +340,6 @@ class Library:
                     # the similarity is float32, but only float64 is JSON serializable
                     chunk['similarity'] = float(
                         similarities_dict[chunk_id])
-                for key in omit_keys:
-                    del chunk[key]
                 result.set_chunk(chunk_id, chunk)
         return result
 
