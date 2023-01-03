@@ -294,7 +294,7 @@ def get_token_count(text):
     return len(tokenizer.tokenize(text))
 
 
-def get_context(chunk_ids, library, count=MAX_CONTEXT_LEN_IN_TOKENS, count_type_is_chunk=False):
+def get_context(chunk_ids, library : Library, count=MAX_CONTEXT_LEN_IN_TOKENS, count_type_is_chunk=False):
     """
     Returns a dict of chunk_id to possibly_truncated_chunk_text.
 
@@ -308,8 +308,9 @@ def get_context(chunk_ids, library, count=MAX_CONTEXT_LEN_IN_TOKENS, count_type_
     for id in chunk_ids:
         if count_type_is_chunk and count >= 0 and counter >= count:
             break
-        tokens = library['content'][id]['token_count']
-        text = library['content'][id]['text']
+        chunk = library.chunk(id)
+        tokens = chunk['token_count']
+        text = chunk['text']
         context_len += tokens
         if not count_type_is_chunk and count >= 0 and context_len > count:
             if len(result) == 0:
@@ -409,8 +410,6 @@ def library_for_query(library : Library, version=None, query_embedding=None, que
 
     result.omit = canonical_omit_configuration
 
-    library_data = library.data
-
     similarities_dict = None
     if query_embedding:
         # TODO: support query_embedding being base64 encoded or a raw vector of
@@ -432,7 +431,7 @@ def library_for_query(library : Library, version=None, query_embedding=None, que
 
     count_type_is_chunk = count_type == 'chunk'
 
-    chunk_dict = get_context(chunk_ids, library_data, count,
+    chunk_dict = get_context(chunk_ids, library, count,
                              count_type_is_chunk=count_type_is_chunk)
     if not omit_whole_chunk:
         for chunk_id, chunk_text in chunk_dict.items():
@@ -475,10 +474,10 @@ def ask(query, context_query=None, library_file=None):
         context_query = query
     library = load_library(
         library_file) if library_file else load_default_libraries()
-    data = library.data
+
     query_embedding = get_embedding(context_query)
     similiarities_dict = get_similarities(query_embedding, library)
-    context_dict = get_context(similiarities_dict.keys(), data)
+    context_dict = get_context(similiarities_dict.keys(), library)
 
     context = list(context_dict.values())
     chunk_ids = list(context_dict.keys())
