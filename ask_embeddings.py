@@ -260,7 +260,7 @@ def load_default_libraries(fail_on_empty=False) -> Library:
         return load_multiple_libraries(files)
     if fail_on_empty:
         raise Exception('No libraries were in the default library directory.')
-    return load_library(SAMPLE_LIBRARIES_FILE)
+    return Library(filename=SAMPLE_LIBRARIES_FILE)
 
 
 def load_libraries_in_directory(directory) -> Library:
@@ -271,10 +271,6 @@ def load_libraries(file=None, fail_on_empty=False) -> Library:
     if file:
         return Library(filename=file)
     return load_default_libraries(fail_on_empty)
-
-
-def load_library(library_file) -> Library:
-    return Library(filename=library_file)
 
 
 def load_multiple_libraries(library_file_names) -> Library:
