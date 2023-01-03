@@ -268,6 +268,12 @@ def get_similarities(query_embedding, library : Library):
     return {key: value for value, key in items}
 
 
+def load_libraries(file=None, fail_on_empty=False) -> Library:
+    if file:
+        return Library(filename=file)
+    return load_default_libraries(fail_on_empty)
+
+
 def load_library(library_file) -> Library:
     return Library(filename=library_file)
 
@@ -462,8 +468,7 @@ def get_completion_with_context(query, context):
 def ask(query, context_query=None, library_file=None):
     if not context_query:
         context_query = query
-    library = load_library(
-        library_file) if library_file else load_default_libraries()
+    library = load_libraries(library_file)
 
     query_embedding = get_embedding(context_query)
     similiarities_dict = get_similarities(query_embedding, library)
