@@ -210,10 +210,16 @@ class Library:
     def delete_chunk(self, chunk_id):
         del self._data["content"][chunk_id]
 
+    def _strip_chunk(self, chunk):
+        for field_to_omit in self.fields_to_omit:
+            if field_to_omit in chunk:
+                del chunk[field_to_omit]
+
     def set_chunk(self, chunk_id, chunk):
         if self.omit_whole_chunk:
             return
         self._data["content"][chunk_id] = chunk
+        self._strip_chunk(chunk)
 
     def set_chunk_field(self, chunk_id, text=None, embedding=None, token_count=None, info = None):
         if self.omit_whole_chunk:
@@ -229,6 +235,7 @@ class Library:
             chunk["token_count"] = token_count
         if info != None:
             chunk["info"] = info
+        self._strip_chunk(chunk)
     
     def delete_chunk_field(self, chunk_id, fields=None):
         if isinstance(fields, str):
