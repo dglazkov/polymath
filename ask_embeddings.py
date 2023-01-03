@@ -165,6 +165,8 @@ class Library:
         """
         Returns either a string or an array of strings all of which are legal omit keys.
         """
+        if 'omit' not in self._data:
+            return ''
         return self._data['omit']
 
 
