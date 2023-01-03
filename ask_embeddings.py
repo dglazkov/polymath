@@ -161,6 +161,16 @@ class Library:
         """
         return self._data['omit']
 
+    @property
+    def omit_whole_chunk(self):
+        omit_whole_chunk, _, _ = keys_to_omit(self.omit)
+        return omit_whole_chunk
+
+    @property
+    def fields_to_omit(self):
+        _, fields_to_omit, _ = keys_to_omit(self.omit)
+        return fields_to_omit
+
     @omit.setter
     def omit(self, value):
         _, _, canonical_value = keys_to_omit(value)
