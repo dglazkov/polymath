@@ -252,6 +252,76 @@ class Library:
             in self.chunks], reverse=True)
         return {key: value for value, key in items}
 
+    def query(self, version=None, query_embedding=None, query_embedding_model=None, count=None, count_type='token', sort='similarity', sort_reversed=False, seed=None, omit='embedding'):
+        # We do our own defaulting so that servers that call us can pass the result
+        # of request.get() directly and if it's None, we'll use the default.
+        if count_type == None:
+            count_type = 'token'
+        if sort == None:
+            sort = 'similarity'
+        if omit == None:
+            omit = 'embedding'
+
+        if version == None or version != CURRENT_VERSION:
+            raise Exception(f'version must be set to {CURRENT_VERSION}')
+
+        if query_embedding and query_embedding_model != EMBEDDINGS_MODEL_ID:
+            raise Exception(
+                f'If query_embedding is passed, query_embedding_model must be {EMBEDDINGS_MODEL_ID} but it was {query_embedding_model}')
+
+        if sort not in LEGAL_SORTS:
+            raise Exception(
+                f'sort {sort} is not one of the legal options: {LEGAL_SORTS}')
+
+        if count_type not in LEGAL_COUNT_TYPES:
+            raise Exception(
+                f'count_type {count_type} is not one of the legal options: {LEGAL_COUNT_TYPES}')
+
+        result = Library()
+
+        omit_whole_chunk, omit_keys, canonical_omit_configuration = keys_to_omit(
+            omit)
+
+        result.omit = canonical_omit_configuration
+
+        similarities_dict = None
+        if query_embedding:
+            # TODO: support query_embedding being base64 encoded or a raw vector of
+            # floats
+            embedding = vector_from_base64(query_embedding)
+            similarities_dict = self.similarities(embedding)
+
+        # The defeault sort for 'any' or 'similarity' if there was no query set.
+        chunk_ids = result.chunk_ids
+        if sort == 'similarity' and similarities_dict:
+            chunk_ids = list(similarities_dict.keys())
+        if sort == 'random':
+            rng = random.Random()
+            rng.seed(seed)
+            rng.shuffle(chunk_ids)
+
+        if sort_reversed:
+            chunk_ids.reverse()
+
+        count_type_is_chunk = count_type == 'chunk'
+
+        chunk_dict = get_context(chunk_ids, self, count,
+                                count_type_is_chunk=count_type_is_chunk)
+        if not omit_whole_chunk:
+            for chunk_id, chunk_text in chunk_dict.items():
+                chunk = copy.deepcopy(self.chunk(chunk_id))
+                # Note: if the text was truncated then technically the embedding isn't
+                # necessarily right anymore. But, like, whatever.
+                chunk['text'] = chunk_text
+                if similarities_dict:
+                    # the similarity is float32, but only float64 is JSON serializable
+                    chunk['similarity'] = float(
+                        similarities_dict[chunk_id])
+                for key in omit_keys:
+                    del chunk[key]
+                result.set_chunk(chunk_id, chunk)
+        return result
+
 
 def load_default_libraries(fail_on_empty=False) -> Library:
     files = glob.glob(os.path.join(LIBRARY_DIR, '**/*.json'), recursive=True)
@@ -365,78 +435,6 @@ def keys_to_omit(configuration=''):
     if len(configuration) == 1:
         configuration = configuration[0]
     return (omit_whole_chunk, set(result), configuration)
-
-
-def library_for_query(library : Library, version=None, query_embedding=None, query_embedding_model=None, count=None, count_type='token', sort='similarity', sort_reversed=False, seed=None, omit='embedding'):
-
-    # We do our own defaulting so that servers that call us can pass the result
-    # of request.get() directly and if it's None, we'll use the default.
-    if count_type == None:
-        count_type = 'token'
-    if sort == None:
-        sort = 'similarity'
-    if omit == None:
-        omit = 'embedding'
-
-    if version == None or version != CURRENT_VERSION:
-        raise Exception(f'version must be set to {CURRENT_VERSION}')
-
-    if query_embedding and query_embedding_model != EMBEDDINGS_MODEL_ID:
-        raise Exception(
-            f'If query_embedding is passed, query_embedding_model must be {EMBEDDINGS_MODEL_ID} but it was {query_embedding_model}')
-
-    if sort not in LEGAL_SORTS:
-        raise Exception(
-            f'sort {sort} is not one of the legal options: {LEGAL_SORTS}')
-
-    if count_type not in LEGAL_COUNT_TYPES:
-        raise Exception(
-            f'count_type {count_type} is not one of the legal options: {LEGAL_COUNT_TYPES}')
-
-    result = Library()
-
-    omit_whole_chunk, omit_keys, canonical_omit_configuration = keys_to_omit(
-        omit)
-
-    result.omit = canonical_omit_configuration
-
-    similarities_dict = None
-    if query_embedding:
-        # TODO: support query_embedding being base64 encoded or a raw vector of
-        # floats
-        embedding = vector_from_base64(query_embedding)
-        similarities_dict = library.similarities(embedding)
-
-    # The defeault sort for 'any' or 'similarity' if there was no query set.
-    chunk_ids = result.chunk_ids
-    if sort == 'similarity' and similarities_dict:
-        chunk_ids = list(similarities_dict.keys())
-    if sort == 'random':
-        rng = random.Random()
-        rng.seed(seed)
-        rng.shuffle(chunk_ids)
-
-    if sort_reversed:
-        chunk_ids.reverse()
-
-    count_type_is_chunk = count_type == 'chunk'
-
-    chunk_dict = get_context(chunk_ids, library, count,
-                             count_type_is_chunk=count_type_is_chunk)
-    if not omit_whole_chunk:
-        for chunk_id, chunk_text in chunk_dict.items():
-            chunk = copy.deepcopy(library.chunk(chunk_id))
-            # Note: if the text was truncated then technically the embedding isn't
-            # necessarily right anymore. But, like, whatever.
-            chunk['text'] = chunk_text
-            if similarities_dict:
-                # the similarity is float32, but only float64 is JSON serializable
-                chunk['similarity'] = float(
-                    similarities_dict[chunk_id])
-            for key in omit_keys:
-                del chunk[key]
-            result.set_chunk(chunk_id, chunk)
-    return result
 
 
 def get_completion(prompt):

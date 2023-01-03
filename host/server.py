@@ -7,7 +7,7 @@ from dotenv import load_dotenv
 from flask import Flask, jsonify, render_template, request
 from flask_compress import Compress
 
-from ask_embeddings import (library_for_query, load_libraries)
+from ask_embeddings import load_libraries
 
 DEFAULT_TOKEN_COUNT = 1000
 
@@ -33,7 +33,7 @@ def start():
         sort_reversed = request.form.get('sort_reversed') is not None
         seed = request.form.get('seed')
         omit = request.form.get('omit')
-        result = library_for_query(library, version=version, query_embedding=query_embedding,
+        result = library.query(version=version, query_embedding=query_embedding,
                                     query_embedding_model=query_embedding_model, count=count,
                                     count_type=count_type, sort=sort, sort_reversed=sort_reversed,
                                     seed=seed, omit=omit)
