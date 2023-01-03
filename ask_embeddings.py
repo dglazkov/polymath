@@ -211,6 +211,8 @@ class Library:
 
 
     def chunk(self, chunk_id):
+        if chunk_id not in self._data["content"]:
+            return None
         return self._data["content"][chunk_id]
 
 
