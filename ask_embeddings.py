@@ -149,11 +149,6 @@ class Library:
                     raise Exception(f'{chunk_id} info is missing required url')
 
     @property
-    def data(self):
-        # TODO: audit all use of this and move them to other getters/setters
-        return self._data
-
-    @property
     def version(self):
         return self._data['version']
 
