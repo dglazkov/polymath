@@ -1,0 +1,19 @@
+[build-system]
+requires = ["flit_core >=3.2,<4"]
+build-backend = "flit_core.buildapi"
+
+[project]
+name = "polymath"
+version = "0.0.1"
+authors = [
+  { name="Alex Komoroske", email="jkomoros@gmail.com" },
+  { name="Dimitri Glazkov", email="dimitri@glazkov.com" },
+]
+description = "Federating wisdom one library at a time."
+readme = "README.md"
+requires-python = ">=3.7"
+classifiers = ["License :: OSI Approved :: MIT License"]
+
+[project.urls]
+"Homepage" = "https://github.com/dglazkov/polymath"
+"Bug Tracker" = "https://github.com/dglazkov/polymath/issues"
