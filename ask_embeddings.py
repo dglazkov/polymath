@@ -75,20 +75,6 @@ def get_embedding(text, model_id=EMBEDDINGS_MODEL_ID):
     return result["data"][0]["embedding"]
 
 
-def load_default_libraries(fail_on_empty=False):
-    files = glob.glob(os.path.join(LIBRARY_DIR, '**/*.json'), recursive=True)
-    if len(files):
-        return load_multiple_libraries(files)
-    if fail_on_empty:
-        raise Exception('No libraries were in the default library directory.')
-    return load_library(SAMPLE_LIBRARIES_FILE)
-
-
-def load_libraries_in_directory(directory):
-    files = glob.glob(os.path.join(directory, '**/*.json'), recursive=True)
-    return load_multiple_libraries(files)
-
-
 def load_data_file(file):
     with open(file, "r") as f:
         return json.load(f)
@@ -267,6 +253,19 @@ def get_similarities(query_embedding, library : Library):
         in library.chunks], reverse=True)
     return {key: value for value, key in items}
 
+
+def load_default_libraries(fail_on_empty=False) -> Library:
+    files = glob.glob(os.path.join(LIBRARY_DIR, '**/*.json'), recursive=True)
+    if len(files):
+        return load_multiple_libraries(files)
+    if fail_on_empty:
+        raise Exception('No libraries were in the default library directory.')
+    return load_library(SAMPLE_LIBRARIES_FILE)
+
+
+def load_libraries_in_directory(directory) -> Library:
+    files = glob.glob(os.path.join(directory, '**/*.json'), recursive=True)
+    return load_multiple_libraries(files)
 
 def load_libraries(file=None, fail_on_empty=False) -> Library:
     if file:
