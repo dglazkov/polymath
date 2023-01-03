@@ -265,11 +265,11 @@ class Library:
             json.dump(result, f, indent='\t')
 
 
-def get_similarities(query_embedding, library):
+def get_similarities(query_embedding, library : Library):
     items = sorted([
         (vector_similarity(query_embedding, item['embedding']), issue_id)
         for issue_id, item
-        in library['content'].items()], reverse=True)
+        in library.chunks], reverse=True)
     return {key: value for value, key in items}
 
 
@@ -416,7 +416,7 @@ def library_for_query(library : Library, version=None, query_embedding=None, que
         # TODO: support query_embedding being base64 encoded or a raw vector of
         # floats
         embedding = vector_from_base64(query_embedding)
-        similarities_dict = get_similarities(embedding, library_data)
+        similarities_dict = get_similarities(embedding, library)
 
     # The defeault sort for 'any' or 'similarity' if there was no query set.
     chunk_ids = result.chunk_ids
@@ -477,7 +477,7 @@ def ask(query, context_query=None, library_file=None):
         library_file) if library_file else load_default_libraries()
     data = library.data
     query_embedding = get_embedding(context_query)
-    similiarities_dict = get_similarities(query_embedding, data)
+    similiarities_dict = get_similarities(query_embedding, library)
     context_dict = get_context(similiarities_dict.keys(), data)
 
     context = list(context_dict.values())
