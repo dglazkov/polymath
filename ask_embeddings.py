@@ -273,11 +273,6 @@ def get_similarities(query_embedding, library : Library):
     return {key: value for value, key in items}
 
 
-def serializable_library(library):
-    result = Library(data=library)
-    return result.serializable()
-
-
 def load_library(library_file) -> Library:
     return Library(filename=library_file)
 
