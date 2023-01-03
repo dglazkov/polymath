@@ -211,9 +211,13 @@ class Library:
         del self._data["content"][chunk_id]
 
     def set_chunk(self, chunk_id, chunk):
+        if self.omit_whole_chunk:
+            return
         self._data["content"][chunk_id] = chunk
 
     def set_chunk_field(self, chunk_id, text=None, embedding=None, token_count=None, info = None):
+        if self.omit_whole_chunk:
+            return
         if chunk_id not in self._data["content"]:
             self._data["content"][chunk_id] = {}
         chunk = self._data["content"][chunk_id]
