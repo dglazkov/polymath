@@ -376,7 +376,7 @@ def keys_to_omit(configuration=''):
     return (omit_whole_chunk, set(result), configuration)
 
 
-def library_for_query(library, version=None, query_embedding=None, query_embedding_model=None, count=None, count_type='token', sort='similarity', sort_reversed=False, seed=None, omit='embedding'):
+def library_for_query(library : Library, version=None, query_embedding=None, query_embedding_model=None, count=None, count_type='token', sort='similarity', sort_reversed=False, seed=None, omit='embedding'):
 
     # We do our own defaulting so that servers that call us can pass the result
     # of request.get() directly and if it's None, we'll use the default.
@@ -409,12 +409,14 @@ def library_for_query(library, version=None, query_embedding=None, query_embeddi
 
     result.omit = canonical_omit_configuration
 
+    library_data = library.data
+
     similarities_dict = None
     if query_embedding:
         # TODO: support query_embedding being base64 encoded or a raw vector of
         # floats
         embedding = vector_from_base64(query_embedding)
-        similarities_dict = get_similarities(embedding, library)
+        similarities_dict = get_similarities(embedding, library_data)
 
     # The defeault sort for 'any' or 'similarity' if there was no query set.
     chunk_ids = result.chunk_ids
@@ -430,12 +432,11 @@ def library_for_query(library, version=None, query_embedding=None, query_embeddi
 
     count_type_is_chunk = count_type == 'chunk'
 
-    chunk_dict = get_context(chunk_ids, library, count,
+    chunk_dict = get_context(chunk_ids, library_data, count,
                              count_type_is_chunk=count_type_is_chunk)
     if not omit_whole_chunk:
         for chunk_id, chunk_text in chunk_dict.items():
-            chunk = copy.deepcopy(
-                library['content'][chunk_id])
+            chunk = copy.deepcopy(library.chunk(chunk_id))
             # Note: if the text was truncated then technically the embedding isn't
             # necessarily right anymore. But, like, whatever.
             chunk['text'] = chunk_text

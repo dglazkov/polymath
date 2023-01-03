@@ -35,7 +35,7 @@ def start():
         sort_reversed = request.form.get('sort_reversed') is not None
         seed = request.form.get('seed')
         omit = request.form.get('omit')
-        result = library_for_query(library.data, version=version, query_embedding=query_embedding,
+        result = library_for_query(library, version=version, query_embedding=query_embedding,
                                     query_embedding_model=query_embedding_model, count=count,
                                     count_type=count_type, sort=sort, sort_reversed=sort_reversed,
                                     seed=seed, omit=omit)
