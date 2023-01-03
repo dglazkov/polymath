@@ -98,6 +98,7 @@ class Library:
 
         self.validate()
 
+
     def validate(self):
         if self._data.get('version', -1) != CURRENT_VERSION:
             raise Exception('Version invalid')
@@ -134,9 +135,11 @@ class Library:
                 if 'url' not in info:
                     raise Exception(f'{chunk_id} info is missing required url')
 
+
     @property
     def version(self):
         return self._data['version']
+
 
     @version.setter
     def version(self, value):
@@ -144,15 +147,18 @@ class Library:
             raise TypeError('Version must be an integer')
         self._data['version'] = value
 
+
     @property
     def embedding_model(self):
         return self._data['embedding_model']
+
 
     @embedding_model.setter
     def embedding_model(self, value):
         if value != EMBEDDINGS_MODEL_ID:
             raise TypeError(f'The only supported value for embedding model is {EMBEDDINGS_MODEL_ID}')
         self._data['embedding_model'] = value
+
 
     @property
     def omit(self):
@@ -161,20 +167,24 @@ class Library:
         """
         return self._data['omit']
 
+
     @property
     def omit_whole_chunk(self):
         omit_whole_chunk, _, _ = keys_to_omit(self.omit)
         return omit_whole_chunk
+
 
     @property
     def fields_to_omit(self):
         _, fields_to_omit, _ = keys_to_omit(self.omit)
         return fields_to_omit
 
+
     @omit.setter
     def omit(self, value):
         _, _, canonical_value = keys_to_omit(value)
         self._data['omit'] = canonical_value
+
 
     def extend(self, other : 'Library'):
         if other.embedding_model != self.embedding_model:
@@ -183,12 +193,14 @@ class Library:
         # within a single library.
         self._data['content'].update(other._data['content'])
 
+
     def reset(self):
         self._data = {
             'version': CURRENT_VERSION,
             'embedding_model': EMBEDDINGS_MODEL_ID,
             'content': {}
         }
+
 
     @property
     def chunk_ids(self):
@@ -200,6 +212,7 @@ class Library:
     def chunk(self, chunk_id):
         return self._data["content"][chunk_id]
 
+
     @property
     def chunks(self):
         """
@@ -207,8 +220,10 @@ class Library:
         """
         return self._data["content"].items()
 
+
     def delete_chunk(self, chunk_id):
         del self._data["content"][chunk_id]
+
 
     def _strip_chunk(self, chunk):
         if self.omit_whole_chunk:
@@ -217,11 +232,13 @@ class Library:
             if field_to_omit in chunk:
                 del chunk[field_to_omit]
 
+
     def set_chunk(self, chunk_id, chunk):
         if self.omit_whole_chunk:
             return
         self._data["content"][chunk_id] = chunk
         self._strip_chunk(chunk)
+
 
     def set_chunk_field(self, chunk_id, text=None, embedding=None, token_count=None, info = None):
         if self.omit_whole_chunk:
@@ -238,7 +255,8 @@ class Library:
         if info != None:
             chunk["info"] = info
         self._strip_chunk(chunk)
-    
+
+
     def delete_chunk_field(self, chunk_id, fields=None):
         if isinstance(fields, str):
             fields = [fields]
@@ -249,6 +267,7 @@ class Library:
             del chunk[field]
         if len(chunk) == 0:
             self.delete_chunk(chunk_id)
+
 
     def serializable(self):
         """
@@ -262,18 +281,21 @@ class Library:
             chunk['embedding'] = base64_from_vector(
                 chunk['embedding']).decode('ascii')
         return result
-    
+
+
     def save(self, filename):
         result = self.serializable()
         with open(filename, 'w') as f:
             json.dump(result, f, indent='\t')
     
+
     def similarities(self, query_embedding):
         items = sorted([
             (vector_similarity(query_embedding, item['embedding']), issue_id)
             for issue_id, item
             in self.chunks], reverse=True)
         return {key: value for value, key in items}
+
 
     def query(self, version=None, query_embedding=None, query_embedding_model=None, count=None, count_type='token', sort='similarity', sort_reversed=False, seed=None, omit='embedding'):
         # We do our own defaulting so that servers that call us can pass the result
@@ -357,6 +379,7 @@ def load_libraries_in_directory(directory) -> Library:
     files = glob.glob(os.path.join(directory, '**/*.json'), recursive=True)
     return load_multiple_libraries(files)
 
+
 def load_libraries(file=None, fail_on_empty=False) -> Library:
     if file:
         return Library(filename=file)
@@ -369,6 +392,7 @@ def load_multiple_libraries(library_file_names) -> Library:
         library = Library(filename =file)
         result.extend(library)
     return result
+
 
 def get_token_count(text):
     tokenizer = GPT2TokenizerFast.from_pretrained("gpt2")
