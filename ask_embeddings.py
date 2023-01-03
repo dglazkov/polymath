@@ -211,6 +211,8 @@ class Library:
         del self._data["content"][chunk_id]
 
     def _strip_chunk(self, chunk):
+        if self.omit_whole_chunk:
+            chunk.clear()
         for field_to_omit in self.fields_to_omit:
             if field_to_omit in chunk:
                 del chunk[field_to_omit]
