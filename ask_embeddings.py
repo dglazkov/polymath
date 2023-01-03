@@ -244,14 +244,13 @@ class Library:
         result = self.serializable()
         with open(filename, 'w') as f:
             json.dump(result, f, indent='\t')
-
-
-def get_similarities(query_embedding, library : Library):
-    items = sorted([
-        (vector_similarity(query_embedding, item['embedding']), issue_id)
-        for issue_id, item
-        in library.chunks], reverse=True)
-    return {key: value for value, key in items}
+    
+    def similarities(self, query_embedding):
+        items = sorted([
+            (vector_similarity(query_embedding, item['embedding']), issue_id)
+            for issue_id, item
+            in self.chunks], reverse=True)
+        return {key: value for value, key in items}
 
 
 def load_default_libraries(fail_on_empty=False) -> Library:
@@ -406,7 +405,7 @@ def library_for_query(library : Library, version=None, query_embedding=None, que
         # TODO: support query_embedding being base64 encoded or a raw vector of
         # floats
         embedding = vector_from_base64(query_embedding)
-        similarities_dict = get_similarities(embedding, library)
+        similarities_dict = library.similarities(embedding)
 
     # The defeault sort for 'any' or 'similarity' if there was no query set.
     chunk_ids = result.chunk_ids
@@ -466,7 +465,7 @@ def ask(query, context_query=None, library_file=None):
     library = load_libraries(library_file)
 
     query_embedding = get_embedding(context_query)
-    similiarities_dict = get_similarities(query_embedding, library)
+    similiarities_dict = library.similarities(query_embedding)
     context_dict = get_context(similiarities_dict.keys(), library)
 
     context = list(context_dict.values())
