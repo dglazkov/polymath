@@ -278,17 +278,16 @@ def serializable_library(library):
     return result.serializable()
 
 
-def load_library(library_file):
-    library = Library(filename=library_file)
-    return library.data
+def load_library(library_file) -> Library:
+    return Library(filename=library_file)
 
 
-def load_multiple_libraries(library_file_names):
+def load_multiple_libraries(library_file_names) -> Library:
     result = Library()
     for file in library_file_names:
         library = Library(filename =file)
         result.extend(library)
-    return result.data
+    return result
 
 def get_token_count(text):
     tokenizer = GPT2TokenizerFast.from_pretrained("gpt2")
@@ -473,16 +472,15 @@ def get_completion_with_context(query, context):
 def ask(query, context_query=None, library_file=None):
     if not context_query:
         context_query = query
-    data = load_library(
+    library = load_library(
         library_file) if library_file else load_default_libraries()
+    data = library.data
     query_embedding = get_embedding(context_query)
     similiarities_dict = get_similarities(query_embedding, data)
     context_dict = get_context(similiarities_dict.keys(), data)
 
     context = list(context_dict.values())
     chunk_ids = list(context_dict.keys())
-
-    library = Library(data=data)
 
     infos = [library.chunk(chunk_id)['info'] for chunk_id in chunk_ids]
     return get_completion_with_context(query, context), infos
