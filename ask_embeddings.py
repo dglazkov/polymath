@@ -347,7 +347,7 @@ class Library:
             chunk_ids = list(similarities_dict.keys())
         if sort == 'random':
             rng = random.Random()
-            rng.seed(seed)
+            rng.seed(None if not seed else seed)
             rng.shuffle(chunk_ids)
 
         if sort_reversed:

@@ -1,16 +1,57 @@
 <!DOCTYPE html>
-<h1>/api/query</h1>
+<h1>/</h1>
+<p>
+  This is a <a href="https://github.com/dglazkov/polymath">polymath</a> endpoint. Typically you query this endpoint with a POST from a polymath client. This page is a convenience front-end to issue queries directly.
+</p>
 <p>
   method = POST
 </p>
 <form method="POST">
+  <input type="hidden" name="version" value="0">
+  <input type="hidden" name="query_embedding_model" value="openai.com:text-embedding-ada-002">
   <p>
     <label for="query">Query (base64-encoded float array):</label>
     <input type="text" name="query" id="query">
   </p>
   <p>
-    <label for="token_count">Token Count (optional):</label>
-    <input type="text" name="token_count" id="token_count">
+    <label for="count">Count (optional):</label>
+    <input type="text" name="count" id="count">
+  </p>
+  <p>
+    <label for="count_type">Count_type</label>
+    <select name="count_type" id="count_type">
+      <option value="token">token</option>
+      <option value="chunk">chunk</option>
+    </select>
+  </p>
+  <p>
+    <label for="sort">Sort</label>
+    <select name="sort" id="sort">
+      <option value="similarity">similarity</option>
+      <option value="any">any</option>
+      <option value="random">random</option>
+    </select>
+  </p>
+  <p>
+    <label for="sort_reversed">Sort reversed?</label>
+    <input type="checkbox" name="sort_reversed" value="1">
+  </p>
+  <p>
+    <label for="seed">Seed</label>
+    <input type="text" name="seed" id="seed">
+  </p>
+  <p>
+    <strong>Omit</strong>
+    <input type="checkbox" id="omit_all" name="omit" value="*">
+    <label for="omit_all">*</label>
+    <input type="checkbox" id="omit_embedding" name="omit" value="embedding">
+    <label for="omit_embedding">embedding</label>
+    <input type="checkbox" id="omit_similarity" name="omit" value="similarity">
+    <label for="omit_similarity">similarity</label>
+    <input type="checkbox" id="omit_token_count" name="omit" value="token_count">
+    <label for="omit_token_count">token_count</label>
+    <input type="checkbox" id="omit_info" name="omit" value="info">
+    <label for="omit_token_info">info</label>
   </p>
   <p>
     <input type="submit" value="Query">
