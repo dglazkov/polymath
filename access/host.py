@@ -23,7 +23,7 @@ def save_access_file(data):
         json.dump(data, f, indent='\t')
     print(f"Don't forget to redeploy with the updated {access_file}")
 
-def add_token_for_user(user_id):
+def add_token_for_user(user_id, force=False):
     token = generate_token_for_user(user_id)
     data = {}
     if os.path.exists(access_file):
@@ -35,7 +35,7 @@ def add_token_for_user(user_id):
     if user_id not in tokens:
         tokens[user_id] = {}
     user = tokens[user_id]
-    if 'token' in user:
+    if not force and 'token' in user:
         print('That user already had a token set, so returning that instead of generating a new one.')
     else:
         user['token'] = token
@@ -48,10 +48,12 @@ parser = argparse.ArgumentParser()
 parser.add_argument("command", help="The command to run", choices=['add'],
                     default='add')
 parser.add_argument("user_id", help="The id of the user to modify")
+parser.add_argument("--force", help="If true, will add a new token even if one already exists", action="store_true")
 args = parser.parse_args()
 
 command = args.command
 user_id = args.user_id
+force = args.force
 
 if command == 'add':
-    add_token_for_user(user_id)
+    add_token_for_user(user_id, force=force)
