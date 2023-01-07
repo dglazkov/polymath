@@ -93,6 +93,17 @@ class Library:
         else:
             self.reset()
 
+        if access_tag == None and filename:
+            next_directory_is_access_tag = False
+            for directory in os.path.dirname(filename).split('/'):
+                if next_directory_is_access_tag:
+                    access_tag = directory
+                    break
+                if directory == 'access':
+                    next_directory_is_access_tag = True
+                else:
+                    next_directory_is_access_tag = False
+
         if access_tag == True:
             access_tag = DEFAULT_PRIVATE_ACCESS_TAG
 
