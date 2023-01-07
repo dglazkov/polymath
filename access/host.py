@@ -18,12 +18,12 @@ def generate_token_for_user(user_id):
     return 'sk_' + user_id + '_' + base
 
 
-def save_access_file(data):
+def save_access_file(data, access_file=DEFAULT_ACCESS_FILE):
     with open(access_file, 'w') as f:
         json.dump(data, f, indent='\t')
     print(f"Don't forget to redeploy with the updated {access_file}")
 
-def add_token_for_user(user_id, force=False):
+def add_token_for_user(user_id, access_file=DEFAULT_ACCESS_FILE, force=False):
     token = generate_token_for_user(user_id)
     data = {}
     if os.path.exists(access_file):
@@ -39,7 +39,7 @@ def add_token_for_user(user_id, force=False):
         print('That user already had a token set, so returning that instead of generating a new one.')
     else:
         user['token'] = token
-        save_access_file(data)
+        save_access_file(data, access_file)
     print('Pass the following line to the user to add to their client.SECRET.json for this endpoint:')
     print(user['token'])
 
@@ -56,4 +56,4 @@ user_id = args.user_id
 force = args.force
 
 if command == 'add':
-    add_token_for_user(user_id, force=force)
+    add_token_for_user(user_id, access_file=access_file, force=force)
