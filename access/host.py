@@ -21,12 +21,17 @@ def save_access_file(data, access_file=DEFAULT_ACCESS_FILE):
     print(f"Don't forget to redeploy with the updated {access_file}")
 
 
-def add_token_for_user(user_id, access_file=DEFAULT_ACCESS_FILE, force=False):
-    token = generate_token_for_user(user_id)
+def load_access_file(access_file=DEFAULT_ACCESS_FILE):
     data = {}
     if os.path.exists(access_file):
         with open(access_file, 'r') as f:
             data = json.load(f)
+    return data
+
+
+def add_token_for_user(user_id, access_file=DEFAULT_ACCESS_FILE, force=False):
+    token = generate_token_for_user(user_id)
+    data = load_access_file(access_file)
     if 'tokens' not in data:
         data['tokens'] = {}
     tokens = data['tokens']
