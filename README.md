@@ -185,6 +185,8 @@ Instead of generating keys yourself and modifying the file, you can use the foll
 
 This will generate a new key, store it in `access.SECRET.json` and print it.
 
+You can also revoke a key with `python3 -m access.host revoke <user_vanity_id>`
+
 ### Developing
 
 It's recommended to use `virtualenv` to manage your python environment for this project.
