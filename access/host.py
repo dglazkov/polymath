@@ -69,8 +69,8 @@ def revoke_token_for_user(user_id, access_file=DEFAULT_ACCESS_FILE, force=False)
 
 
 parser = argparse.ArgumentParser()
-parser.add_argument("command", help="The command to run", choices=['add', 'revoke'],
-                    default='add')
+parser.add_argument("command", help="The command to run", choices=['grant', 'revoke'],
+                    default='grant')
 parser.add_argument("user_id", help="The id of the user to modify")
 parser.add_argument("--force", help="Whether to force the action", action="store_true")
 parser.add_argument("--file", help="The access file to operate on", default=DEFAULT_ACCESS_FILE)
