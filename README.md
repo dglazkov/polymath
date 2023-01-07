@@ -168,6 +168,7 @@ The mapping of `asset_token` to `access_tag` they give access to is configured i
   "tokens": {
       //user_vanity_id can be any user-understable name, typically an email address like 'alex@komoroske.com'
       <user_vanity_id>: {
+        //A cryptographically secure string that is treated as a secret. It should be given to the user so they can put it in their "token" field in their `client.SECRET.json` associated with this endpoint.
         "token": <access_token>,
         //An optional stirng where you can store notes about this user or record.
         "description": ""
