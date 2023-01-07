@@ -1,0 +1,8 @@
+Getting random chunks ...
+Querying polymath.glazkov.com ...
+{'content': {}, 'embedding_model': 'openai.com:text-embedding-ada-002', 'omit': 'embedding', 'version': 0}
+Context:
+
+
+Sources:
+  

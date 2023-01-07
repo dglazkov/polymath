@@ -302,7 +302,7 @@ class Library:
         return {key: value for value, key in items}
 
 
-    def query(self, version=None, query_embedding=None, query_embedding_model=None, count=None, count_type='token', sort='similarity', sort_reversed=False, seed=None, omit='embedding'):
+    def query(self, version=None, query_embedding=None, query_embedding_model=None, count=0, count_type='token', sort='similarity', sort_reversed=False, seed=None, omit='embedding'):
         # We do our own defaulting so that servers that call us can pass the result
         # of request.get() directly and if it's None, we'll use the default.
         if count_type == None:
@@ -311,6 +311,9 @@ class Library:
             sort = 'similarity'
         if omit == None:
             omit = 'embedding'
+
+        if count == 0:
+            raise Exception('count must be greater than 0')
 
         if version == None or version != CURRENT_VERSION:
             raise Exception(f'version must be set to {CURRENT_VERSION}')
@@ -341,14 +344,18 @@ class Library:
             embedding = vector_from_base64(query_embedding)
             similarities_dict = self.similarities(embedding)
 
-        # The defeault sort for 'any' or 'similarity' if there was no query set.
-        chunk_ids = result.chunk_ids
+        # The default sort for 'any' or 'similarity' if there was no query set.
+        chunk_ids = None 
         if sort == 'similarity' and similarities_dict:
             chunk_ids = list(similarities_dict.keys())
         if sort == 'random':
+            chunk_ids = list(self.chunk_ids)
             rng = random.Random()
             rng.seed(None if not seed else seed)
             rng.shuffle(chunk_ids)
+
+        if not chunk_ids:
+            raise Exception('Invalid type of sort was specified')
 
         if sort_reversed:
             chunk_ids.reverse()
