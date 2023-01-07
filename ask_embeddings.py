@@ -31,6 +31,10 @@ DEFAULT_PRIVATE_ACCESS_TAG = 'unpublished'
 DEFAULT_ACCESS_FILE = 'access.SECRET.json'
 
 def permitted_access_tags(access_token):
+
+    if not access_token:
+        return set([])
+
     # TODO: allow overriding this
     access_file = DEFAULT_ACCESS_FILE
     if not os.path.exists(access_file):
@@ -358,7 +362,7 @@ class Library:
         return {key: value for value, key in items}
 
 
-    def query(self, version=None, query_embedding=None, query_embedding_model=None, count=0, count_type='token', sort='similarity', sort_reversed=False, seed=None, omit='embedding'):
+    def query(self, version=None, query_embedding=None, query_embedding_model=None, count=0, count_type='token', sort='similarity', sort_reversed=False, seed=None, omit='embedding', access_token=''):
         # We do our own defaulting so that servers that call us can pass the result
         # of request.get() directly and if it's None, we'll use the default.
         if count_type == None:
@@ -421,9 +425,15 @@ class Library:
 
         chunk_dict = get_context(chunk_ids, self, count,
                                 count_type_is_chunk=count_type_is_chunk)
+
+        visible_access_tags = permitted_access_tags(access_token)
+
         if not omit_whole_chunk:
             for chunk_id, chunk_text in chunk_dict.items():
                 chunk = copy.deepcopy(self.chunk(chunk_id))
+                if 'access_tag' in chunk:
+                    if chunk['access_tag'] not in visible_access_tags:
+                        continue
                 # Note: if the text was truncated then technically the embedding isn't
                 # necessarily right anymore. But, like, whatever.
                 chunk['text'] = chunk_text
