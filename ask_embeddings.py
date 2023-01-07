@@ -478,7 +478,7 @@ def get_chunk_infos_for_library(library : Library):
 LEGAL_SORTS = set(['similarity', 'any', 'random'])
 LEGAL_COUNT_TYPES = set(['token', 'chunk'])
 LEGAL_OMIT_KEYS = set(
-    ['*', '', 'similarity', 'embedding', 'token_count', 'info'])
+    ['*', '', 'similarity', 'embedding', 'token_count', 'info', 'access_tag'])
 
 
 def keys_to_omit(configuration=''):
