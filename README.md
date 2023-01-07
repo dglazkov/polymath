@@ -117,6 +117,20 @@ Now, run the client, specifying the query and servers that you just started. For
 
 The output should be a completion on the combined context of both servers.
 
+You can also specify client configuration in a config file like this: `--config client.SECRET.json`.
+
+The config file should be formatted like this:
+
+```
+{
+  "servers": {
+    "wdl": {
+      endpoint: "https://polymath.wdl.com"
+    }
+  }
+}
+```
+
 ### Standing up a polymath endpoint
 
 This project can be used to stand up your own polymath endpoint on Google App Engine.

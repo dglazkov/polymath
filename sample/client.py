@@ -38,8 +38,9 @@ def query_server(query_embedding, random, server):
 parser = argparse.ArgumentParser()
 parser.add_argument("query", help="The question to ask",
                     default="Tell me about 3P")
+parser.add_argument("--config", help=f"A path to a config file to use")
 parser.add_argument("--server", help="A server to use for querying",
-                    action="append", required=True),
+                    action="append"),
 parser.add_argument("--completion", help="Request completion based on the query and context",
                     action=argparse.BooleanOptionalAction, default=True)
 parser.add_argument("--random", help="Ask for a random set of chunks",
@@ -48,11 +49,29 @@ parser.add_argument("--verbose", help="Print out context and sources and other u
                     action=argparse.BooleanOptionalAction, default=False)
 args = parser.parse_args()
 
+config = {}
+
+if args.config:
+    config_file = args.config
+    if os.path.exists(config_file):
+        with open(config_file, 'r') as f:
+            config = json.load(f)
+    else:
+        print(f'{config_file} was not found.')
+    
 load_dotenv()
 openai.api_key = os.getenv("OPENAI_API_KEY")
 
 query = args.query
 server_list = args.server
+
+if not server_list:
+    server_list = []
+
+if 'servers' in config:
+    for server_config in config['servers'].values():
+        if 'endpoint' in server_config:
+            server_list.append(server_config['endpoint'])
 
 if args.verbose:
     if args.random:
