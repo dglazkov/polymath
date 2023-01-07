@@ -46,6 +46,8 @@ parser.add_argument(
     '--max', help='The number of max lines to process. If negative, will process all.', default=-1, type=int)
 parser.add_argument('--overwrite', action='store_true',
                     help='If set, will ignore any existing output and overwrite it instead of incrementally extending it')
+parser.add_argument('--truncate', action='store_true',
+                    help='If set, will only persist things to output from base that also had their ID in input')
 for importer in IMPORTERS.values():
     if 'install_arguments' in dir(importer):
         importer.install_arguments(parser)
@@ -56,6 +58,7 @@ max_lines = args.max
 overwrite = args.overwrite
 output_filename = args.output
 base_filename = args.base
+truncate = args.truncate
 
 importer = IMPORTERS[args.importer]
 
@@ -82,7 +85,10 @@ print('Will process ' + ('all' if max_lines < 0 else str(max_lines)) + ' lines')
 
 count = 0
 
+seen_ids = {}
+
 for id, chunk in importer.get_chunks(filename):
+    seen_ids[id] = True
     if max_lines >= 0 and count >= max_lines:
         print('Reached max lines')
         break
@@ -100,6 +106,13 @@ for id, chunk in importer.get_chunks(filename):
     count += 1
 
 print(f'Loaded {count} new lines')
+
+if truncate:
+    
+    for chunk_id in [id for id in result.chunk_ids]:
+        if chunk_id in seen_ids:
+            continue
+        result.delete_chunk(chunk_id)
 
 if not os.path.exists(ask_embeddings.LIBRARY_DIR):
     os.mkdir(ask_embeddings.LIBRARY_DIR)
