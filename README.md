@@ -125,7 +125,7 @@ The config file should be formatted like this:
 {
   "servers": {
     "wdl": {
-      endpoint: "https://polymath.wdl.com"
+      "endpoint": "https://polymath.wdl.com"
     }
   }
 }
