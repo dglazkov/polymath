@@ -26,6 +26,8 @@ SAMPLE_LIBRARIES_FILE = 'sample-content.json'
 
 CURRENT_VERSION = 0
 
+DEFAULT_PRIVATE_ACCESS_TAG = 'unpublished'
+
 # In JS, the argument can be produced with with:
 # ```
 # btoa(String.fromCharCode(...(new Uint8Array(new Float32Array(data).buffer))));
@@ -81,7 +83,7 @@ def load_data_file(file):
 
 
 class Library:
-    def __init__(self, data=None, blob=None, filename=None):
+    def __init__(self, data=None, blob=None, filename=None, access_tag=None):
         if filename:
             data = load_data_file(filename)
         if blob:
@@ -95,6 +97,10 @@ class Library:
             if 'embedding' not in chunk:
                 continue
             chunk['embedding'] = vector_from_base64(chunk['embedding'])
+
+        if access_tag:
+            for chunk_id in self.chunk_ids:
+                self.set_chunk_field(chunk_id, access_tag=access_tag)
 
         self.validate()
 
@@ -245,7 +251,7 @@ class Library:
         self._strip_chunk(chunk)
 
 
-    def set_chunk_field(self, chunk_id, text=None, embedding=None, token_count=None, info = None):
+    def set_chunk_field(self, chunk_id, text=None, embedding=None, token_count=None, info=None, access_tag=None):
         if self.omit_whole_chunk:
             return
         if chunk_id not in self._data["content"]:
@@ -259,6 +265,8 @@ class Library:
             chunk["token_count"] = token_count
         if info != None:
             chunk["info"] = info
+        if access_tag != None:
+            chunk["access_tag"] = access_tag
         self._strip_chunk(chunk)
 
 
@@ -281,6 +289,8 @@ class Library:
         """
         result = copy.deepcopy(self._data)
         for _, chunk in result['content'].items():
+            if 'access_tag' in chunk:
+                del chunk['access_tag']
             if 'embedding' not in chunk:
                 continue
             chunk['embedding'] = base64_from_vector(

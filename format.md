@@ -15,6 +15,9 @@ The format of the library files is as follows:
       token_count: <tokens_count>,
       //Similarity is included in libraries that were given a query_embedding.
       similarity: <float>,
+      //An optional field. If it is set, then this chunk will only be returned from Library.query() if an access_token that grant
+      //access to that tag is presented. These are typically not stored in files, but rather provided in the Library constructor.
+      access_tag: <access_tag>,
       info: {
         url: <url>,
         //All of the following properties are optional
