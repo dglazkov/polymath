@@ -19,6 +19,7 @@ def query_server(query_embedding, random, server):
     http = urllib3.PoolManager()
     fields = {
         "version": CURRENT_VERSION,
+        "access_token": server_tokens.get(server, ''),
         "query_embedding_model": EMBEDDINGS_MODEL_ID,
         "count": CONTEXT_TOKEN_COUNT
     }
@@ -68,10 +69,15 @@ server_list = args.server
 if not server_list:
     server_list = []
 
+server_tokens = {}
+
 if 'servers' in config:
     for server_config in config['servers'].values():
-        if 'endpoint' in server_config:
-            server_list.append(server_config['endpoint'])
+        if 'endpoint' not in server_config:
+            continue
+        endpoint = server_config['endpoint']
+        server_list.append(endpoint)
+        server_tokens[endpoint] = server_config.get('token', '')
 
 if args.verbose:
     if args.random:

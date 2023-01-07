@@ -125,7 +125,9 @@ The config file should be formatted like this:
 {
   "servers": {
     "wdl": {
-      "endpoint": "https://polymath.wdl.com"
+      "endpoint": "https://polymath.wdl.com",
+      //Optional. If provided, it will be passed as the access_token when querying this server. It should be an access_token this host has in their `access.SECRET.json`.
+      "token": <access_token>
     }
   }
 }
