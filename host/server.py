@@ -33,10 +33,11 @@ def start():
         sort_reversed = request.form.get('sort_reversed') is not None
         seed = request.form.get('seed')
         omit = request.form.get('omit')
+        access_token = request.form.get('access_token', '')
         result = library.query(version=version, query_embedding=query_embedding,
                                     query_embedding_model=query_embedding_model, count=count,
                                     count_type=count_type, sort=sort, sort_reversed=sort_reversed,
-                                    seed=seed, omit=omit)
+                                    seed=seed, omit=omit, access_token=access_token)
         return jsonify(result.serializable())
 
     except Exception as e:
