@@ -135,6 +135,13 @@ You can configure a subdomain of one of your domains to point to your polymath a
 
 It might take a few minutes for your cert to be issued and DNS to update. Your automatically issued cert is ready when `gcloud app domain-mappings list` will show a number for SSL_CERTIFICATE_ID and no number for PENDING_AUTO_CERT.
 
+### Private content
+
+In many cases the content hosted in a library is published and viewable to anyone. But sometimes you have content that is unpublished (e.g. draft notes) but you still want some subset of clients to be able to query it.
+
+polymath supports this use case with `access_tag`s. Each chunk of content in a library may have an `access_tag` set on it. (Chunks default to having no `access_tag`.). `access_tag` can be any string, but is typically `unpublished`. `Library.query()` will only return chunks of content that have a non-missing `access_tag` if an `access_token` is provided that grants access to items with that tag.
+
+`access_token` is typically not actually stored directly in the library.json file, but instead added at load time. The easiest way to do that is to put your library in a subdirectory like this: `libraries/access/unpublished/library.json`. In that case, it will automatically have the `access_tag` of `unpublished` added to all content in that library file, and that will flow with the chunks if they're merged in with libraries with public chunks. You can use this mechanism to add any access_tag; any part of the filename that includes `access/foo/` will add an `access_tag` of `foo`.
 
 ### Developing
 
