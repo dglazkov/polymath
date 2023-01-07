@@ -353,6 +353,7 @@ class Library:
             rng = random.Random()
             rng.seed(None if not seed else seed)
             rng.shuffle(chunk_ids)
+            result.omit = 'embedding,similarity'
 
         if not chunk_ids:
             raise Exception('Invalid type of sort was specified')
@@ -449,8 +450,12 @@ def get_chunk_infos_for_library(library : Library):
     """
     Returns all infos for all chunks in library
     """
-    infos = [(chunk["similarity"], chunk['info']) for (_, chunk) in library.chunks]
-    infos.sort(reverse=True)
+    infos = []
+    if "similarity" in library.fields_to_omit:
+        infos = [(_, chunk['info']) for (_, chunk) in library.chunks]
+    else:
+        infos = [(chunk["similarity"], chunk['info']) for (_, chunk) in library.chunks]
+        infos.sort(reverse=True)
     unique_infos = []
     urls = []
     for _, info in infos:
