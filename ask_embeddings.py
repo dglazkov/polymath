@@ -28,6 +28,38 @@ CURRENT_VERSION = 0
 
 DEFAULT_PRIVATE_ACCESS_TAG = 'unpublished'
 
+DEFAULT_ACCESS_FILE = 'access.SECRET.json'
+
+def permitted_access_tags(access_token):
+    # TODO: allow overriding this
+    access_file = DEFAULT_ACCESS_FILE
+    if not os.path.exists(access_file):
+        return set([])
+
+    # TODO: don't load this file every time
+    with open(DEFAULT_ACCESS_FILE, 'r') as f:
+        data = json.load(f)
+
+    if 'tokens' not in data:
+        raise Exception(f'The data in {access_file} did not contain a key of "tokens" as expected')
+    
+    private_access_tag = data['default_private_access_tag'] if 'default_private_access_tag' in data else DEFAULT_PRIVATE_ACCESS_TAG
+
+    token_record = None
+    for record in data['tokens']:
+        if 'token' not in record:
+            continue
+        if record['token'] == access_token:
+            token_record = record
+            break
+    
+    if not token_record:
+        return set([])
+
+    tags = token_record['access_tags'] if 'access_tags' in token_record else [private_access_tag]
+
+    return set(tags)
+
 # In JS, the argument can be produced with with:
 # ```
 # btoa(String.fromCharCode(...(new Uint8Array(new Float32Array(data).buffer))));

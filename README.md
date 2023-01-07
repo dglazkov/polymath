@@ -143,6 +143,25 @@ polymath supports this use case with `access_tag`s. Each chunk of content in a l
 
 `access_token` is typically not actually stored directly in the library.json file, but instead added at load time. The easiest way to do that is to put your library in a subdirectory like this: `libraries/access/unpublished/library.json`. In that case, it will automatically have the `access_tag` of `unpublished` added to all content in that library file, and that will flow with the chunks if they're merged in with libraries with public chunks. You can use this mechanism to add any access_tag; any part of the filename that includes `access/foo/` will add an `access_tag` of `foo`.
 
+The mapping of `asset_token` to `access_tag` they give access to is configured in the `access.SECRET.json` file that you should keep at the root of the repo. It has a format like:
+
+```
+{
+  //This defaults to "unpublished" if not explicitly set, and may be omitted
+  "default_private_access_tag": "unpublished"
+  "tokens": {
+      //user_vanity_id can be any user-understable name, typically an email address like 'alex@komoroske.com'
+      <user_vanity_id>: {
+        "token": <access_token>,
+        //An optional stirng where you can store notes about this user or record.
+        "description": ""
+        //The access_tags this token is allowed to access in this library. If it is omitted it defaults to `["unpublished"]`
+        "access_tags": ["unpublished"]
+    }
+  }
+}
+```
+
 ### Developing
 
 It's recommended to use `virtualenv` to manage your python environment for this project.
