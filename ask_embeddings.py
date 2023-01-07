@@ -282,14 +282,14 @@ class Library:
             self.delete_chunk(chunk_id)
 
 
-    def serializable(self):
+    def serializable(self, include_access_tag=False):
         """
         Returns a dict representing the data in the library that is suitable for
         being serialized e.g. into JSON.
         """
         result = copy.deepcopy(self._data)
         for _, chunk in result['content'].items():
-            if 'access_tag' in chunk:
+            if not include_access_tag and 'access_tag' in chunk:
                 del chunk['access_tag']
             if 'embedding' not in chunk:
                 continue
