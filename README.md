@@ -179,6 +179,12 @@ The mapping of `asset_token` to `access_tag` they give access to is configured i
 }
 ```
 
+Instead of generating keys yourself and modifying the file, you can use the following command:
+
+`python3 -m access.host add <user_vanity_id>`
+
+This will generate a new key, store it in `access.SECRET.json` and print it.
+
 ### Developing
 
 It's recommended to use `virtualenv` to manage your python environment for this project.
