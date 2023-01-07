@@ -93,6 +93,9 @@ class Library:
         else:
             self.reset()
 
+        if access_tag == True:
+            access_tag = DEFAULT_PRIVATE_ACCESS_TAG
+
         for _, chunk in self._data['content'].items():
             if 'embedding' not in chunk:
                 continue
