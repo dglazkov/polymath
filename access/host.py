@@ -18,6 +18,11 @@ def generate_token_for_user(user_id):
     return 'sk_' + user_id + '_' + base
 
 
+def save_access_file(data):
+    with open(access_file, 'w') as f:
+        json.dump(data, f, indent='\t')
+    print(f"Don't forget to redeploy with the updated {access_file}")
+
 def add_token_for_user(user_id):
     token = generate_token_for_user(user_id)
     data = {}
@@ -34,9 +39,7 @@ def add_token_for_user(user_id):
         print('That user already had a token set, so returning that instead of generating a new one.')
     else:
         user['token'] = token
-        with open(access_file, 'w') as f:
-            json.dump(data, f, indent='\t')
-        print(f"Don't forget to redeploy with the updated {access_file}")
+        save_access_file(data)
     print('Pass the following line to the user to add to their client.SECRET.json for this endpoint:')
     print(user['token'])
 
