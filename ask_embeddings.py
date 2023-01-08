@@ -244,6 +244,28 @@ class Library:
         self._data['omit'] = canonical_value
 
 
+    @property
+    def _details(self):
+        if 'details' not in self._data:
+            return {}
+        return self._data['details']
+
+
+    @property
+    def counts(self):
+        details = self._details
+        if 'counts' not in details:
+            return {}
+        return details['counts']
+
+    @property
+    def count_chunks(self):
+        counts = self.counts
+        if 'chunks' not in counts:
+            return 0
+        return counts['chunks']
+
+
     def extend(self, other : 'Library'):
         if other.embedding_model != self.embedding_model:
             raise Exception('The other library had a different embedding model')
