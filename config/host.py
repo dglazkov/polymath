@@ -84,6 +84,10 @@ def revoke_token_for_user(user_id, access_file=DEFAULT_CONFIG_FILE, force=False)
         print('You must pass --force to remove the token.')
         return
     del user['token']
+
+    if len(user) == 0:
+        del tokens[user_id]
+
     save_config_file(data, access_file)
     print(f'Removed the token for {user_id} from {access_file}')    
 
