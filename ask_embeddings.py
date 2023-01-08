@@ -251,6 +251,11 @@ class Library:
         return self._data['details']
 
 
+    @_details.setter
+    def _details(self, value):
+        self._data['details'] = value
+
+
     @property
     def counts(self):
         details = self._details
@@ -258,12 +263,26 @@ class Library:
             return {}
         return details['counts']
 
+
+    @counts.setter
+    def counts(self, value):
+        self._details = self._details
+        self._details['counts'] = value
+
+
     @property
     def count_chunks(self):
         counts = self.counts
         if 'chunks' not in counts:
             return 0
         return counts['chunks']
+
+
+    @count_chunks.setter
+    def count_chunks(self, value):
+        self._details = self._details
+        self.counts = self.counts
+        self.counts['chunks'] = value
 
 
     def extend(self, other : 'Library'):
