@@ -5,7 +5,7 @@ import os
 import secrets
 import base64
 
-DEFAULT_ACCESS_FILE = 'host.SECRET.json'
+DEFAULT_CONFIG_FILE = 'host.SECRET.json'
 
 
 def generate_token_for_user(user_id):
@@ -14,13 +14,13 @@ def generate_token_for_user(user_id):
     return 'sk_' + user_id + '_' + base
 
 
-def save_access_file(data, access_file=DEFAULT_ACCESS_FILE):
+def save_config_file(data, access_file=DEFAULT_CONFIG_FILE):
     with open(access_file, 'w') as f:
         json.dump(data, f, indent='\t')
     print(f"Don't forget to redeploy with the updated {access_file}")
 
 
-def load_access_file(access_file=DEFAULT_ACCESS_FILE):
+def load_config_file(access_file=DEFAULT_CONFIG_FILE):
     data = {}
     if os.path.exists(access_file):
         with open(access_file, 'r') as f:
@@ -28,9 +28,9 @@ def load_access_file(access_file=DEFAULT_ACCESS_FILE):
     return data
 
 
-def add_token_for_user(user_id, access_file=DEFAULT_ACCESS_FILE, force=False):
+def add_token_for_user(user_id, access_file=DEFAULT_CONFIG_FILE, force=False):
     token = generate_token_for_user(user_id)
-    data = load_access_file(access_file)
+    data = load_config_file(access_file)
     if 'tokens' not in data:
         data['tokens'] = {}
     tokens = data['tokens']
@@ -41,13 +41,13 @@ def add_token_for_user(user_id, access_file=DEFAULT_ACCESS_FILE, force=False):
         print('That user already had a token set, so returning that instead of generating a new one. Pass --force to force creating one.')
     else:
         user['token'] = token
-        save_access_file(data, access_file)
+        save_config_file(data, access_file)
     print('Pass the following line to the user to add to their client.SECRET.json for this endpoint:')
     print(user['token'])
 
 
-def revoke_token_for_user(user_id, access_file=DEFAULT_ACCESS_FILE, force=False):
-    data = load_access_file(access_file)
+def revoke_token_for_user(user_id, access_file=DEFAULT_CONFIG_FILE, force=False):
+    data = load_config_file(access_file)
     if 'tokens' not in data:
         print(f'{access_file} had no tokens.')
         return
@@ -63,7 +63,7 @@ def revoke_token_for_user(user_id, access_file=DEFAULT_ACCESS_FILE, force=False)
         print('You must pass --force to remove the token.')
         return
     del user['token']
-    save_access_file(data, access_file)
+    save_config_file(data, access_file)
     print(f'Removed the token for {user_id} from {access_file}')    
 
 
@@ -72,7 +72,7 @@ parser.add_argument("command", help="The command to run", choices=['grant', 'rev
                     default='grant')
 parser.add_argument("user_id", help="The id of the user to modify")
 parser.add_argument("--force", help="Whether to force the action", action="store_true")
-parser.add_argument("--file", help="The access file to operate on", default=DEFAULT_ACCESS_FILE)
+parser.add_argument("--file", help="The config file to operate on", default=DEFAULT_CONFIG_FILE)
 args = parser.parse_args()
 
 command = args.command
