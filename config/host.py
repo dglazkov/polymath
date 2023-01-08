@@ -10,7 +10,7 @@ DEFAULT_CONFIG_FILE = 'host.SECRET.json'
 
 
 def generate_token_for_user(user_id):
-    base = base64.urlsafe_b64encode(secrets.token_bytes(16)).decode('utf-8')
+    base = base64.urlsafe_b64encode(secrets.token_bytes(32)).decode('utf-8')
     base = base.replace('=', '')
     base = base.replace('-', '_')
     safe_user_id = user_id.replace('@', '_at_')
