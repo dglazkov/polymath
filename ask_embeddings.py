@@ -289,6 +289,21 @@ class Library:
 
 
     @property
+    def count_restricted(self):
+        counts = self.counts
+        if 'restricted' not in counts:
+            return 0
+        return counts['restricted']
+
+
+    @count_restricted.setter
+    def count_chunks(self, value):
+        self._details = self._details
+        self.counts = self.counts
+        self.counts['restricted'] = value
+
+
+    @property
     def message(self):
         details = self._details
         if 'message' not in details:
