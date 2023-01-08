@@ -140,6 +140,7 @@ The config file should be formatted like this:
 ```
 {
   "servers": {
+    //The name of the server can be whatever you want it to be, it's just a distinctive shortname for your own use.
     "wdl": {
       "endpoint": "https://polymath.wdl.com",
       //Optional. If set, and `--dev` is passed, then it will use this endpoint instead.
