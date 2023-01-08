@@ -32,13 +32,14 @@ DEFAULT_CONFIG_FILE = 'host.SECRET.json'
 
 def permitted_access(access_token):
     """
-    Returns the set of permitted access tags, and whether to include restricted_count in the result.
+    Returns the set of permitted access tags, whether to include restricted_count in the result,
+    and a message to return in the library if any results were filtered.
     """
 
     # TODO: allow overriding this
     access_file = DEFAULT_CONFIG_FILE
     if not os.path.exists(access_file):
-        return set([]), False
+        return set([]), False, ""
 
     # TODO: don't load this file every time
     with open(DEFAULT_CONFIG_FILE, 'r') as f:
@@ -46,9 +47,10 @@ def permitted_access(access_token):
 
     restricted = data.get('restricted', {})
     include_restricted_count = restricted.get('count', False)
+    restricted_message = restricted.get('message', "")
 
     if not access_token:
-        return set([]), include_restricted_count
+        return set([]), include_restricted_count, restricted_message
 
     if 'tokens' not in data:
         raise Exception(f'The data in {access_file} did not contain a key of "tokens" as expected')
@@ -64,11 +66,11 @@ def permitted_access(access_token):
             break
     
     if not token_record:
-        return set([]), include_restricted_count
+        return set([]), include_restricted_count, restricted_message
 
     tags = token_record['access_tags'] if 'access_tags' in token_record else [private_access_tag]
 
-    return set(tags), include_restricted_count
+    return set(tags), include_restricted_count, restricted_message
 
 # In JS, the argument can be produced with with:
 # ```
@@ -505,7 +507,7 @@ class Library:
         chunk_dict = get_context(chunk_ids, self, count,
                                 count_type_is_chunk=count_type_is_chunk)
 
-        visible_access_tags, include_restricted_count = permitted_access(access_token)
+        visible_access_tags, include_restricted_count, restricted_message = permitted_access(access_token)
 
         chunk_count = 0
         restricted_count = 0
@@ -535,6 +537,9 @@ class Library:
 
         if include_restricted_count:
             result.count_restricted = restricted_count
+        
+        if restricted_message and restricted_count > 0:
+            result.message = restricted_message
 
         return result
 
