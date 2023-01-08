@@ -7,7 +7,7 @@ from argparse import (ArgumentParser, Namespace)
 class MediumImporter:
 
     def __init__(self):
-        self._include_drafts = False
+        self._include = 'all'
 
 
     def install_arguments(self, parser : ArgumentParser):
@@ -18,14 +18,15 @@ class MediumImporter:
         and have a default.
         """
         medium_group = parser.add_argument_group('medium')
-        medium_group.add_argument('--medium-include-drafts', help='If provided and the importer is medium, will include drafts', action='store_true')
+        medium_group.add_argument('--medium-include', help='If provided and the importer is medium, which set to include',
+                                  choices=['all', 'drafts', 'published'], default='published')
 
 
     def retrieve_arguments(self, args : Namespace):
         """
         An opportunity to retrieve arguments configured via install_arguments.
         """
-        self._include_drafts = args.medium_include_drafts
+        self._include = args.medium_include
 
 
     def output_base_filename(self, filename):
@@ -34,7 +35,7 @@ class MediumImporter:
             soup = BeautifulSoup(f, "html.parser")
             ele = soup.find('a', class_='u-url')
             username = ele.get_text(strip=True)
-            return 'medium-' + username.replace('@','')
+            return 'medium-' + username.replace('@','') + '-' + self._include
 
 
     def extract_url_from_soup(self, base_filename : str, soup : BeautifulSoup):
@@ -83,9 +84,14 @@ class MediumImporter:
         for file in filenames:
             with open(file, 'r') as f:
                 base_filename = os.path.basename(file)
-                if base_filename.startswith('draft_') and not self._include_drafts:
-                    print('Skipping draft ' + base_filename)
-                    continue
+                if base_filename.startswith('draft_'):
+                    if self._include == 'published':
+                        print('Skipping draft ' + base_filename)
+                        continue
+                else:
+                    if self._include == 'drafts':
+                        print('Skipping published post' + base_filename)
+                        continue
                 soup = BeautifulSoup(f, "html.parser")
                 url = self.extract_url_from_soup(base_filename, soup)
                 image_url = self.extract_image_url_from_soup(soup)
