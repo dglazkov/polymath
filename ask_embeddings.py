@@ -50,7 +50,7 @@ def permitted_access_tags(access_token):
     private_access_tag = data['default_private_access_tag'] if 'default_private_access_tag' in data else DEFAULT_PRIVATE_ACCESS_TAG
 
     token_record = None
-    for record in data['tokens']:
+    for record in data['tokens'].values():
         if 'token' not in record:
             continue
         if record['token'] == access_token:
