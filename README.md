@@ -157,6 +157,58 @@ It might take a few minutes for your cert to be issued and DNS to update. Your a
 
 In many cases the content hosted in a library is published and viewable to anyone. But sometimes you have content that is unpublished (e.g. draft notes) but you still want some subset of clients to be able to query it.
 
+#### Getting started quickly
+
+Put the libraries you want everyone to have access to in the root of `libraries/`. Put libraries you only want people you have distributed tokens to into `libraries/access/unpublished`.
+
+Run `python3 -m config.host access grant <email_address>` to generate a token. Copy/paste it and send it to that person in a secure channel. Note that you must redeploy to production with `gcloud app deploy`.
+
+They then add their token to their `client.SECRET.config` like this:
+
+```
+{
+  "servers": {
+    "their_server_vanity_id": {
+      "endpoint": "https://polymath.theirserver.com",
+      "token": "<token_you_sent_them>"
+    }
+  }
+}
+```
+
+Then they run their client like: `python3 -m sample.client --config client.SECRET.cong "query"`.
+
+You'll also want to generate a token for yourself too so you have access to your private libraries.
+
+You might chose to have your own `client.SECRET.json` that looks like this:
+
+```
+{
+  "servers": {
+    "your_server_vanity_id": {
+      "endpoint": "https://polymath.yourserver.com",
+      "token": "<token_you_generated>"
+    }
+  }
+}
+```
+
+and a `client.dev.SECRET.json` that looks like this (for when you query your local development host)
+
+```
+{
+  "servers": {
+    "your_server_vanity_id": {
+      "endpoint": "http://127.0.0.1:8080",
+      "token": "<token_you_generated>"
+    }
+  }
+}
+```
+
+
+#### How it works in more detail
+
 polymath supports this use case with `access_tag`s. Each chunk of content in a library may have an `access_tag` set on it. (Chunks default to having no `access_tag`.). `access_tag` can be any string, but is typically `unpublished`. `Library.query()` will only return chunks of content that have a non-missing `access_tag` if an `access_token` is provided that grants access to items with that tag.
 
 `access_token` is typically not actually stored directly in the library.json file, but instead added at load time. The easiest way to do that is to put your library in a subdirectory like this: `libraries/access/unpublished/library.json`. In that case, it will automatically have the `access_tag` of `unpublished` added to all content in that library file, and that will flow with the chunks if they're merged in with libraries with public chunks. You can use this mechanism to add any access_tag; any part of the filename that includes `access/foo/` will add an `access_tag` of `foo`.
