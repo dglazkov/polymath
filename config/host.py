@@ -67,22 +67,32 @@ def revoke_token_for_user(user_id, access_file=DEFAULT_CONFIG_FILE, force=False)
     print(f'Removed the token for {user_id} from {access_file}')    
 
 
+def access_command(args):
+    command = args.command
+    user_id = args.user_id
+    force = args.force
+    file = args.file
+    if command == 'grant':
+        add_token_for_user(user_id, access_file=file, force=force)
+    elif command == 'revoke':
+        revoke_token_for_user(user_id, access_file=file, force=force)
+    else:
+        print(f'Unknown command {command}')
+
+
 parser = argparse.ArgumentParser()
-parser.add_argument("command", help="The command to run", choices=['grant', 'revoke'],
+
+base_parser = argparse.ArgumentParser(add_help=False)
+base_parser.add_argument("--force", help="Whether to force the action", action="store_true")
+base_parser.add_argument("--file", help="The config file to operate on", default=DEFAULT_CONFIG_FILE)
+
+sub_parser = parser.add_subparsers(title='action')
+sub_parser.required = True
+access_parser = sub_parser.add_parser('access', parents=[base_parser])
+access_parser.add_argument("command", help="The command to run", choices=['grant', 'revoke'],
                     default='grant')
-parser.add_argument("user_id", help="The id of the user to modify")
-parser.add_argument("--force", help="Whether to force the action", action="store_true")
-parser.add_argument("--file", help="The config file to operate on", default=DEFAULT_CONFIG_FILE)
+access_parser.add_argument("user_id", help="The id of the user to modify")
+access_parser.set_defaults(func=access_command)
+
 args = parser.parse_args()
-
-command = args.command
-user_id = args.user_id
-force = args.force
-file = args.file
-
-if command == 'grant':
-    add_token_for_user(user_id, access_file=file, force=force)
-elif command == 'revoke':
-    revoke_token_for_user(user_id, access_file=file, force=force)
-else:
-    print(f'Unknown command {command}')
+args.func(args)

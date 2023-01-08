@@ -183,11 +183,11 @@ The mapping of `asset_token` to `access_tag` they give access to is configured i
 
 Instead of generating keys yourself and modifying the file, you can use the following command:
 
-`python3 -m config.host grant <user_vanity_id>`
+`python3 -m config.host access grant <user_vanity_id>`
 
 This will generate a new key, store it in `host.SECRET.json` and print it.
 
-You can also revoke a key with `python3 -m config.host revoke <user_vanity_id>`
+You can also revoke a key with `python3 -m config.host access revoke <user_vanity_id>`
 
 ### Developing
 
