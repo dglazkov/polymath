@@ -4,6 +4,7 @@ import json
 import os
 import secrets
 import base64
+import re
 
 DEFAULT_CONFIG_FILE = 'host.SECRET.json'
 
@@ -11,7 +12,10 @@ DEFAULT_CONFIG_FILE = 'host.SECRET.json'
 def generate_token_for_user(user_id):
     base = base64.urlsafe_b64encode(secrets.token_bytes(16)).decode('utf-8')
     base = base.replace('=', '')
-    return 'sk_' + user_id + '_' + base
+    base = base.replace('-', '_')
+    safe_user_id = user_id.replace('@', '_at_')
+    safe_user_id = re.sub(r'[^a-zA-Z0-9_.-]', '_', safe_user_id)
+    return 'sk_' + safe_user_id + '_' + base
 
 
 def save_config_file(data, access_file=DEFAULT_CONFIG_FILE):
