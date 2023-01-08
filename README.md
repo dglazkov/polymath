@@ -233,7 +233,12 @@ The mapping of `asset_token` to `access_tag` they give access to is configured i
 ```
 {
   //This defaults to "unpublished" if not explicitly set, and may be omitted
-  "default_private_access_tag": "unpublished"
+  "default_private_access_tag": "unpublished",
+  //An optional configuration
+  "restricted": {
+    //Optional. If provided and set to true, then Library.query() will return count_restricted in its result. This will reveal to any queriers that there are private results.
+    "count": true
+  }
   "tokens": {
       //user_vanity_id can be any user-understable name, typically an email address like 'alex@komoroske.com'
       <user_vanity_id>: {

@@ -30,19 +30,25 @@ DEFAULT_PRIVATE_ACCESS_TAG = 'unpublished'
 
 DEFAULT_CONFIG_FILE = 'host.SECRET.json'
 
-def permitted_access_tags(access_token):
-
-    if not access_token:
-        return set([])
+def permitted_access(access_token):
+    """
+    Returns the set of permitted access tags, and whether to include restricted_count in the result.
+    """
 
     # TODO: allow overriding this
     access_file = DEFAULT_CONFIG_FILE
     if not os.path.exists(access_file):
-        return set([])
+        return set([]), False
 
     # TODO: don't load this file every time
     with open(DEFAULT_CONFIG_FILE, 'r') as f:
         data = json.load(f)
+
+    restricted = data.get('restricted', {})
+    include_restricted_count = restricted.get('count', False)
+
+    if not access_token:
+        return set([]), include_restricted_count
 
     if 'tokens' not in data:
         raise Exception(f'The data in {access_file} did not contain a key of "tokens" as expected')
@@ -58,11 +64,11 @@ def permitted_access_tags(access_token):
             break
     
     if not token_record:
-        return set([])
+        return set([]), include_restricted_count
 
     tags = token_record['access_tags'] if 'access_tags' in token_record else [private_access_tag]
 
-    return set(tags)
+    return set(tags), include_restricted_count
 
 # In JS, the argument can be produced with with:
 # ```
@@ -499,14 +505,16 @@ class Library:
         chunk_dict = get_context(chunk_ids, self, count,
                                 count_type_is_chunk=count_type_is_chunk)
 
-        visible_access_tags = permitted_access_tags(access_token)
+        visible_access_tags, include_restricted_count = permitted_access(access_token)
 
         chunk_count = 0
+        restricted_count = 0
 
         for chunk_id, chunk_text in chunk_dict.items():
             chunk = copy.deepcopy(self.chunk(chunk_id))
             if 'access_tag' in chunk:
                 if chunk['access_tag'] not in visible_access_tags:
+                    restricted_count += 1
                     continue
 
             chunk_count += 1
@@ -524,6 +532,9 @@ class Library:
             result.set_chunk(chunk_id, chunk)
 
         result.count_chunks = chunk_count
+
+        if include_restricted_count:
+            result.count_restricted = restricted_count
 
         return result
 
