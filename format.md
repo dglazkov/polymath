@@ -6,6 +6,14 @@ The format of the library files is as follows:
   embedding_model: 'openai.com:text-embedding-ada-002',
   //Omit is optional. If provided, it is a string or array of strings that specify which keys in chunks are expected to be missing. '' means nothing is supposed to be missing, and '*' means all chunks are totally gone, that is content: {}.
   omit: 'embedding'
+  //details is optional. It's typically only set for libraries generated from Library.query()
+  details: {
+    //Counts is optional. It can be retrieved or set by Library.counts.
+    counts: {
+      //chunks is the number of chunks that this file contains... even if they were all omitted with omit='*'. It can be retrieved or set with Library.count_chunks
+      chunks: <int>
+    }
+  }
   content: {
     //A chunk_id is any string unique within this index to address your content. It could be a post's slug, a URL, or a monotonically-increasing integer formatted as a string.
     <chunk_id>: {
