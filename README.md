@@ -141,14 +141,14 @@ The config file should be formatted like this:
   "servers": {
     "wdl": {
       "endpoint": "https://polymath.wdl.com",
+      //Optional. If set, and `--dev` is passed, then it will use this endpoint instead.
+      "dev_endpoint": "http://127.0.0.1:8080",
       //Optional. If provided, it will be passed as the access_token when querying this server. It should be an access_token this host has in their `access.SECRET.json`.
       "token": <access_token>
     }
   }
 }
 ```
-
-You might want to also create a `client.dev.SECRET.json` that includes the endpoints and tokens for your local setup, too, where your endpoints would be urls like `http://127.0.0.1:8080` and pass the tokens in use to protect unpublished library data.
 
 ### Standing up a polymath endpoint
 
@@ -202,19 +202,8 @@ You might chose to have your own `client.SECRET.json` that looks like this:
   "servers": {
     "your_server_vanity_id": {
       "endpoint": "https://polymath.yourserver.com",
-      "token": "<token_you_generated>"
-    }
-  }
-}
-```
-
-and a `client.dev.SECRET.json` that looks like this (for when you query your local development host)
-
-```
-{
-  "servers": {
-    "your_server_vanity_id": {
-      "endpoint": "http://127.0.0.1:8080",
+      //Including this will switch to the local endpoint and provide the same token if `--dev` is passed to sample.client
+      "dev_endpoint": "http://127.0.0.1:8080",
       "token": "<token_you_generated>"
     }
   }

@@ -39,6 +39,8 @@ def query_server(query_embedding, random, server):
 parser = argparse.ArgumentParser()
 parser.add_argument("query", help="The question to ask",
                     default="Tell me about 3P")
+parser.add_argument("--dev", action="store_true",
+                    help=f"If set, will use the dev_* properties for each endpoint in config if they exist")
 parser.add_argument("--config", help=f"A path to a config file to use")
 parser.add_argument("--server", help="A server to use for querying",
                     action="append"),
@@ -65,6 +67,7 @@ openai.api_key = os.getenv("OPENAI_API_KEY")
 
 query = args.query
 server_list = args.server
+dev_mode = args.dev
 
 if not server_list:
     server_list = []
@@ -73,9 +76,11 @@ server_tokens = {}
 
 if 'servers' in config:
     for server_config in config['servers'].values():
-        if 'endpoint' not in server_config:
+        endpoint = server_config.get('endpoint', '')
+        if dev_mode and 'dev_endpoint' in server_config:
+            endpoint = server_config['dev_endpoint']
+        if not endpoint:
             continue
-        endpoint = server_config['endpoint']
         server_list.append(endpoint)
         server_tokens[endpoint] = server_config.get('token', '')
 
