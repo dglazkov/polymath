@@ -132,7 +132,8 @@ Now, run the client, specifying the query and servers that you just started. For
 
 The output should be a completion on the combined context of both servers.
 
-You can also specify client configuration in a config file like this: `--config client.SECRET.json`.
+If you have a file named `client.SECRET.json` in the root of your directory, it
+will automatically be used for configuration.
 
 The config file should be formatted like this:
 
@@ -191,7 +192,7 @@ They then add their token to their `client.SECRET.config` like this:
 }
 ```
 
-Then they run their client like: `python3 -m sample.client --config client.SECRET.cong "query"`.
+Then they run their client like: `python3 -m sample.client "query"`.
 
 You'll also want to generate a token for yourself too so you have access to your private libraries.
 

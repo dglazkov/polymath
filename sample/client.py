@@ -14,6 +14,8 @@ from ask_embeddings import (base64_from_vector, get_completion_with_context,
 # TODO: Make this computed from the number of servers.
 CONTEXT_TOKEN_COUNT = 1500
 
+DEFAULT_CONFIG_FILE = "client.SECRET.json"
+
 
 def query_server(query_embedding, random, server):
     http = urllib3.PoolManager()
@@ -41,7 +43,7 @@ parser.add_argument("query", help="The question to ask",
                     default="Tell me about 3P")
 parser.add_argument("--dev", action="store_true",
                     help=f"If set, will use the dev_* properties for each endpoint in config if they exist")
-parser.add_argument("--config", help=f"A path to a config file to use")
+parser.add_argument("--config", help=f"A path to a config file to use. If not provided it will try to use {DEFAULT_CONFIG_FILE} if it exists. Pass \"\" explicitly to proactively ignore that file even if it exists", default=None)
 parser.add_argument("--server", help="A server to use for querying",
                     action="append"),
 parser.add_argument("--completion", help="Request completion based on the query and context",
@@ -54,13 +56,20 @@ args = parser.parse_args()
 
 config = {}
 
-if args.config:
-    config_file = args.config
+config_file = args.config
+complain_for_missing_config = True
+if config_file == None:
+    config_file = DEFAULT_CONFIG_FILE
+    complain_for_missing_config = False
+
+if config_file:
     if os.path.exists(config_file):
+        print(f'Using config {config_file}')
         with open(config_file, 'r') as f:
             config = json.load(f)
     else:
-        print(f'{config_file} was not found.')
+        if complain_for_missing_config:
+            print(f'{config_file} was not found.')
     
 load_dotenv()
 openai.api_key = os.getenv("OPENAI_API_KEY")
@@ -83,6 +92,9 @@ if 'servers' in config:
             continue
         server_list.append(endpoint)
         server_tokens[endpoint] = server_config.get('token', '')
+
+if len(server_list) == 0:
+    print('No servers provided.')
 
 if args.verbose:
     if args.random:
