@@ -14,7 +14,7 @@ def generate_token_for_user(user_id):
     base = base.replace('=', '')
     base = base.replace('-', '_')
     safe_user_id = user_id.replace('@', '_at_')
-    safe_user_id = re.sub(r'[^a-zA-Z0-9_.-]', '_', safe_user_id)
+    safe_user_id = re.sub(r'[^a-zA-Z0-9_-]', '_', safe_user_id)
     return 'sk_' + safe_user_id + '_' + base
 
 
