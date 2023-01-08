@@ -28,7 +28,7 @@ CURRENT_VERSION = 0
 
 DEFAULT_PRIVATE_ACCESS_TAG = 'unpublished'
 
-DEFAULT_ACCESS_FILE = 'host.SECRET.json'
+DEFAULT_CONFIG_FILE = 'host.SECRET.json'
 
 def permitted_access_tags(access_token):
 
@@ -36,12 +36,12 @@ def permitted_access_tags(access_token):
         return set([])
 
     # TODO: allow overriding this
-    access_file = DEFAULT_ACCESS_FILE
+    access_file = DEFAULT_CONFIG_FILE
     if not os.path.exists(access_file):
         return set([])
 
     # TODO: don't load this file every time
-    with open(DEFAULT_ACCESS_FILE, 'r') as f:
+    with open(DEFAULT_CONFIG_FILE, 'r') as f:
         data = json.load(f)
 
     if 'tokens' not in data:
