@@ -39,15 +39,30 @@ def add_token_for_user(user_id, tags=None, access_file=DEFAULT_CONFIG_FILE, forc
     if user_id not in tokens:
         tokens[user_id] = {}
     user = tokens[user_id]
-    if not force and 'token' in user:
-        print('That user already had a token set, so returning that and leaving it unmodified instead of generating a new one. Pass --force to force creating one.')
+    changes_made = False
+    if 'token' in user:
+        if force:
+            user['token'] = token
+            changes_made = True
+        else:
+            print('That user already had a token set, so returning that instead of generating a new one. Pass --force to force creating one.')
     else:
         user['token'] = token
-        if tags:
+        changes_made = True
+
+    if tags:
+        if 'access_tags' not in user or user['access_tags'] != tags:
+            print(f'Setting access tags to {tags}')
             user['access_tags'] = tags
-        elif 'access_tags' in user:
+    else:
+        if 'access_tags' in user:
+            print('Removing access_tags and setting to default')
             del user['access_tags']
+            changes_made = True
+
+    if changes_made:
         save_config_file(data, access_file)
+
     print('Pass the following line to the user to add to their client.SECRET.json for this endpoint:')
     print(user['token'])
 
