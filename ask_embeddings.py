@@ -154,6 +154,9 @@ class Library:
 
         self.validate()
 
+        if self.message:
+            print(self.message)
+
 
     def validate(self):
         if self._data.get('version', -1) != CURRENT_VERSION:
@@ -283,6 +286,20 @@ class Library:
         self._details = self._details
         self.counts = self.counts
         self.counts['chunks'] = value
+
+
+    @property
+    def message(self):
+        details = self._details
+        if 'message' not in details:
+            return ''
+        return details['message']
+
+    
+    @message.setter
+    def message(self, value):
+        self._details = self._details
+        self._details['message'] = value
 
 
     def extend(self, other : 'Library'):
