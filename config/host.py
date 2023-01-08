@@ -78,8 +78,9 @@ def access_command(args):
     user_id = args.user_id
     force = args.force
     file = args.file
+    tags = args.access_tags
     if command == 'grant':
-        add_token_for_user(user_id, access_file=file, force=force)
+        add_token_for_user(user_id, tags=tags, access_file=file, force=force)
     elif command == 'revoke':
         revoke_token_for_user(user_id, access_file=file, force=force)
     else:
@@ -98,6 +99,7 @@ access_parser = sub_parser.add_parser('access', parents=[base_parser])
 access_parser.add_argument("command", help="The command to run", choices=['grant', 'revoke'],
                     default='grant')
 access_parser.add_argument("user_id", help="The id of the user to modify")
+access_parser.add_argument("access_tags", help="Optional access tags to set", nargs='*')
 access_parser.set_defaults(func=access_command)
 
 args = parser.parse_args()
