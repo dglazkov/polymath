@@ -28,9 +28,11 @@ def load_config_file(access_file=DEFAULT_CONFIG_FILE):
     return data
 
 
-def add_token_for_user(user_id, access_file=DEFAULT_CONFIG_FILE, force=False):
+def add_token_for_user(user_id, tags=None, access_file=DEFAULT_CONFIG_FILE, force=False):
     token = generate_token_for_user(user_id)
     data = load_config_file(access_file)
+    if not tags or len(tags) == 0:
+        tags = None
     if 'tokens' not in data:
         data['tokens'] = {}
     tokens = data['tokens']
@@ -38,9 +40,13 @@ def add_token_for_user(user_id, access_file=DEFAULT_CONFIG_FILE, force=False):
         tokens[user_id] = {}
     user = tokens[user_id]
     if not force and 'token' in user:
-        print('That user already had a token set, so returning that instead of generating a new one. Pass --force to force creating one.')
+        print('That user already had a token set, so returning that and leaving it unmodified instead of generating a new one. Pass --force to force creating one.')
     else:
         user['token'] = token
+        if tags:
+            user['access_tags'] = tags
+        elif 'access_tags' in user:
+            del user['access_tags']
         save_config_file(data, access_file)
     print('Pass the following line to the user to add to their client.SECRET.json for this endpoint:')
     print(user['token'])
