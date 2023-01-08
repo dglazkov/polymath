@@ -133,6 +133,8 @@ The config file should be formatted like this:
 }
 ```
 
+You might want to also create a `client.dev.SECRET.json` that includes the endpoints and tokens for your local setup, too, where your endpoints would be urls like `http://127.0.0.1:8080` and pass the tokens in use to protect unpublished library data.
+
 ### Standing up a polymath endpoint
 
 This project can be used to stand up your own polymath endpoint on Google App Engine.
