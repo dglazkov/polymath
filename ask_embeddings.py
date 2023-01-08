@@ -297,7 +297,7 @@ class Library:
 
 
     @count_restricted.setter
-    def count_chunks(self, value):
+    def count_restricted(self, value):
         self._details = self._details
         self.counts = self.counts
         self.counts['restricted'] = value
