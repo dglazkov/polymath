@@ -469,20 +469,30 @@ class Library:
 
         visible_access_tags = permitted_access_tags(access_token)
 
-        if not omit_whole_chunk:
-            for chunk_id, chunk_text in chunk_dict.items():
-                chunk = copy.deepcopy(self.chunk(chunk_id))
-                if 'access_tag' in chunk:
-                    if chunk['access_tag'] not in visible_access_tags:
-                        continue
-                # Note: if the text was truncated then technically the embedding isn't
-                # necessarily right anymore. But, like, whatever.
-                chunk['text'] = chunk_text
-                if similarities_dict:
-                    # the similarity is float32, but only float64 is JSON serializable
-                    chunk['similarity'] = float(
-                        similarities_dict[chunk_id])
-                result.set_chunk(chunk_id, chunk)
+        chunk_count = 0
+
+        for chunk_id, chunk_text in chunk_dict.items():
+            chunk = copy.deepcopy(self.chunk(chunk_id))
+            if 'access_tag' in chunk:
+                if chunk['access_tag'] not in visible_access_tags:
+                    continue
+
+            chunk_count += 1
+
+            if omit_whole_chunk:
+                continue
+
+            # Note: if the text was truncated then technically the embedding isn't
+            # necessarily right anymore. But, like, whatever.
+            chunk['text'] = chunk_text
+            if similarities_dict:
+                # the similarity is float32, but only float64 is JSON serializable
+                chunk['similarity'] = float(
+                    similarities_dict[chunk_id])
+            result.set_chunk(chunk_id, chunk)
+
+        result.count_chunks = chunk_count
+
         return result
 
 
