@@ -17,6 +17,10 @@ answer the question.
 
 `sample/` includes a sample question answerer.
 
+You'll need to install the requirements. We recommend using `virtualenv` (see guidance below in this guide).
+
+Then run `pip3 install -r requirements.txt` to load all of the requirements.
+
 To run it, ensure you have an environment variable set for `OPENAI_API_KEY`.
 
 Alternatively, create a `.env` file with these contents:
@@ -31,6 +35,17 @@ TRANSFORMERS_VERBOSITY=error
 Any library files you have in `libraries/` will be used as the content. If none exist, the sample will use `sample-content.json`.
 
 Then run `python3 -m sample.main "How does building a platform differ from building a product?"`
+
+You can run it with production libraries that others host with `python3 -m sample.client --server https://polymath.komoroske.com "What are best practices for managing platforms?"`
+
+You can also use `--server` multiple times to use multiple end points.
+
+A few public content servers you can try:
+  - https://polymath.komoroske.com
+  - https://polymath.glazkov.com
+  - https://polymath.fluxcollective.org
+
+If someone who runs a polymath server sent you a private token, see the section below on `Private Content` and its own getting started guide.
 
 ## Creating a new library
 
