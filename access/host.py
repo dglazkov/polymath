@@ -4,9 +4,8 @@ import json
 import os
 import secrets
 import base64
-import re
 
-DEFAULT_ACCESS_FILE = 'access.SECRET.json'
+DEFAULT_ACCESS_FILE = 'host.SECRET.json'
 
 
 def generate_token_for_user(user_id):

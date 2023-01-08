@@ -28,7 +28,7 @@ CURRENT_VERSION = 0
 
 DEFAULT_PRIVATE_ACCESS_TAG = 'unpublished'
 
-DEFAULT_ACCESS_FILE = 'access.SECRET.json'
+DEFAULT_ACCESS_FILE = 'host.SECRET.json'
 
 def permitted_access_tags(access_token):
 
