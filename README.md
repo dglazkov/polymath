@@ -27,10 +27,7 @@ Alternatively, create a `.env` file with these contents:
 
 ```
 OPENAI_API_KEY=<key goes here>
-TRANSFORMERS_VERBOSITY=error
 ```
-
-(The last line will suppress the `None of PyTorch, TensorFlow >= 2.0, or Flax have been found` warning you may get when running the code)
 
 Any library files you have in `libraries/` will be used as the content. If none exist, the sample will use `sample-content.json`.
 
