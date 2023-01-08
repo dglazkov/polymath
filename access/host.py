@@ -81,7 +81,9 @@ user_id = args.user_id
 force = args.force
 file = args.file
 
-if command == 'add':
+if command == 'grant':
     add_token_for_user(user_id, access_file=file, force=force)
 elif command == 'revoke':
     revoke_token_for_user(user_id, access_file=file, force=force)
+else:
+    print(f'Unknown command {command}')
