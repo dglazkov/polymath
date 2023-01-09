@@ -6,9 +6,6 @@ from dotenv import load_dotenv
 
 import ask_embeddings
 
-load_dotenv()
-openai.api_key = os.getenv("OPENAI_API_KEY")
-
 
 def add_embeddings(max_entries, library : ask_embeddings.Library):
     """
@@ -41,6 +38,9 @@ def add_embeddings(max_entries, library : ask_embeddings.Library):
 
 
 if __name__ == "__main__":
+    load_dotenv()
+    openai.api_key = os.getenv("OPENAI_API_KEY")
+
     parser = argparse.ArgumentParser()
     parser.add_argument(
         "path", help="Path to the library to add embeddings to")
