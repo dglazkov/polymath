@@ -5,6 +5,7 @@ import glob
 import json
 import copy
 import random
+import hashlib
 from time import sleep
 
 import numpy as np
@@ -71,6 +72,27 @@ def permitted_access(access_token):
     tags = token_record['access_tags'] if 'access_tags' in token_record else [private_access_tag]
 
     return set(tags), include_restricted_count, restricted_message
+
+
+def canonical_id_for_chunk(chunk):
+    text = chunk.get('text', '')
+    info = chunk.get('info', {})
+    url = info.get('url', {})
+    return canonical_id(text, url)
+
+
+def canonical_id(chunk_text, url=''):
+    """
+    Returns the canonical ID for a given chunk of text.
+
+    Today using the canonical ID as a chunk ID is a best practice, but in upcoming versions it will be required.
+    """
+    message = url.strip() + '\n' + chunk_text.strip()
+    message_bytes = message.encode()
+    hash_object = hashlib.sha256()
+    hash_object.update(message_bytes)
+    return hash_object.hexdigest()
+
 
 # In JS, the argument can be produced with with:
 # ```
