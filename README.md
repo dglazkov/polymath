@@ -266,3 +266,7 @@ Every time you open a new terminal, activate the environment with `source env/bi
 After checking out the repo and activating your environment install dependencies: `pip install -r requirements.txt`
 
 Every time you add a new depenency, update the dependency list with `pip freeze > requirements.txt`
+
+## Commmunity
+
+If you would ike to participate in development or host a polymath endpoint, consider joining the [Polymath Discord](https://discord.gg/8mbSq5vA). It's not much, but should give you a better sense of what's happening, like when formats are changing or new interesting capabilities are available. 
