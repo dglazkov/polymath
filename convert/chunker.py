@@ -39,6 +39,7 @@ MEH_SIZE = GOLDIELOCKS["min"] / 2
 
 # TODO: Make this logic use GPT-2 tokenizer rather than character lengths.
 
+
 def get_clean_text(text: str):
     return clean(text,
                  no_urls=True,
@@ -101,9 +102,20 @@ def create_chunks(sections):
 
 
 def generate_chunks(pages):
+    """
+    Main entry point for the Chunker.
+
+    Chunks pages into strings that are well-sized for embeddings.
+
+    Returns chunks that can be used as output of the Importer.get_chunks
+
+    Arguments:
+        pages -- Object that is an output of one of the importers.
+    """
     for page_id, page in pages.items():
         sections = page["sections"]
-        print(f"Processing {page['info']['url']} with {len(sections)} sections ...")
+        print(
+            f"Processing {page['info']['url']} with {len(sections)} sections ...")
         for chunk_id, chunk in create_chunks(sections):
             yield (
                 f"{page_id}-{chunk_id}",
@@ -113,28 +125,6 @@ def generate_chunks(pages):
                 }
             )
 
-def get_chunks(pages):
-    """
-    Main entry point for the Chunker.
-
-    Chunks pages into strings that are well-sized for embeddings.
-
-    Returns polymath-formatted object (as specified in
-    https://github.com/dglazkov/polymath/blob/main/format.md)
-
-    Arguments:
-        pages -- Object that is an output of one of the importers.
-    """
-    content = {}
-    for id, chunk in generate_chunks(pages):
-        content[id] = chunk
-    return {
-        "version": 0,
-        "embedding_model": 'openai.com:text-embedding-ada-002',
-        "omit": 'embedding,token_count,similarity',
-        "content": content
-    }
-
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
@@ -143,9 +133,17 @@ if __name__ == "__main__":
     parser.add_argument(
         '--output', help='Filename of where the output goes"', required=True)
     args = parser.parse_args()
-  
+
     pages = json.load(open(args.path, 'r'))
-    chunks = get_chunks(pages)
+    content = {}
+    for id, chunk in generate_chunks(pages):
+        content[id] = chunk
+    chunks = {
+        "version": 0,
+        "embedding_model": 'openai.com:text-embedding-ada-002',
+        "omit": 'embedding,token_count,similarity',
+        "content": content
+    }
     print(f"Writing output to {args.output} ...")
     json.dump(chunks, open(args.output, "w"), indent="\t")
     print("Done.")

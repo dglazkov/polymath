@@ -93,11 +93,22 @@ Drafts will be excluded by default. If you want to include them, add `--medium-i
 
 First, generate a snapshot of your substack account by going to the Exports part of your substack settings and choosing `Create new export`.
 
-Download and unzip your snapshot. Then run:
+Download and unzip your snapshot. 
+In the root of the snapshot, create a `config.json` file, formatted as:
+```
+{
+        "substack_url": <url of the Substack site>,
+        "exclude": [
+            Optoinal, list of strings to exclude from the import. 
+            Each string is a substring of the text to exclude from the import.
+        ]
+    }
 
-`python3 -m convert.main --importer substack --substack-url=https://read.fluxcollective.org path/to/substack/root/`
+```
 
-Replacing the url with your base url.
+Then run:
+
+`python3 -m convert.main --importer substack path/to/substack/root/`
 
 ### Running the server
 

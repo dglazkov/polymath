@@ -6,6 +6,7 @@ import urllib3
 from bs4 import BeautifulSoup
 from typing import Tuple
 from argparse import (ArgumentParser, Namespace)
+from .chunker import generate_chunks
 
 HEADERS = ["h1", "h2", "h3", "h4", "h5", "h6"]
 LISTS = ["ul", "ol"]
@@ -41,42 +42,22 @@ def get_issue_info(substack_url, issue_slug: str) -> Tuple[str, str, str, str]:
 
 class SubstackImporter:
     def __init__(self):
-        self._substack_url = None
-
-    def install_arguments(self, parser: ArgumentParser):
-        """
-        An opportunity to install arguments on the parser.
-
-        Arguments should be in a new group, start with a `--{importer_name}-`
-        and have a default.
-        """
-        substack_group = parser.add_argument_group('substack')
-        substack_group.add_argument(
-            '--substack-url', help='If importer type is substack, this url is required. Example: https://read.fluxcollective.org', default='')
+        self._config = None
 
     def retrieve_arguments(self, args: Namespace):
         """
         An opportunity to retrieve arguments configured via install_arguments.
         """
-        self._substack_url = args.substack_url
-        if not self._substack_url:
-            raise Exception('--substack-url is required')
+        self._max = args.max
 
-    def output_base_filename(self, _) -> str:
-        return self._substack_url.replace('https://', '').replace('http://', '').replace('.', '_')
+    def output_base_filename(self, filename) -> str:
+        self._config = json.load(open(f"{filename}/config.json"))
+        return self._config["substack_url"].replace('https://', '').replace('http://', '').replace('.', '_')
 
     def get_chunks(self, filename: str):
-        filenames = glob.glob(f"{filename}/posts/*.html")
-        for file in filenames:
-            issue_slug = get_issue_slug(file)
-            issue_info = get_issue_info(self._substack_url, issue_slug)
-            with open(file, 'r') as file:
-                soup = BeautifulSoup(file, "html.parser")
-                for id, sibling in enumerate(soup.children):
-                    yield (f"{issue_slug}-{id}", {
-                        "text": sibling.get_text(" ", strip=True),
-                        "info": issue_info
-                    })
+        pages = get_pages(filename, self._config, self._max)
+        for chunk in generate_chunks(pages):
+            yield chunk
 
 
 def get_text(node):
@@ -89,7 +70,8 @@ def get_sections(filename: str, exclude: list):
         section_content = []
         for sibling in soup.children:
             if sibling.name in LISTS:
-                section_content.extend([get_text(item) for item in sibling.children])
+                section_content.extend([get_text(item)
+                                       for item in sibling.children])
             else:
                 text = get_text(sibling)
                 if not text:
@@ -98,7 +80,7 @@ def get_sections(filename: str, exclude: list):
                 if sibling.name in HEADERS:
                     if section_content:
                         yield section_content
-                    section_content = [ text ] if not skip else []
+                    section_content = [text] if not skip else []
                 else:
                     if not skip:
                         section_content.append(text)
@@ -106,7 +88,7 @@ def get_sections(filename: str, exclude: list):
             yield section_content
 
 
-def get_pages(path: str, config: dict):
+def get_pages(path: str, config: dict, max: int = None):
     """
     Main entry point for the Substack importer.
 
@@ -132,7 +114,10 @@ def get_pages(path: str, config: dict):
     """
     page_filenames = glob.glob(f"{path}/posts/*.html")
     result = {}
+    count = 0
     for page_filename in page_filenames:
+        if max > 0 and count >= max:
+            break
         print(f"Processing \"{page_filename}\"")
         issue_slug = get_issue_slug(page_filename)
         issue_info = get_issue_info(config["substack_url"], issue_slug)
@@ -140,7 +125,9 @@ def get_pages(path: str, config: dict):
             "sections": list(get_sections(page_filename, config["exclude"])),
             "info": issue_info
         }
+        count += 1
     return result
+
 
 if __name__ == "__main__":
     parser = ArgumentParser()
