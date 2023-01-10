@@ -226,8 +226,8 @@ The mapping of `asset_token` to `access_tag` they give access to is configured i
   "restricted": {
     //Optional. If provided and set to true, then Library.query() will return count_restricted in its result. This will reveal to any queriers that there are private results.
     "count": true,
-    //Optional. If provided, then Library.query() will output a message field of this message if at least one chunk was filtered out due to being access restricted. This reveals that there are private results. A typical message might 
-    "message": "Restricted results omitted. Contact alex@komoroske.com for an access_token."
+    //Optional. If provided, then Library.query() will output a message field of this message if at least one chunk was filtered out due to being access restricted. This reveals that there are private results. The message will be prepended with 'Restricted results were omitted. '
+    "message": "Contact alex@komoroske.com for an access_token."
   }
   "tokens": {
       //user_vanity_id can be any user-understable name, typically an email address like 'alex@komoroske.com'

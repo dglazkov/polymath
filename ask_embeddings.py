@@ -184,9 +184,6 @@ class Library:
 
         self.validate()
 
-        if self.message:
-            print(self.message)
-
 
     def validate(self):
         if self._data.get('version', -1) != CURRENT_VERSION:
@@ -561,7 +558,7 @@ class Library:
             result.count_restricted = restricted_count
         
         if restricted_message and restricted_count > 0:
-            result.message = restricted_message
+            result.message = 'Restricted results were omitted. ' + restricted_message
 
         return result
 

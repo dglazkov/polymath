@@ -111,6 +111,8 @@ for server in server_list:
     print(f"Querying {server} ...") if args.verbose else None
     # for now, just combine contexts
     library = query_server(query_vector, args.random, server)
+    if library.message:
+        print(f'{server} said: ' + library.message)
     context.extend(get_context_for_library(library))
     sources.extend([chunk["url"]
                    for chunk in get_chunk_infos_for_library(library)])
