@@ -2,7 +2,6 @@ import glob
 import json
 import re
 from .og import get_og_data
-import urllib3
 from bs4 import BeautifulSoup
 from typing import Tuple
 from argparse import (ArgumentParser, Namespace)
