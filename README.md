@@ -164,7 +164,7 @@ The config file should be formatted like this:
 
 This project can be used to stand up your own polymath endpoint on Google App Engine.
 
-1) Follow [these instrustions](https://cloud.google.com/appengine/docs/standard/python3/building-app/creating-gcp-project) to set up a Google App Engine (GAE) instance. If you already have a GAE instance elsewhere on your machine, don't forget to change the name of the project before running `gcloud app create`. You can change the name of the project by invoking `gcloud config set project <gae-project-name>` first.
+1) Follow [these instructions](https://cloud.google.com/appengine/docs/standard/python3/building-app/creating-gcp-project) to set up a Google App Engine (GAE) instance. If you already have a GAE instance elsewhere on your machine, don't forget to change the name of the project before running `gcloud app create`. You can change the name of the project by invoking `gcloud config set project <gae-project-name>` first.
 
 2) Place the libraries you want to use in the `libraries/` directory (anything in `libraries/third_party/` will not be uploaded to the production server). If you have multiple libraries in that directory but only want to serve one, you can add a line like `LIBRARY_FILENAME=libraries/my-substack-posts.json` to your `.env` file.
 
@@ -266,7 +266,7 @@ You can also revoke a key with `python3 -m config.host access revoke <user_vanit
 
 It's recommended to use `virtualenv` to manage your python environment for this project.
 
-If you don't have `virtualenv`, install it with `pip install virtualenv`.
+If you don't have `virtualenv`, install it with `pip3 install virtualenv`.
 
 After checking out the repo, create a virtualenv:
 
@@ -274,9 +274,9 @@ After checking out the repo, create a virtualenv:
 
 Every time you open a new terminal, activate the environment with `source env/bin/activate`.
 
-After checking out the repo and activating your environment install dependencies: `pip install -r requirements.txt`
+After checking out the repo and activating your environment install dependencies: `pip3 install -r requirements.txt`
 
-Every time you add a new dependency, update the dependency list with `pip freeze > requirements.txt`
+Every time you add a new dependency, update the dependency list with `pip3 freeze > requirements.txt`
 
 ## Commmunity
 
