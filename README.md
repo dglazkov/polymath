@@ -276,7 +276,7 @@ Every time you open a new terminal, activate the environment with `source env/bi
 
 After checking out the repo and activating your environment install dependencies: `pip install -r requirements.txt`
 
-Every time you add a new depenency, update the dependency list with `pip freeze > requirements.txt`
+Every time you add a new dependency, update the dependency list with `pip freeze > requirements.txt`
 
 ## Commmunity
 
