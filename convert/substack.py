@@ -54,9 +54,8 @@ class SubstackImporter:
         return self._config["substack_url"].replace('https://', '').replace('http://', '').replace('.', '_')
 
     def get_chunks(self, filename: str):
-        pages = get_pages(filename, self._config, self._max)
-        for chunk in generate_chunks(pages):
-            yield chunk
+        for page in get_pages(filename, self._config):
+            yield from generate_chunks(**page)
 
 
 def get_text(node):
@@ -87,16 +86,20 @@ def get_sections(filename: str, exclude: list):
             yield section_content
 
 
-def get_pages(path: str, config: dict, max: int = None):
+def get_pages(path: str, config: dict):
     """
     Main entry point for the Substack importer.
 
-    Returns a dict of pages. The key is a unique identifier of a page
-    and the value is of the following structure structure:
+    Returns an iterable of dictionaries. 
+
+    Dictionaries are of the following structure:
+    {
+        "id": unique id of the page,
         "sections": list of sections, each section is a list of strings,
         represnting a text chunk
         "info": dict of issue metadata, following the `info` format
         as specified in https://github.com/dglazkov/polymath/blob/main/format.md
+    }
 
     Arguments:
         path {str} -- Path to the directory containing the Substack export
@@ -113,32 +116,29 @@ def get_pages(path: str, config: dict, max: int = None):
     """
     page_filenames = glob.glob(f"{path}/posts/*.html")
     result = {}
-    count = 0
     for page_filename in page_filenames:
-        if max > 0 and count >= max:
-            break
         print(f"Processing \"{page_filename}\"")
         issue_slug = get_issue_slug(page_filename)
         issue_info = get_issue_info(config["substack_url"], issue_slug)
-        result[f"{issue_slug}"] = {
+        yield {
+            "id": f"{issue_slug}",
             "sections": list(get_sections(page_filename, config["exclude"])),
             "info": issue_info
         }
-        count += 1
     return result
 
 
-if __name__ == "__main__":
-    parser = ArgumentParser()
-    parser.add_argument(
-        "path", help="Path to the directory containing the Substack export")
-    parser.add_argument(
-        '--output', help='Filename of where the output goes"', required=True)
-    args = parser.parse_args()
+# if __name__ == "__main__":
+#     parser = ArgumentParser()
+#     parser.add_argument(
+#         "path", help="Path to the directory containing the Substack export")
+#     parser.add_argument(
+#         '--output', help='Filename of where the output goes"', required=True)
+#     args = parser.parse_args()
 
-    config = json.load(open(f"{args.path}/config.json"))
+#     config = json.load(open(f"{args.path}/config.json"))
 
-    pages = get_pages(args.path, config)
-    print(f"Writing output to {args.output} ...")
-    json.dump(pages, open(args.output, "w"), indent="\t")
-    print("Done.")
+#     pages = get_pages(args.path, config)
+#     print(f"Writing output to {args.output} ...")
+#     json.dump(pages, open(args.output, "w"), indent="\t")
+#     print("Done.")

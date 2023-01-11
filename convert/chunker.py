@@ -101,49 +101,52 @@ def create_chunks(sections):
             buffer_size = 0
 
 
-def generate_chunks(pages):
+def generate_chunks(id, sections, info):
     """
     Main entry point for the Chunker.
 
-    Chunks pages into strings that are well-sized for embeddings.
+    Chunks a page into strings that are well-sized for embeddings.
 
     Returns chunks that can be used as output of the Importer.get_chunks
 
     Arguments:
-        pages -- Object that is an output of one of the importers.
+        id -- A unique id for the page.
+        sections -- list of sections, each section is a list of strings,
+            represnting a text chunk
+        info -- dict of issue metadata, following the `info` format
+            as specified in https://github.com/dglazkov/polymath/blob/main/format.md
+
     """
-    for page_id, page in pages.items():
-        sections = page["sections"]
-        print(
-            f"Processing {page['info']['url']} with {len(sections)} sections ...")
-        for chunk_id, chunk in create_chunks(sections):
-            yield (
-                f"{page_id}-{chunk_id}",
-                {
-                    "text": chunk,
-                    "info": page["info"]
-                }
-            )
+    print(
+        f"Processing {info['url']} with {len(sections)} sections ...")
+    for chunk_id, chunk in create_chunks(sections):
+        yield (
+            f"{id}-{chunk_id}",
+            {
+                "text": chunk,
+                "info": info
+            }
+        )
 
 
-if __name__ == "__main__":
-    parser = argparse.ArgumentParser()
-    parser.add_argument(
-        "path", help="Path to the file containing page sections")
-    parser.add_argument(
-        '--output', help='Filename of where the output goes"', required=True)
-    args = parser.parse_args()
+# if __name__ == "__main__":
+#     parser = argparse.ArgumentParser()
+#     parser.add_argument(
+#         "path", help="Path to the file containing page sections")
+#     parser.add_argument(
+#         '--output', help='Filename of where the output goes"', required=True)
+#     args = parser.parse_args()
 
-    pages = json.load(open(args.path, 'r'))
-    content = {}
-    for id, chunk in generate_chunks(pages):
-        content[id] = chunk
-    chunks = {
-        "version": 0,
-        "embedding_model": 'openai.com:text-embedding-ada-002',
-        "omit": 'embedding,token_count,similarity',
-        "content": content
-    }
-    print(f"Writing output to {args.output} ...")
-    json.dump(chunks, open(args.output, "w"), indent="\t")
-    print("Done.")
+#     pages = json.load(open(args.path, 'r'))
+#     content = {}
+#     for id, chunk in generate_chunks(pages):
+#         content[id] = chunk
+#     chunks = {
+#         "version": 0,
+#         "embedding_model": 'openai.com:text-embedding-ada-002',
+#         "omit": 'embedding,token_count,similarity',
+#         "content": content
+#     }
+#     print(f"Writing output to {args.output} ...")
+#     json.dump(chunks, open(args.output, "w"), indent="\t")
+#     print("Done.")
