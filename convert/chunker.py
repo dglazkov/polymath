@@ -127,26 +127,3 @@ def generate_chunks(id, sections, info):
                 "info": info
             }
         )
-
-
-# if __name__ == "__main__":
-#     parser = argparse.ArgumentParser()
-#     parser.add_argument(
-#         "path", help="Path to the file containing page sections")
-#     parser.add_argument(
-#         '--output', help='Filename of where the output goes"', required=True)
-#     args = parser.parse_args()
-
-#     pages = json.load(open(args.path, 'r'))
-#     content = {}
-#     for id, chunk in generate_chunks(pages):
-#         content[id] = chunk
-#     chunks = {
-#         "version": 0,
-#         "embedding_model": 'openai.com:text-embedding-ada-002',
-#         "omit": 'embedding,token_count,similarity',
-#         "content": content
-#     }
-#     print(f"Writing output to {args.output} ...")
-#     json.dump(chunks, open(args.output, "w"), indent="\t")
-#     print("Done.")

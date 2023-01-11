@@ -126,19 +126,3 @@ def get_pages(path: str, config: dict):
             "info": issue_info
         }
     return result
-
-
-# if __name__ == "__main__":
-#     parser = ArgumentParser()
-#     parser.add_argument(
-#         "path", help="Path to the directory containing the Substack export")
-#     parser.add_argument(
-#         '--output', help='Filename of where the output goes"', required=True)
-#     args = parser.parse_args()
-
-#     config = json.load(open(f"{args.path}/config.json"))
-
-#     pages = get_pages(args.path, config)
-#     print(f"Writing output to {args.output} ...")
-#     json.dump(pages, open(args.output, "w"), indent="\t")
-#     print("Done.")
