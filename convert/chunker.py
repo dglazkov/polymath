@@ -63,8 +63,19 @@ def make_chunky_sentences(text: str):
     return result
 
 
-def create_chunks(sections):
-    count = 0
+def generate_chunks(sections):
+    """
+    Main entry point for the Chunker.
+
+    Chunks a page into strings that are well-sized for embeddings.
+
+    Returns chunks that can be used as output of the Importer.get_chunks
+
+    Arguments:
+        sections -- list of sections, each section is a list of strings,
+            represnting a text chunk
+
+    """
     buffer = []
     buffer_size = 0
     for section in sections:
@@ -83,47 +94,17 @@ def create_chunks(sections):
             if (buffer_size) > GOLDIELOCKS["max"]:
                 chunks = make_chunky_sentences("\n".join(buffer))
                 for chunk in chunks:
-                    count += 1
-                    yield (count, chunk)
+                    yield chunk
                     buffer = []
                     buffer_size = 0
                 continue
             # If just right, yield it
-            count += 1
-            yield (count, "\n".join(buffer))
+            yield "\n".join(buffer)
             buffer = []
             buffer_size = 0
         # Yield the last buffer
         if buffer:
-            count += 1
-            yield (count, "\n".join(buffer))
+            yield "\n".join(buffer)
             buffer = []
             buffer_size = 0
 
-
-def generate_chunks(id, sections, info):
-    """
-    Main entry point for the Chunker.
-
-    Chunks a page into strings that are well-sized for embeddings.
-
-    Returns chunks that can be used as output of the Importer.get_chunks
-
-    Arguments:
-        id -- A unique id for the page.
-        sections -- list of sections, each section is a list of strings,
-            represnting a text chunk
-        info -- dict of issue metadata, following the `info` format
-            as specified in https://github.com/dglazkov/polymath/blob/main/format.md
-
-    """
-    print(
-        f"Processing {info['url']} with {len(sections)} sections ...")
-    for chunk_id, chunk in create_chunks(sections):
-        yield (
-            f"{id}-{chunk_id}",
-            {
-                "text": chunk,
-                "info": info
-            }
-        )

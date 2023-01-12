@@ -55,7 +55,17 @@ class SubstackImporter:
 
     def get_chunks(self, filename: str):
         for page in get_pages(filename, self._config):
-            yield from generate_chunks(**page)
+            id = page["id"]
+            info = page["info"]
+            sections = page["sections"]
+            for chunk_id, chunk in enumerate(generate_chunks(sections)):
+                yield (
+                            f"{id}-{chunk_id}",
+                            {
+                                "text": chunk,
+                                "info": info
+                            }
+                        )
 
 
 def get_text(node):
