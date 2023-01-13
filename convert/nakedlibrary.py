@@ -1,5 +1,9 @@
+from pathlib import Path
+
 import ask_embeddings
-import os
+
+from .chunker import generate_chunks
+
 
 class NakedLibraryImporter:
     def get_chunks(self, filename):
@@ -12,12 +16,15 @@ class NakedLibraryImporter:
         for id, chunk in chunks.items():
             text = chunk.get('text')
             if not text:
-                print('Skipping a row with id ' + id + ' that was missing text')
+                print('Skipping a row with id ' +
+                      id + ' that was missing text')
                 continue
-            yield (id, {
-                    'text': text,
+
+            for text_chunk in generate_chunks([[text]]):
+                yield (id, {
+                    'text': text_chunk,
                     'info': chunk.get('info')
-            })
+                })
+
     def output_base_filename(self, input_filename):
-        base_filename, file_extension = os.path.splitext(input_filename)
-        return base_filename
+        return Path(input_filename).stem
