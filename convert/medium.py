@@ -1,7 +1,10 @@
 import glob
 import os
+from argparse import ArgumentParser, Namespace
+
 from bs4 import BeautifulSoup
-from argparse import (ArgumentParser, Namespace)
+
+from .chunker import generate_chunks
 
 
 class MediumImporter:
@@ -9,8 +12,7 @@ class MediumImporter:
     def __init__(self):
         self._include = 'all'
 
-
-    def install_arguments(self, parser : ArgumentParser):
+    def install_arguments(self, parser: ArgumentParser):
         """
         An opportunity to install arguments on the parser.
 
@@ -21,13 +23,11 @@ class MediumImporter:
         medium_group.add_argument('--medium-include', help='If provided and the importer is medium, which set to include',
                                   choices=['all', 'drafts', 'published'], default='published')
 
-
-    def retrieve_arguments(self, args : Namespace):
+    def retrieve_arguments(self, args: Namespace):
         """
         An opportunity to retrieve arguments configured via install_arguments.
         """
         self._include = args.medium_include
-
 
     def output_base_filename(self, filename):
         profile_path = f"{filename}/profile/profile.html"
@@ -35,10 +35,9 @@ class MediumImporter:
             soup = BeautifulSoup(f, "html.parser")
             ele = soup.find('a', class_='u-url')
             username = ele.get_text(strip=True)
-            return 'medium-' + username.replace('@','') + '-' + self._include
+            return 'medium-' + username.replace('@', '') + '-' + self._include
 
-
-    def extract_url_from_soup(self, base_filename : str, soup : BeautifulSoup):
+    def extract_url_from_soup(self, base_filename: str, soup: BeautifulSoup):
         if (base_filename.startswith('draft_')):
             footer = soup.find('footer')
             ele = footer.find('a')
@@ -46,18 +45,15 @@ class MediumImporter:
             ele = soup.find('a', class_='p-canonical')
         return ele.get('href')
 
-
-    def extract_image_url_from_soup(self, soup : BeautifulSoup):
+    def extract_image_url_from_soup(self, soup: BeautifulSoup):
         img = soup.find('img', class_='graf-image')
         if not img:
             return ''
         return img.get('src')
 
-
-    def extract_title_from_soup(self, soup : BeautifulSoup):
+    def extract_title_from_soup(self, soup: BeautifulSoup):
         h1 = soup.find('h1', class_='p-name')
         return h1.get_text(strip=True) if h1 else ''
-
 
     def extract_description_from_soup(self, soup: BeautifulSoup):
         section = soup.find('section', class_='p-summary')
@@ -66,18 +62,15 @@ class MediumImporter:
         paragraphs = self.extract_chunks_from_soup(soup)
         return paragraphs[0] if len(paragraphs) else ''
 
-
     def extract_slug_from_filename(self, base_filename):
         base, _ = os.path.splitext(base_filename)
         return base.split('-')[-1]
-
 
     def extract_chunks_from_soup(self, soup: BeautifulSoup):
         body = soup.find('section', class_='e-content')
         ps = body.find_all('p')
         text = [p.get_text(strip=True) for p in ps]
-        return [item for item in text if len(item) > 50]
-
+        return generate_chunks([text])
 
     def get_chunks(self, filename):
         filenames = glob.glob(f"{filename}/posts/*.html")
