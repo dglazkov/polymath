@@ -1,6 +1,6 @@
 from pathlib import Path
 
-import ask_embeddings
+from library import Library
 
 from .chunker import generate_chunks
 
@@ -8,7 +8,7 @@ from .chunker import generate_chunks
 class NakedLibraryImporter:
     def get_chunks(self, filename):
         # Will return a generator of (id, chunk) of chunks, possibly missing embedding and token_count.
-        data = ask_embeddings.load_data_file(filename)
+        data = Library.load_data_file(filename)
 
         chunks = data.get('content')
         if not chunks:

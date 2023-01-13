@@ -6,10 +6,10 @@ import openai
 import urllib3
 from dotenv import load_dotenv
 
-from ask_embeddings import (base64_from_vector, get_completion_with_context,
-                            get_embedding, Library, get_context_for_library,
-                            get_chunk_infos_for_library, CURRENT_VERSION,
-                            EMBEDDINGS_MODEL_ID)
+from ask_embeddings import (get_chunk_infos_for_library,
+                            get_completion_with_context,
+                            get_context_for_library, get_embedding)
+from library import Library
 
 # TODO: Make this computed from the number of servers.
 CONTEXT_TOKEN_COUNT = 1500
@@ -20,9 +20,9 @@ DEFAULT_CONFIG_FILE = "client.SECRET.json"
 def query_server(query_embedding, random, server):
     http = urllib3.PoolManager()
     fields = {
-        "version": CURRENT_VERSION,
+        "version": Library.CURRENT_VERSION,
         "access_token": server_tokens.get(server, ''),
-        "query_embedding_model": EMBEDDINGS_MODEL_ID,
+        "query_embedding_model": Library.EMBEDDINGS_MODEL_ID,
         "count": CONTEXT_TOKEN_COUNT
     }
     if random:
@@ -43,7 +43,8 @@ parser.add_argument("query", help="The question to ask",
                     default="Tell me about 3P")
 parser.add_argument("--dev", action="store_true",
                     help=f"If set, will use the dev_* properties for each endpoint in config if they exist")
-parser.add_argument("--config", help=f"A path to a config file to use. If not provided it will try to use {DEFAULT_CONFIG_FILE} if it exists. Pass \"\" explicitly to proactively ignore that file even if it exists", default=None)
+parser.add_argument(
+    "--config", help=f"A path to a config file to use. If not provided it will try to use {DEFAULT_CONFIG_FILE} if it exists. Pass \"\" explicitly to proactively ignore that file even if it exists", default=None)
 parser.add_argument("--server", help="A server to use for querying",
                     action="append"),
 parser.add_argument("--completion", help="Request completion based on the query and context",
@@ -70,7 +71,7 @@ if config_file:
     else:
         if complain_for_missing_config:
             print(f'{config_file} was not found.')
-    
+
 load_dotenv()
 openai.api_key = os.getenv("OPENAI_API_KEY")
 
@@ -102,7 +103,7 @@ if args.verbose:
     else:
         print(f"Getting embedding for \"{query}\" ...")
 
-query_vector = None if args.random else base64_from_vector(
+query_vector = None if args.random else Library.base64_from_vector(
     get_embedding(query))
 
 context = []
