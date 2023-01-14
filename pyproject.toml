@@ -13,6 +13,12 @@ description = "Federating wisdom one library at a time."
 readme = "README.md"
 requires-python = ">=3.7"
 classifiers = ["License :: OSI Approved :: MIT License"]
+dependencies = [
+  "numpy",
+  "openai",
+  "transformers",
+  "numpy"
+]
 
 [project.urls]
 "Homepage" = "https://github.com/dglazkov/polymath"
