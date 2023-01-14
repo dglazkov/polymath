@@ -58,8 +58,8 @@ class MediumImporter:
     def extract_description_from_soup(self, soup: BeautifulSoup):
         section = soup.find('section', class_='p-summary')
         if section:
-            return section.get_text(strip=True)
-        paragraphs = self.extract_chunks_from_soup(soup)
+            return section.get_text(" ", strip=True)
+        paragraphs = [*self.extract_chunks_from_soup(soup)]
         return paragraphs[0] if len(paragraphs) else ''
 
     def extract_slug_from_filename(self, base_filename):
@@ -69,7 +69,7 @@ class MediumImporter:
     def extract_chunks_from_soup(self, soup: BeautifulSoup):
         body = soup.find('section', class_='e-content')
         ps = body.find_all('p')
-        text = [p.get_text(strip=True) for p in ps]
+        text = [p.get_text(" ", strip=True) for p in ps]
         return generate_chunks([text])
 
     def get_chunks(self, filename):
