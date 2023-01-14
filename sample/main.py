@@ -4,7 +4,7 @@ import os
 import openai
 from dotenv import load_dotenv
 
-import ask_embeddings
+from ask_embeddings import ask
 
 parser = argparse.ArgumentParser()
 parser.add_argument('query', help='The question to ask', default="Tell me about 3P")
@@ -17,4 +17,4 @@ openai.api_key = os.getenv("OPENAI_API_KEY")
 query = args.query
 context = args.context
 
-print(ask_embeddings.ask(query, context))
+print(ask(query, context))

@@ -5,7 +5,8 @@ import re
 import openai
 from dotenv import load_dotenv
 
-import ask_embeddings
+from ask_embeddings import LIBRARY_DIR, get_embedding, get_token_count
+from library import Library
 
 from .medium import MediumImporter
 from .nakedlibrary import NakedLibraryImporter
@@ -39,7 +40,7 @@ parser.add_argument(
 parser.add_argument('--importer', help='The importer to use',
                     choices=IMPORTERS.keys(), default='library')
 parser.add_argument(
-    '--output', help=f'The name of the file to store in {ask_embeddings.LIBRARY_DIR}/. If not provided, will default to the input file with a new extension', default='')
+    '--output', help=f'The name of the file to store in {LIBRARY_DIR}/. If not provided, will default to the input file with a new extension', default='')
 parser.add_argument(
     '--base', help='The library file to base the final library on, unless overwrite is true. Defaults to --output if not specified.', default='')
 parser.add_argument(
@@ -70,16 +71,16 @@ if not output_filename:
     output_filename = f'{filename_without_extension}.json'
 
 full_output_filename = os.path.join(
-    ask_embeddings.LIBRARY_DIR, output_filename)
+    LIBRARY_DIR, output_filename)
 if not base_filename:
     base_filename = full_output_filename
 
-result = ask_embeddings.Library()
+result = Library()
 
 if not overwrite and os.path.exists(base_filename):
     print(
         f'Found {full_output_filename}, loading it as a base to incrementally extend.')
-    result = ask_embeddings.Library(filename=base_filename)
+    result = Library(filename=base_filename)
 
 print('Will process ' + ('all' if max_lines < 0 else str(max_lines)) + ' lines')
 
@@ -98,10 +99,10 @@ for id, chunk in importer.get_chunks(filename):
     text = strip_emoji(chunk.get('text', ''))
     if 'embedding' not in chunk:
         print(f'Fetching embedding for {id}')
-        chunk['embedding'] = ask_embeddings.get_embedding(text)
+        chunk['embedding'] = get_embedding(text)
     if 'token_count' not in chunk:
         print(f'Fetching token_count for {id}')
-        chunk['token_count'] = ask_embeddings.get_token_count(text)
+        chunk['token_count'] = get_token_count(text)
     result.set_chunk(id, chunk)
     count += 1
 
@@ -113,7 +114,7 @@ if truncate:
             continue
         result.delete_chunk(chunk_id)
 
-if not os.path.exists(ask_embeddings.LIBRARY_DIR):
-    os.mkdir(ask_embeddings.LIBRARY_DIR)
+if not os.path.exists(LIBRARY_DIR):
+    os.mkdir(LIBRARY_DIR)
 
 result.save(full_output_filename)
