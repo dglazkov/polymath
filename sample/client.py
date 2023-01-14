@@ -6,10 +6,9 @@ import openai
 import urllib3
 from dotenv import load_dotenv
 
-from ask_embeddings import (get_chunk_infos_for_library,
-                            get_completion_with_context,
-                            get_context_for_library, get_embedding)
-from library import Library
+from polymath import (Library, get_chunk_infos_for_library,
+                      get_completion_with_context, get_context_for_library,
+                      get_embedding)
 
 # TODO: Make this computed from the number of servers.
 CONTEXT_TOKEN_COUNT = 1500

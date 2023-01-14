@@ -5,8 +5,7 @@ import re
 import openai
 from dotenv import load_dotenv
 
-from ask_embeddings import LIBRARY_DIR, get_embedding, get_token_count
-from library import Library
+from polymath import LIBRARY_DIR, Library, get_embedding, get_token_count
 
 from .medium import MediumImporter
 from .nakedlibrary import NakedLibraryImporter

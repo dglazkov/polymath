@@ -5,7 +5,7 @@ from time import sleep
 import openai
 from transformers import GPT2TokenizerFast
 
-from library import Library
+from .library import Library
 
 COMPLETION_MODEL_NAME = "text-davinci-003"
 

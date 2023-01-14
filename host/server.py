@@ -7,7 +7,7 @@ from dotenv import load_dotenv
 from flask import Flask, jsonify, render_template, request
 from flask_compress import Compress
 
-from ask_embeddings import load_libraries
+import polymath
 
 DEFAULT_TOKEN_COUNT = 1000
 
@@ -18,7 +18,8 @@ load_dotenv()
 openai.api_key = os.getenv("OPENAI_API_KEY")
 library_filename = os.getenv("LIBRARY_FILENAME")
 
-library = load_libraries(library_filename, True)
+library = polymath.load_libraries(library_filename, True)
+
 
 @app.route("/", methods=["POST"])
 def start():
@@ -35,9 +36,9 @@ def start():
         omit = request.form.get('omit')
         access_token = request.form.get('access_token', '')
         result = library.query(version=version, query_embedding=query_embedding,
-                                    query_embedding_model=query_embedding_model, count=count,
-                                    count_type=count_type, sort=sort, sort_reversed=sort_reversed,
-                                    seed=seed, omit=omit, access_token=access_token)
+                               query_embedding_model=query_embedding_model, count=count,
+                               count_type=count_type, sort=sort, sort_reversed=sort_reversed,
+                               seed=seed, omit=omit, access_token=access_token)
         return jsonify(result.serializable())
 
     except Exception as e:

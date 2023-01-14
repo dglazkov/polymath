@@ -1,6 +1,6 @@
 from pathlib import Path
 
-from library import Library
+from polymath import Library
 
 from .chunker import generate_chunks
 
