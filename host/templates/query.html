@@ -7,6 +7,9 @@
 <p>
   See more about how to get started at <a href="https://github.com/dglazkov/polymath#readme">https://github.com/dglazkov/polymath</a>
 </p>
+{% if restricted_message %}
+  <p>This server has additional private content that requires an access token to access. {{ restricted_message }}</p>
+{% endif %}
 <details>
   <summary>Issue a debug query</summary>
   <p>

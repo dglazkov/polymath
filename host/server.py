@@ -19,6 +19,7 @@ openai.api_key = os.getenv("OPENAI_API_KEY")
 library_filename = os.getenv("LIBRARY_FILENAME")
 
 library = polymath.load_libraries(library_filename, True)
+_, restricted_message = polymath.restricted_configuration()
 
 
 @app.route("/", methods=["POST"])
@@ -49,7 +50,7 @@ def start():
 
 @app.route("/", methods=["GET"])
 def start_sample():
-    return render_template("query.html")
+    return render_template("query.html", restricted_message=restricted_message)
 
 
 if __name__ == "__main__":
