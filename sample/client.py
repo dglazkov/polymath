@@ -79,6 +79,8 @@ query = args.query
 server_list = args.server
 dev_mode = args.dev
 only = args.only
+if not only:
+    only = []
 
 if not server_list:
     server_list = []
