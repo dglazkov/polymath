@@ -46,6 +46,7 @@ parser.add_argument(
     "--config", help=f"A path to a config file to use. If not provided it will try to use {DEFAULT_CONFIG_FILE} if it exists. Pass \"\" explicitly to proactively ignore that file even if it exists", default=None)
 parser.add_argument("--server", help="A server to use for querying",
                     action="append"),
+parser.add_argument("--only", help=f"If provided, will ignore any servers without this name in {DEFAULT_CONFIG_FILE}", action="append")
 parser.add_argument("--completion", help="Request completion based on the query and context",
                     action=argparse.BooleanOptionalAction, default=True)
 parser.add_argument("--random", help="Ask for a random set of chunks",
@@ -77,6 +78,7 @@ openai.api_key = os.getenv("OPENAI_API_KEY")
 query = args.query
 server_list = args.server
 dev_mode = args.dev
+only = args.only
 
 if not server_list:
     server_list = []
@@ -84,11 +86,13 @@ if not server_list:
 server_tokens = {}
 
 if 'servers' in config:
-    for server_config in config['servers'].values():
+    for (server_name, server_config) in config['servers'].items():
         endpoint = server_config.get('endpoint', '')
         if dev_mode and 'dev_endpoint' in server_config:
             endpoint = server_config['dev_endpoint']
         if not endpoint:
+            continue
+        if len(only) and endpoint not in only and server_name not in only:
             continue
         server_list.append(endpoint)
         server_tokens[endpoint] = server_config.get('token', '')
