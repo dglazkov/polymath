@@ -1,14 +1,16 @@
 <!DOCTYPE html>
 <h1>Polymath Endpoint</h1>
 <p>
-  This is a <a href="https://github.com/dglazkov/polymath">polymath</a> endpoint. Typically you query this endpoint with a POST from a polymath client, typically like:
+  This is a <a href="https://github.com/dglazkov/polymath">polymath</a> endpoint. Typically you query this endpoint with
+  a POST from a polymath client, typically like:
 </p>
 <pre>python3 -m sample.client --server <span id='url'></span> "What does PMF mean in the platform context?"</pre>
 <p>
-  See more about how to get started at <a href="https://github.com/dglazkov/polymath#readme">https://github.com/dglazkov/polymath</a>
+  See more about how to get started at <a
+    href="https://github.com/dglazkov/polymath#readme">https://github.com/dglazkov/polymath</a>
 </p>
 {% if restricted_message %}
-  <p>This server has additional private content that requires an access token to access. {{ restricted_message }}</p>
+<p>This server has additional private content that requires an access token to access. {{ restricted_message }}</p>
 {% endif %}
 <details>
   <summary>Issue a debug query</summary>
@@ -72,9 +74,9 @@
   </form>
 </details>
 <script>
-const updateURL = () => {
-  const ele = document.getElementById('url');
-  ele.innerText = window.location;
-}
-updateURL();
+  const updateURL = () => {
+    const ele = document.getElementById('url');
+    ele.innerText = window.location;
+  }
+  updateURL();
 </script>
