@@ -4,19 +4,20 @@ import json
 DEFAULT_CONFIG_FILE = 'host.SECRET.json'
 DEFAULT_PRIVATE_ACCESS_TAG = 'unpublished'
 
-access_data = None
+_access_data = None
 
 
 def _get_access_data():
-    if access_data:
-        return access_data
+    global _access_data
+    if _access_data:
+        return _access_data
     # TODO: allow overriding this
     access_file = DEFAULT_CONFIG_FILE
     if not os.path.exists(access_file):
         return {}
     with open(DEFAULT_CONFIG_FILE, 'r') as f:
-        access_data = json.load(f)
-    return access_data
+        _access_data = json.load(f)
+    return _access_data
 
 
 def restricted_configuration():
