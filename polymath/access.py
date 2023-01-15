@@ -4,20 +4,28 @@ import json
 DEFAULT_CONFIG_FILE = 'host.SECRET.json'
 DEFAULT_PRIVATE_ACCESS_TAG = 'unpublished'
 
+access_data = None
+
+
+def _get_access_data():
+    if access_data:
+        return access_data
+    # TODO: allow overriding this
+    access_file = DEFAULT_CONFIG_FILE
+    if not os.path.exists(access_file):
+        return {}
+    with open(DEFAULT_CONFIG_FILE, 'r') as f:
+        access_data = json.load(f)
+    return access_data
+
+
 def permitted_access(access_token):
     """
     Returns the set of permitted access tags, whether to include restricted_count in the result,
     and a message to return in the library if any results were filtered.
     """
 
-    # TODO: allow overriding this
-    access_file = DEFAULT_CONFIG_FILE
-    if not os.path.exists(access_file):
-        return set([]), False, ""
-
-    # TODO: don't load this file every time
-    with open(DEFAULT_CONFIG_FILE, 'r') as f:
-        data = json.load(f)
+    data = _get_access_data()
 
     restricted = data.get('restricted', {})
     include_restricted_count = restricted.get('count', False)
@@ -28,7 +36,7 @@ def permitted_access(access_token):
 
     if 'tokens' not in data:
         raise Exception(
-            f'The data in {access_file} did not contain a key of "tokens" as expected')
+            f'The data in {DEFAULT_CONFIG_FILE} did not contain a key of "tokens" as expected')
 
     private_access_tag = data['default_private_access_tag'] if 'default_private_access_tag' in data else DEFAULT_PRIVATE_ACCESS_TAG
 
