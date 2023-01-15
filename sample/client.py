@@ -99,8 +99,10 @@ if 'servers' in config:
         if not endpoint:
             continue
         if len(only) and endpoint not in only and server_name not in only:
+            print(f'Excluding {server_name} because neither it nor its endpoint was included in --only')
             continue
         if len(exclude) and (endpoint in exclude or server_name in exclude):
+            print(f'Excluding {server_name} because either it or its endpoint was included in --exclude')
             continue
         server_list.append(endpoint)
         server_tokens[endpoint] = server_config.get('token', '')
