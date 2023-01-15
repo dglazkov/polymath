@@ -403,14 +403,22 @@ class Library:
 
         # The default sort for 'any' or 'similarity' if there was no query set.
         chunk_ids = None
-        if sort == 'similarity' and similarities_dict:
+        if sort == 'similarity':
+            if not similarities_dict:
+                raise Exception('similarity sort passed without a query')
             chunk_ids = list(similarities_dict.keys())
-        if sort == 'random':
+        elif sort == 'random':
             chunk_ids = list(self.chunk_ids)
             rng = random.Random()
             rng.seed(None if not seed else seed)
             rng.shuffle(chunk_ids)
+            # TODO: this is a smell; technically it's possible to have a sort of
+            # random and still want embeddings. Likely we should change other
+            # systems that want the random behavior to also pass the desired
+            # omit behavior and not force it.
             result.omit = 'embedding,similarity'
+        elif sort == 'any':
+            chunk_ids = list(self.chunk_ids)
 
         if not chunk_ids:
             raise Exception('Invalid type of sort was specified')
