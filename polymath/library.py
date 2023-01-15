@@ -7,7 +7,7 @@ import random
 
 import numpy as np
 
-from .access import DEFAULT_PRIVATE_ACCESS_TAG, permitted_access
+from .access import DEFAULT_PRIVATE_ACCESS_TAG, permitted_access, restricted_configuration
 
 EMBEDDINGS_MODEL_ID = "openai.com:text-embedding-ada-002"
 
@@ -423,8 +423,9 @@ class Library:
         chunk_dict = _get_context(chunk_ids, self, count,
                                   count_type_is_chunk=count_type_is_chunk)
 
-        visible_access_tags, include_restricted_count, restricted_message = permitted_access(
-            access_token)
+        include_restricted_count, restricted_message = restricted_configuration()
+
+        visible_access_tags = permitted_access(access_token)
 
         chunk_count = 0
         restricted_count = 0

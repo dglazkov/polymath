@@ -19,20 +19,26 @@ def _get_access_data():
     return access_data
 
 
+def restricted_configuration():
+    """
+    Returns a boolean of whether to include restricted count, and the message
+    """
+    data = _get_access_data()
+    restricted = data.get('restricted', {})
+    include_restricted_count = restricted.get('count', False)
+    restricted_message = restricted.get('message', "")
+    return include_restricted_count, restricted_message
+
+
 def permitted_access(access_token):
     """
-    Returns the set of permitted access tags, whether to include restricted_count in the result,
-    and a message to return in the library if any results were filtered.
+    Returns the set of permitted access tags
     """
 
     data = _get_access_data()
 
-    restricted = data.get('restricted', {})
-    include_restricted_count = restricted.get('count', False)
-    restricted_message = restricted.get('message', "")
-
     if not access_token:
-        return set([]), include_restricted_count, restricted_message
+        return set([])
 
     if 'tokens' not in data:
         raise Exception(
@@ -49,9 +55,9 @@ def permitted_access(access_token):
             break
 
     if not token_record:
-        return set([]), include_restricted_count, restricted_message
+        return set([])
 
     tags = token_record['access_tags'] if 'access_tags' in token_record else [
         private_access_tag]
 
-    return set(tags), include_restricted_count, restricted_message
+    return set(tags)
