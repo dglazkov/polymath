@@ -47,6 +47,7 @@ parser.add_argument(
 parser.add_argument("--server", help="A server to use for querying",
                     action="append"),
 parser.add_argument("--only", help=f"If provided, will ignore any servers without this name or endpoint in {DEFAULT_CONFIG_FILE}", action="append")
+parser.add_argument("--exclude", help=f"If provided, will ignore any servers that have this name or endpoint in {DEFAULT_CONFIG_FILE}", action="append")
 parser.add_argument("--completion", help="Request completion based on the query and context",
                     action=argparse.BooleanOptionalAction, default=True)
 parser.add_argument("--random", help="Ask for a random set of chunks",
@@ -81,6 +82,9 @@ dev_mode = args.dev
 only = args.only
 if not only:
     only = []
+exclude = args.exclude
+if not exclude:
+    exclude = []
 
 if not server_list:
     server_list = []
@@ -95,6 +99,8 @@ if 'servers' in config:
         if not endpoint:
             continue
         if len(only) and endpoint not in only and server_name not in only:
+            continue
+        if len(exclude) and (endpoint in exclude or server_name in exclude):
             continue
         server_list.append(endpoint)
         server_tokens[endpoint] = server_config.get('token', '')
