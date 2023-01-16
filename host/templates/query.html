@@ -1,10 +1,9 @@
 <!DOCTYPE html>
 <h1>Polymath Endpoint</h1>
 <p>
-  This is a <a href="https://github.com/dglazkov/polymath">polymath</a> endpoint. Typically you query this endpoint with
-  a POST from a polymath client, typically like:
+  This is a <a href="https://github.com/dglazkov/polymath">polymath</a> endpoint.
 </p>
-<pre>python3 -m sample.client --server <span id='url'></span> "What does PMF mean in the platform context?"</pre>
+<div id="surface"></div>
 <p>
   See more about how to get started at <a
     href="https://github.com/dglazkov/polymath#readme">https://github.com/dglazkov/polymath</a>
@@ -12,71 +11,255 @@
 {% if restricted_message %}
 <p>This server has additional private content that requires an access token to access. {{ restricted_message }}</p>
 {% endif %}
-<details>
-  <summary>Issue a debug query</summary>
+<template id="query-view">
   <p>
-    method = POST
+    <label>Query:
+      <input type="text" id="query">
+    </label>
+    <button id="ask">Ask</button>
   </p>
-  <form method="POST">
-    <input type="hidden" name="version" value="0">
-    <input type="hidden" name="query_embedding_model" value="openai.com:text-embedding-ada-002">
-    <p>
-      <label for="query">Query (base64-encoded float array):</label>
-      <input type="text" name="query" id="query">
-    </p>
-    <p>
-      <label for="count">Count (optional):</label>
-      <input type="text" name="count" id="count">
-    </p>
-    <p>
-      <label for="count_type">Count_type:</label>
-      <select name="count_type" id="count_type">
-        <option value="token">token</option>
-        <option value="chunk">chunk</option>
-      </select>
-    </p>
-    <p>
-      <label for="sort">Sort:</label>
-      <select name="sort" id="sort">
-        <option value="similarity">similarity</option>
-        <option value="any">any</option>
-        <option value="random">random</option>
-      </select>
-    </p>
-    <p>
-      <label for="sort_reversed">Sort reversed:</label>
-      <input type="checkbox" name="sort_reversed" value="1">
-    </p>
-    <p>
-      <label for="seed">Seed (optional):</label>
-      <input type="text" name="seed" id="seed">
-    </p>
+  <details>
+    <summary>More options</summary>
     <p>
       <label for="access_token">access_token (optional):</label>
       <input type="text" name="access_token" id="access_token">
     </p>
     <p>
-      <strong>Omit:</strong>
-      <input type="checkbox" id="omit_all" name="omit" value="*">
-      <label for="omit_all">*</label>
-      <input type="checkbox" id="omit_embedding" name="omit" value="embedding">
-      <label for="omit_embedding">embedding</label>
-      <input type="checkbox" id="omit_similarity" name="omit" value="similarity">
-      <label for="omit_similarity">similarity</label>
-      <input type="checkbox" id="omit_token_count" name="omit" value="token_count">
-      <label for="omit_token_count">token_count</label>
-      <input type="checkbox" id="omit_info" name="omit" value="info">
-      <label for="omit_token_info">info</label>
+      <button id="clear">Clear Key</button>
     </p>
-    <p>
-      <input type="submit" value="Query">
-    </p>
-  </form>
-</details>
-<script>
-  const updateURL = () => {
-    const ele = document.getElementById('url');
-    ele.innerText = window.location;
+  </details>
+</template>
+<template id="request-key-view">
+  <p>
+    <label>
+      To query this server, enter your Open AI API key:
+      <input name="key" type="text">
+    </label>
+    <button>Save Key</button>
+  </p>
+</template>
+<template id="loading-view">
+  <p>Loading...</p>
+</template>
+<template id="results-view">
+  <h3>Results</h3>
+  <div id="completion"></div>
+  <h3>Sources</h3>
+  <ul id="sources">
+  </ul>
+</template>
+<template id="error-view">
+  <h3>Error</h3>
+  <div id="message"></div>
+</template>
+
+<script type="module">
+
+  class Keystore {
+    get openai_api_key() {
+      return localStorage.getItem('openai_api_key');
+    }
+
+    set openai_api_key(value) {
+      localStorage.setItem('openai_api_key', value);
+    }
+
+    clear() {
+      localStorage.removeItem('openai_api_key');
+    }
   }
-  updateURL();
+
+  class PolymathServer {
+    async ask(query) {
+      const form = new FormData();
+      form.append('version', '0');
+      form.append('query_embedding_model', 'openai.com:text-embedding-ada-002');
+      form.append('sort', 'similarity');
+      for (const [key, value] of Object.entries(query)) {
+        form.append(key, value);
+      }
+      const url = new URL(window.location);
+      const result = await (await fetch(url, {
+        method: 'POST',
+        body: form
+      })).json();
+      return result;
+    }
+
+    static encode_embedding(data) {
+      return btoa(String.fromCharCode(...(new Uint8Array(new Float32Array(data).buffer))));
+    }
+
+    static create_prompt({query, results}) {
+      const context = Object.values(results.content).map(chunk => chunk.text).join('\n');
+      return `Answer the question as truthfully as possible using the provided context, and if the answer is not contained within the text below, say \"I don't know.\"\n\nContext:\n${context} \n\nQuestion:\n${query}\n\nAnswer:`;
+    }
+  }
+
+  class OpenAI {
+    constructor(key) {
+      this._key = key;
+    }
+
+    async _call_api(type, payload, getter) {
+      const url = `https://api.openai.com/v1/${type}`;
+      const result = await (await fetch(url, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${this._key}`,
+        },
+        body: JSON.stringify(payload)
+      })).json();
+      if (result.error)
+        return {
+          error: result.error.message
+        }
+      return {
+        result: getter(result)
+      };
+    }
+
+    async completion(prompt) {
+      return await this._call_api('completions', {
+        model: 'text-davinci-003',
+        prompt: prompt,
+        max_tokens: 1024,
+        temperature: 0,
+        top_p: 1,
+        n: 1,
+        stream: false,
+        logprobs: null,
+        stop: '\n'
+      }, out => out.choices[0].text);
+    }
+
+    async embedding(query) {
+      return await this._call_api('embeddings', {
+        input: query,
+        model: 'text-embedding-ada-002'
+      }, out => out.data[0].embedding);
+    }
+  }
+
+  class Views {
+    constructor() {
+      this._surface = document.querySelector('#surface');
+    }
+
+    _render(templateId, decorator) {
+      const template = document.getElementById(templateId);
+      const clone = template.content.cloneNode(true);
+      decorator && decorator(clone);
+      this._surface.appendChild(clone);
+    }
+
+    clear() {
+      this._surface.textContent = '';
+    }
+
+    requestKey(controller) {
+      this._render('request-key-view', (view) => {
+        const button = view.querySelector('button');
+        const input = view.querySelector('input');
+        button.addEventListener('click', () => controller.storeKey(input.value));
+      });
+    }
+
+    loading(controller) {
+      this._render('loading-view');
+    }
+
+    query(controller) {
+      this._render('query-view', (view) => {
+        const query = view.querySelector('#query');
+        const access_token = view.querySelector('#access_token');
+        view.querySelector('#ask').addEventListener('click',
+          () => controller.ask_server({
+            query: query.value,
+            access_token: access_token.value,
+          }));
+        view.querySelector('#clear').addEventListener('click',
+          () => controller.clearKeys());
+      });
+    }
+
+    results(controller) {
+      this._render('results-view', (view) => {
+        const sources = view.querySelector('#sources');
+        const completion = view.querySelector('#completion');
+        completion.textContent = controller.completion.result;
+        const infos = Object.values(controller.results.content).map(entry => entry.info);
+        sources.innerHTML = infos.map(info => `<li><a href="${info.url}">${info.title}</a></li>`).join('\n');
+      })
+    }
+
+    error(controller) {
+      this._render('error-view', (view) => {
+        const message = view.querySelector('#message');
+        message.textContent = controller.results.error;
+      })
+    }
+
+  }
+
+  class Controller {
+    constructor() {
+      this.store = new Keystore();
+      this.views = new Views();
+      this.results = null;
+    }
+
+    storeKey(key) {
+      this.store.openai_api_key = key;
+      this.results = null;
+      this.start();
+    }
+
+    async ask_server(query) {
+      this.views.clear();
+      this.views.loading(this);
+      const server = new PolymathServer();
+      const openai = new OpenAI(this.store.openai_api_key);
+      const embedding = await openai.embedding(query.query);
+      if (embedding.error) {
+        this.results = embedding;
+      } else {
+        query.query_embedding = PolymathServer.encode_embedding(embedding.result);
+        this.results = await server.ask(query);
+        if (!this.results.error) {
+          const context = PolymathServer.create_prompt({
+            query: query.query,
+            results: this.results,
+          });
+          this.completion = await openai.completion(context);
+        }
+      }
+      this.start();
+    }
+
+    clearKeys() {
+      this.store.clear();
+      this.start();
+    }
+
+    start() {
+      this.views.clear();
+      if (!this.store.openai_api_key) {
+        this.views.requestKey(this);
+        return;
+      }
+      this.views.query(this);
+      if (!this.results)
+        return; 
+      if (this.results.error) {
+        this.views.error(this);
+      } else {
+        this.views.results(this);
+      }
+    }
+  }
+
+  const controller = new Controller();
+  controller.start();
 </script>
