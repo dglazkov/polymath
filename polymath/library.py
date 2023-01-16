@@ -343,7 +343,11 @@ class Library:
         """
         Returns an iterator for the chunk_ids in the library in order.
         """
-        return self._data["content"].keys()
+        sort = self._data.get('sort', {})
+        ids = sort.get('ids', None)
+        if not ids:
+            return self._data['content'].keys()
+        return ids
 
     def chunk(self, chunk_id):
         if chunk_id not in self._data["content"]:
@@ -355,7 +359,7 @@ class Library:
         """
         Returns an iterator of (chunk_id, chunk)
         """
-        return self._data["content"].items()
+        return [(chunk_id, self.chunk(chunk_id)) for chunk_id in self.chunk_ids]
 
     def delete_chunk(self, chunk_id):
         del self._data["content"][chunk_id]
