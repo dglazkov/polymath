@@ -189,7 +189,7 @@
         const query = view.querySelector('#query');
         const access_token = view.querySelector('#access_token');
         view.querySelector('#ask').addEventListener('click',
-          () => controller.ask_server({
+          () => controller.askServer({
             query: query.value,
             access_token: access_token.value,
           }));
