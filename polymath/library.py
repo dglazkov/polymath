@@ -368,7 +368,15 @@ class Library:
                 'The other library had a different embedding model')
         # TODO: handle key collisions; keys are only guaranteed to be unique
         # within a single library.
-        self._data['content'].update(other._data['content'])
+        self_sort = self._data.get('sort', {})
+        self_sort_type = self_sort.get('type', None)
+        if self_sort_type == None:
+            # We don't have a sort type, it's just implicitly 'any'. We can use
+            # the one from the other library. If the other one is also 'any'
+            # then this will basically be a no op.
+            self.sort = other.sort
+        for chunk_id, chunk in other.chunks:
+            self.set_chunk(chunk_id, chunk)
 
     def copy(self):
         result = Library()
