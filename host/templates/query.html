@@ -203,30 +203,33 @@
   }
 
   // Contains logic that is bound to respective templates.
+  // Each item is a function that is called when the view template is instantiated.
+  // `this` is the template itself
+  // Arguments are supplied by the controller and are view-specific.
   const VIEW_LOGIC = {
-    'request-key': (view, controller) => {
-      const button = view.querySelector('button');
-      const input = view.querySelector('input');
+    'request-key': function(controller) {
+      const button = this.querySelector('button');
+      const input = this.querySelector('input');
       button.addEventListener('click', () => controller.storeKey(input.value));
     },
-    'query': (view, controller, query_value) => {
-      const query = view.querySelector('#query');
+    'query': function(controller, query_value) {
+      const query = this.querySelector('#query');
       query.value = query_value;
-      const access_token = view.querySelector('#access_token');
-      view.querySelector('#ask').addEventListener('click',
+      const access_token = this.querySelector('#access_token');
+      this.querySelector('#ask').addEventListener('click',
         () => controller.askServer({
           query: query.value,
           access_token: access_token.value,
         }));
-      view.querySelector('#clear').addEventListener('click',
+      this.querySelector('#clear').addEventListener('click',
         () => controller.clearKeys());
     },
-    'results': (view, completion, infos) => {
-      view.querySelector('#completion').textContent = completion;
-      view.querySelector('#sources').innerHTML = infos.map(info => `<li><a href="${info.url}">${info.title}</a></li>`).join('\n');
+    'results': function(completion, infos) {
+      this.querySelector('#completion').textContent = completion;
+      this.querySelector('#sources').innerHTML = infos.map(info => `<li><a href="${info.url}">${info.title}</a></li>`).join('\n');
     },
-    'error': (view, error) => {
-      const message = view.querySelector('#message');
+    'error': function(error) {
+      const message = this.querySelector('#message');
       message.textContent = error;
     }
   }
@@ -255,7 +258,7 @@
       const template = document.getElementById(templateId);
       const clone = template.content.cloneNode(true);
       const logic = this._viewLogic[viewId];
-      logic && logic(clone, ...data);
+      logic && logic.call(clone, ...data);
 
       instance = document.createElement('div');
       instance.appendChild(clone);
