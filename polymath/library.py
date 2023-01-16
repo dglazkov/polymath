@@ -303,6 +303,14 @@ class Library:
             for chunk_id in ids:
                 chunk = self.chunk(chunk_id)
                 if not chunk:
+                    sort_ids_set = set(ids)
+                    content_ids_set = set(self._data['content'].keys())
+                    keys_in_sort_not_content = sort_ids_set - content_ids_set
+                    keys_in_content_not_sort = content_ids_set - sort_ids_set
+                    if len(keys_in_sort_not_content):
+                        raise Exception(f'sort.ids must contain precisely one entry for each content chunk if provided. It has extra keys {keys_in_sort_not_content}')
+                    if len(keys_in_content_not_sort):
+                        raise Exception(f'sort.ids must contain precisely one entry for each content chunk if provided. It is missing keys {keys_in_content_not_sort}')
                     raise Exception(f'similarity sort started with a chunk that no longer exists: {chunk_id}')
                 similarity = chunk.get('similarity', None)
                 if similarity == None:
@@ -479,14 +487,15 @@ class Library:
         if self.omit_whole_chunk:
             return
         content = self._data['content']
-        if chunk_id not in content:
+        chunk_inserted = chunk_id not in content
+        content[chunk_id] = chunk
+        self._strip_chunk(chunk)
+        if chunk_inserted:
             sort = self._data.get('sort', {})
             sort_ids = sort.get('ids', None)
             if sort_ids != None:
                 sort_ids.append(chunk_id)
                 self._re_sort()
-        content[chunk_id] = chunk
-        self._strip_chunk(chunk)
 
     def set_chunk_field(self, chunk_id, text=None, embedding=None, token_count=None, info=None, access_tag=None, similarity=None):
         if self.omit_whole_chunk:
