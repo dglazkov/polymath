@@ -300,7 +300,7 @@ class Library:
                     raise Exception(f'sort of similarity passed but {chunk_id} had no similarity')
                 ids_to_sort.append((similarity, chunk_id))
             ids_to_sort.sort(reverse=True)
-            ids = ids_to_sort
+            ids = [chunk_id for (_, chunk_id) in ids_to_sort]
         elif sort_type == 'manual':
             # sort type of manual we expliclity want left in the previous order.
             pass
