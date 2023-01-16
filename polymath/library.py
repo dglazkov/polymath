@@ -510,6 +510,8 @@ class Library:
                 f'count_type {count_type} is not one of the legal options: {LEGAL_COUNT_TYPES}')
 
         result = Library()
+        # TODO: when we fix #52 then we won't use this. But for now ensure that all of the items are in insertion order.
+        result.sort = 'manual'
 
         omit_whole_chunk, _, canonical_omit_configuration = _keys_to_omit(
             omit)
