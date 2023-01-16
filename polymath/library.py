@@ -418,7 +418,7 @@ class Library:
         if chunk_id not in content:
             sort = self._data.get('sort', {})
             sort_ids = sort.get('ids', None)
-            if sort_ids:
+            if sort_ids != None:
                 sort_ids.append(chunk_id)
                 self._re_sort()
         content[chunk_id] = chunk
