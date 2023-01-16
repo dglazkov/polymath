@@ -251,7 +251,7 @@
         this.results = await server.ask({ query_embedding, access_token });
         if (!this.results.error) {
           const context = PolymathServer.create_prompt({
-            query: query.query,
+            query: query,
             results: this.results,
           });
           this.completion = await openai.completion(context);
