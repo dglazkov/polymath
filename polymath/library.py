@@ -232,7 +232,36 @@ class Library:
             del self._data['sort']['type']
         if len(self._data['sort']) == 0:
             del self._data['sort']
-        # TODO: resort by the new key
+        self._re_sort()
+
+    def _re_sort(self):
+        """
+        Called when the sort type might have changed and _data.sort.ids needs to be resorted
+        """
+        sort = self._data.get('sort', {})
+        ids = sort.get('ids', None)
+        if not ids:
+            return
+        sort_type = sort.get('type', 'any')
+        if sort_type == 'random':
+            rng = random.Random()
+            # TODO: allow using sort.seed if it exists
+            rng.seed(None)
+            rng.shuffle(ids)
+        elif sort_type == 'similiarity':
+            ids_to_sort = []
+            # TODO: use a list comprehension or whatever
+            for chunk_id, chunk in self.chunks:
+                similarity = chunk.get('similarity', None)
+                if similarity == None:
+                    raise Exception(f'sort of similarity passed but {chunk_id} had no similarity')
+                ids_to_sort.append((similarity, chunk_id))
+            ids_to_sort.sort(reverse=True)
+            ids = ids_to_sort
+        else:
+            # effectively any, which means any order is fine.
+            pass
+        self._data['sort']['ids'] = ids
 
     @property
     def _details(self):
@@ -334,6 +363,7 @@ class Library:
         ids = sort.get('ids', None)
         if ids:
             ids.remove(chunk_id)
+            self._re_sort()
 
     def _strip_chunk(self, chunk):
         if self.omit_whole_chunk:
@@ -350,8 +380,8 @@ class Library:
             sort = self._data.get('sort', {})
             sort_ids = sort.get('ids', None)
             if sort_ids:
-                # TODO: resort, ideally an insertion because we assume it's already sorted.
                 sort_ids.append(chunk_id)
+                self._re_sort()
         content[chunk_id] = chunk
         self._strip_chunk(chunk)
 
