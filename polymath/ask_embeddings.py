@@ -80,6 +80,10 @@ def get_chunk_infos_for_library(library: Library):
     """
     Returns all infos for all chunks in library
     """
+    # TODO: this defensively re-sorts because before #50 was fixed libraries
+    # didn't have a consistent sort order. Now that that's fixed, this is only
+    # necessary while hosts exist that have not been redeployed, but at some
+    # point in the future it can stop defensively re-sorting.
     infos = []
     if "similarity" in library.fields_to_omit:
         infos = [(_, chunk['info']) for (_, chunk) in library.chunks]
