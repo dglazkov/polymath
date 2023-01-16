@@ -301,7 +301,7 @@ class Library:
             ids_to_sort = []
             # TODO: use a list comprehension or whatever
             for chunk_id in ids:
-                chunk = self.chunk(id)
+                chunk = self.chunk(chunk_id)
                 if not chunk:
                     raise Exception(f'similarity sort started with a chunk that no longer exists: {chunk_id}')
                 similarity = chunk.get('similarity', None)
