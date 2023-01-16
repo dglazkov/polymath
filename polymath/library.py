@@ -294,7 +294,7 @@ class Library:
         elif sort_type == 'similarity':
             ids_to_sort = []
             # TODO: use a list comprehension or whatever
-            for chunk_id, chunk in self.chunks:
+            for chunk_id, chunk in self._data['content'].items():
                 similarity = chunk.get('similarity', None)
                 if similarity == None:
                     raise Exception(f'sort of similarity passed but {chunk_id} had no similarity')
