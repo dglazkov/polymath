@@ -28,6 +28,18 @@
       <button id="clear">Clear Key and Access Token</button>
     </p>
   </details>
+  <script arguments="controller,query_value">
+    const query = this.querySelector('#query');
+    query.value = query_value;
+    const access_token = this.querySelector('#access_token');
+    this.querySelector('#ask').addEventListener('click',
+      () => controller.askServer({
+        query: query.value,
+        access_token: access_token.value,
+      }));
+    this.querySelector('#clear').addEventListener('click',
+      () => controller.clearKeys());
+  </script>
 </template>
 <template id="request-key-view">
   <p>
@@ -40,6 +52,11 @@
   <p>
     <em>Your Open AI API key is stored locally and only ever transmitted directly to openai.com</em>
   </p>
+  <script arguments="controller">
+    const button = this.querySelector('button');
+    const input = this.querySelector('input');
+    button.addEventListener('click', () => controller.storeKey(input.value));
+  </script>
 </template>
 <template id="loading-view">
   <p>Loading...</p>
@@ -50,10 +67,18 @@
   <h3>Sources</h3>
   <ul id="sources">
   </ul>
+  <script arguments="completion,infos">
+    this.querySelector('#completion').textContent = completion;
+    this.querySelector('#sources').innerHTML = infos.map(info => `<li><a href="${info.url}">${info.title}</a></li>`).join('\n');
+  </script>
 </template>
 <template id="error-view">
   <h3>Error</h3>
   <div id="message"></div>
+  <script arguments="error">
+    const message = this.querySelector('#message');
+    message.textContent = error;
+  </script>
 </template>
 
 <script type="module">
@@ -202,42 +227,9 @@
     }
   }
 
-  // Contains logic that is bound to respective templates.
-  // Each item is a function that is called when the view template is instantiated.
-  // `this` is the template itself
-  // Arguments are supplied by the controller and are view-specific.
-  const VIEW_LOGIC = {
-    'request-key': function(controller) {
-      const button = this.querySelector('button');
-      const input = this.querySelector('input');
-      button.addEventListener('click', () => controller.storeKey(input.value));
-    },
-    'query': function(controller, query_value) {
-      const query = this.querySelector('#query');
-      query.value = query_value;
-      const access_token = this.querySelector('#access_token');
-      this.querySelector('#ask').addEventListener('click',
-        () => controller.askServer({
-          query: query.value,
-          access_token: access_token.value,
-        }));
-      this.querySelector('#clear').addEventListener('click',
-        () => controller.clearKeys());
-    },
-    'results': function(completion, infos) {
-      this.querySelector('#completion').textContent = completion;
-      this.querySelector('#sources').innerHTML = infos.map(info => `<li><a href="${info.url}">${info.title}</a></li>`).join('\n');
-    },
-    'error': function(error) {
-      const message = this.querySelector('#message');
-      message.textContent = error;
-    }
-  }
-
   class Views {
-    constructor(viewLogic) {
+    constructor() {
       this._surface = document.querySelector('#surface');
-      this._viewLogic = viewLogic;
     }
 
     hide(viewId) {
@@ -257,8 +249,13 @@
 
       const template = document.getElementById(templateId);
       const clone = template.content.cloneNode(true);
-      const logic = this._viewLogic[viewId];
-      logic && logic.call(clone, ...data);
+      let logicScript = clone.querySelector('script[arguments]');
+      if (logicScript) {
+        let args = logicScript.getAttribute('arguments').split(',');
+        const logic = new Function(...args, logicScript.textContent);
+        logicScript.remove();
+        logic.call(clone, ...data);
+      }
 
       instance = document.createElement('div');
       instance.appendChild(clone);
@@ -274,7 +271,7 @@
   class Controller {
     constructor() {
       this.store = new Keystore();
-      this.views = new Views(VIEW_LOGIC);
+      this.views = new Views();
       this.results = null;
       this.url = new URL(window.location);
     }
