@@ -211,7 +211,16 @@
       const template = document.getElementById(templateId);
       const clone = template.content.cloneNode(true);
       decorator && decorator(clone);
-      this._surface.appendChild(clone);
+      const instance = document.createElement('div');
+      instance.appendChild(clone);
+      instance.id = `${templateId}-instance`;
+      this._surface.appendChild(instance);
+    }
+
+    hide(templateId) {
+      const instance = document.getElementById(`${templateId}-instance`);
+      if (instance)
+        instance.hidden = true;
     }
 
     clear() {
@@ -309,6 +318,7 @@
             key: this.store.openai_api_key,
             access_token: this.store.access_token,
           });
+          this.views.hide('loading-view')
           if (answers.error) {
             this.views.error(this, answers.error);
           } else {
