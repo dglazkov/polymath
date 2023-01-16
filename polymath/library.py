@@ -78,6 +78,10 @@ def vector_similarity(x, y):
 
 class Library:
     def __init__(self, data=None, blob=None, filename=None, access_tag=None):
+
+        # The only actual data member of the class is _data. If that ever
+        # changes, also change copy().
+
         if filename:
             data = _load_data_file(filename)
         if blob:
@@ -365,6 +369,11 @@ class Library:
         # TODO: handle key collisions; keys are only guaranteed to be unique
         # within a single library.
         self._data['content'].update(other._data['content'])
+
+    def copy(self):
+        result = Library()
+        result._data = copy.deepcopy(self._data)
+        return result
 
     def reset(self):
         self._data = {
