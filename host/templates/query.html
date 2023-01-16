@@ -34,14 +34,25 @@
     </p>
   </details>
   <script arguments="controller,query_value">
-    const query = this.querySelector('#query');
-    query.value = query_value;
+    const textInput = this.querySelector('#query');
+    textInput.value = query_value;
     const access_token = this.querySelector('#access_token');
-    this.querySelector('#ask').addEventListener('click',
-      () => controller.askServer({
-        query: query.value,
-        access_token: access_token.value,
-      }));
+    const askButton = this.querySelector('#ask');
+    const askServer = () => controller.askServer({
+      query: textInput.value,
+      access_token: access_token.value,
+    });
+    if (!query_value) {
+      askButton.disabled = true;
+    }
+    textInput.addEventListener('keyup', (event) => {
+      askButton.disabled = textInput.value.length < 3;
+      if (event.keyCode != 13 || askButton.disabled) {
+        return;
+      }
+      askServer();
+    });
+    askButton.addEventListener('click', askServer);
     this.querySelector('#clear').addEventListener('click',
       () => controller.clearKeys());
   </script>
