@@ -235,16 +235,6 @@
       this._surface = document.querySelector('#surface');
     }
 
-    _render(templateId, logic) {
-      const template = document.getElementById(templateId);
-      const clone = template.content.cloneNode(true);
-      logic && logic(clone);
-      const instance = document.createElement('div');
-      instance.appendChild(clone);
-      instance.id = `${templateId}-instance`;
-      this._surface.appendChild(instance);
-    }
-
     hide(viewId) {
       const instance = document.getElementById(`${viewId}-view-instance`);
       if (instance)
@@ -252,11 +242,15 @@
     }
 
     show(viewId, ...data) {
-      this._render(`${viewId}-view`, (view) => {
-        console.log(`showing ${viewId} view`);
-        const logic = viewLogic[viewId];
-        logic && logic(view, ...data);
-      });
+      const templateId = `${viewId}-view`;
+      const template = document.getElementById(templateId);
+      const clone = template.content.cloneNode(true);
+      const logic = viewLogic[viewId];
+      logic && logic(clone, ...data);
+      const instance = document.createElement('div');
+      instance.appendChild(clone);
+      instance.id = `${templateId}-instance`;
+      this._surface.appendChild(instance);
     }
 
     clear() {
