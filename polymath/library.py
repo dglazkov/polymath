@@ -73,7 +73,9 @@ def _base64_from_vector(vector):
 
 
 def vector_similarity(x, y):
-    return np.dot(np.array(x), np.array(y))
+    # np.dot returns a float32 but those aren't serializable in json. Just
+    # covert to a float64 now.
+    return float(np.dot(np.array(x), np.array(y)))
 
 
 class Library:
@@ -655,9 +657,7 @@ class Library:
             # necessarily right anymore. But, like, whatever.
             chunk['text'] = chunk_text
             if similarities_dict:
-                # the similarity is float32, but only float64 is JSON serializable
-                chunk['similarity'] = float(
-                    similarities_dict[chunk_id])
+                chunk['similarity'] = similarities_dict[chunk_id]
             result.set_chunk(chunk_id, chunk)
 
         result.count_chunks = chunk_count
