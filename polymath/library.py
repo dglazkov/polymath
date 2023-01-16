@@ -581,6 +581,72 @@ class Library:
         for chunk_id, similarity in similarities.items():
             self.set_chunk_field(chunk_id, similarity=similarity)
 
+    def new_query(self, version=None, query_embedding=None, query_embedding_model=None, count=0, count_type='token', sort='similarity', sort_reversed=False, seed=None, omit='embedding', access_token=''):
+        
+        # This is the implementation of query that will wone day replace the
+        # legacy query() However currently it doesn't work, and the kids just
+        # woke up so I'm checking it in so I can tweak to get it to work and
+        # later swap it out with the real query().
+        
+        # We do our own defaulting so that servers that call us can pass the result
+        # of request.get() directly and if it's None, we'll use the default.
+        if count_type == None:
+            count_type = 'token'
+        if sort == None:
+            sort = 'similarity'
+        if omit == None:
+            omit = 'embedding'
+
+        if count == 0:
+            raise Exception('count must be greater than 0')
+
+        if version == None or version != CURRENT_VERSION:
+            raise Exception(f'version must be set to {CURRENT_VERSION}')
+
+        if query_embedding and query_embedding_model != EMBEDDINGS_MODEL_ID:
+            raise Exception(
+                f'If query_embedding is passed, query_embedding_model must be {EMBEDDINGS_MODEL_ID} but it was {query_embedding_model}')
+
+        if sort not in LEGAL_SORTS:
+            raise Exception(
+                f'sort {sort} is not one of the legal options: {LEGAL_SORTS}')
+            
+        if sort == 'manual':
+            raise Exception('sort of manual is not allowed in query')
+
+        if count_type not in LEGAL_COUNT_TYPES:
+            raise Exception(
+                f'count_type {count_type} is not one of the legal options: {LEGAL_COUNT_TYPES}')
+
+        result = self.copy()
+        if query_embedding:
+            # TODO: support query_embedding being base64 encoded or a raw vector of
+            # floats
+            embedding = vector_from_base64(query_embedding)
+            result.add_similarities(embedding)
+
+        result.seed = seed
+        result.sort_reversed = sort_reversed
+        result.sort = sort
+
+        count_type_is_chunk = count_type == 'chunk'
+        restricted_count = result.delete_restricted_chunks(access_token)
+        result = result.slice(count, count_type_is_chunk=count_type_is_chunk)
+        result.count_chunks = len(result.chunk_ids)
+        # Now that we know how many chunks exist we can set omit, which might
+        # remove all chunks.
+        result.omit = omit
+
+        include_restricted_count, restricted_message = restricted_configuration()
+
+        if include_restricted_count:
+            result.count_restricted = restricted_count
+
+        if restricted_message and restricted_count > 0:
+            result.message = 'Restricted results were omitted. ' + restricted_message
+
+        return result
+
     def query(self, version=None, query_embedding=None, query_embedding_model=None, count=0, count_type='token', sort='similarity', sort_reversed=False, seed=None, omit='embedding', access_token=''):
         # We do our own defaulting so that servers that call us can pass the result
         # of request.get() directly and if it's None, we'll use the default.
