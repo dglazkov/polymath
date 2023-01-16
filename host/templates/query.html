@@ -107,7 +107,7 @@
       return `Answer the question as truthfully as possible using the provided context, and if the answer is not contained within the text below, say \"I don't know.\"\n\nContext:\n${context} \n\nQuestion:\n${query}\n\nAnswer:`;
     }
 
-    static async synthesizeAnswers({ key, query, access_token}) {
+    static async synthesizeAnswers({ key, query, access_token }) {
       const server = new Polymath();
       const openai = new OpenAI(key);
       const result = {
@@ -202,72 +202,66 @@
     }
   }
 
+  const viewLogic = {
+    'request-key': (view, controller) => {
+      const button = view.querySelector('button');
+      const input = view.querySelector('input');
+      button.addEventListener('click', () => controller.storeKey(input.value));
+    },
+    'query': (view, controller, query_value) => {
+      const query = view.querySelector('#query');
+      query.value = query_value;
+      const access_token = view.querySelector('#access_token');
+      view.querySelector('#ask').addEventListener('click',
+        () => controller.askServer({
+          query: query.value,
+          access_token: access_token.value,
+        }));
+      view.querySelector('#clear').addEventListener('click',
+        () => controller.clearKeys());
+    },
+    'results': (view, completion, infos) => {
+      view.querySelector('#completion').textContent = completion;
+      view.querySelector('#sources').innerHTML = infos.map(info => `<li><a href="${info.url}">${info.title}</a></li>`).join('\n');
+    },
+    'error': (view, error) => {
+      const message = view.querySelector('#message');
+      message.textContent = error;
+    }
+  }
+
   class Views {
     constructor() {
       this._surface = document.querySelector('#surface');
     }
 
-    _render(templateId, decorator) {
+    _render(templateId, logic) {
       const template = document.getElementById(templateId);
       const clone = template.content.cloneNode(true);
-      decorator && decorator(clone);
+      logic && logic(clone);
       const instance = document.createElement('div');
       instance.appendChild(clone);
       instance.id = `${templateId}-instance`;
       this._surface.appendChild(instance);
     }
 
-    hide(templateId) {
-      const instance = document.getElementById(`${templateId}-instance`);
+    hide(viewId) {
+      const instance = document.getElementById(`${viewId}-view-instance`);
       if (instance)
         instance.hidden = true;
+    }
+
+    show(viewId, ...data) {
+      this._render(`${viewId}-view`, (view) => {
+        console.log(`showing ${viewId} view`);
+        const logic = viewLogic[viewId];
+        logic && logic(view, ...data);
+      });
     }
 
     clear() {
       this._surface.textContent = '';
     }
-
-    requestKey(controller) {
-      this._render('request-key-view', (view) => {
-        const button = view.querySelector('button');
-        const input = view.querySelector('input');
-        button.addEventListener('click', () => controller.storeKey(input.value));
-      });
-    }
-
-    loading(controller) {
-      this._render('loading-view');
-    }
-
-    query(controller, query_value) {
-      this._render('query-view', (view) => {
-        const query = view.querySelector('#query');
-        query.value = query_value;
-        const access_token = view.querySelector('#access_token');
-        view.querySelector('#ask').addEventListener('click',
-          () => controller.askServer({
-            query: query.value,
-            access_token: access_token.value,
-          }));
-        view.querySelector('#clear').addEventListener('click',
-          () => controller.clearKeys());
-      });
-    }
-
-    results(controller, completion, infos) {
-      this._render('results-view', (view) => {
-        view.querySelector('#completion').textContent = completion;
-        view.querySelector('#sources').innerHTML = infos.map(info => `<li><a href="${info.url}">${info.title}</a></li>`).join('\n');
-      })
-    }
-
-    error(controller, error) {
-      this._render('error-view', (view) => {
-        const message = view.querySelector('#message');
-        message.textContent = error;
-      })
-    }
-
   }
 
   class Controller {
@@ -307,29 +301,27 @@
     async start() {
       this.views.clear();
       if (!this.store.openai_api_key) {
-        this.views.requestKey(this);
+        this.views.show('request-key', this);
       } else {
         const query = this.url.searchParams.get('query');
-        this.views.query(this, query);
+        this.views.show('query', this, query);
         if (query) {
-          this.views.loading(this);
+          this.views.show('loading', this);
           const answers = await Polymath.synthesizeAnswers({
             query: query,
             key: this.store.openai_api_key,
             access_token: this.store.access_token,
           });
-          this.views.hide('loading-view')
+          this.views.hide('loading')
           if (answers.error) {
-            this.views.error(this, answers.error);
+            this.views.show('error', this, answers.error);
           } else {
-            this.views.results(this, answers.completion, answers.infos);
+            this.views.show('results', answers.completion, answers.infos);
           }
         }
       }
-      if (!this.results)
-        return;
-      if (this.results.error) {
-        this.views.error(this, this.results.error);
+      if (this.results && this.results.error) {
+        this.views.show('error', this.results.error);
       }
     }
   }
