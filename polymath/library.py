@@ -495,6 +495,14 @@ class Library:
             in self.chunks], reverse=True)
         return {key: value for value, key in items}
 
+    def add_similarities(self, query_embedding):
+        # if we won't store the similarities anyway then don't bother.
+        if self.omit_whole_chunk or 'similarities' in self.fields_to_omit:
+            return
+        similarities = self.similarities(query_embedding)
+        for chunk_id, similarity in similarities.items():
+            self.set_chunk_field(chunk_id, similarity=similarity)
+
     def query(self, version=None, query_embedding=None, query_embedding_model=None, count=0, count_type='token', sort='similarity', sort_reversed=False, seed=None, omit='embedding', access_token=''):
         # We do our own defaulting so that servers that call us can pass the result
         # of request.get() directly and if it's None, we'll use the default.
