@@ -13,7 +13,9 @@ The format of the library files is as follows:
     //Ids is the sorted order of ids, sorted according to 'type'. May be omitted only if type is equivalent to 'any'. If ids is not empty, then it must contain an entry for every chunk in the content dict.
     ids: ['abc', 'def', '123', ...],
     //If provided, will be used as the seed to sort.random to yield a deterministic order. May be omitted.
-    seed: 'abc'
+    seed: 'abc',
+    //Sorts are descending by default. If true, will reverse the sort. May be omitted if 'false'
+    reversed: true
   },
   //details is optional. It's typically only set for libraries generated from Library.query()
   details: {

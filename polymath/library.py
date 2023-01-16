@@ -223,6 +223,21 @@ class Library:
         self._re_sort()
 
     @property
+    def sort_reversed(self):
+        if 'sort' not in self._data:
+            return False
+        return self._data['sort'].get('reversed', False)
+
+    @sort_reversed.setter
+    def sort_reversed(self, value):
+        if value == self.sort_reversed:
+            return
+        if 'sort' not in self._data:
+            self._data['sort'] = {}
+        self._data['sort']['reversed'] = value
+        self._re_sort()
+
+    @property
     def sort(self):
         if 'sort' not in self._data:
             return 'any'
@@ -258,6 +273,7 @@ class Library:
         if not ids:
             return
         sort_type = sort.get('type', 'any')
+        sort_reversed = sort.get('reversed', False)
         if sort_type == 'random':
             rng = random.Random()
             rng.seed(self.seed)
@@ -278,6 +294,8 @@ class Library:
         else:
             # effectively any, which means any order is fine.
             pass
+        if sort_reversed:
+            ids.reverse()
         self._data['sort']['ids'] = ids
 
     @property
