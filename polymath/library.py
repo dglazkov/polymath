@@ -397,6 +397,12 @@ class Library:
             'content': {}
         }
 
+    def delete_all_chunks(self):
+        self._data['content'] = {}
+        if 'sort' in self._data:
+            if 'ids' in self._data['sort']:
+                self._data['sort']['ids'] = []
+
     @property
     def chunk_ids(self):
         """
