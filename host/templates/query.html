@@ -81,7 +81,7 @@
     }
   }
 
-  class PolymathServer {
+  class Polymath {
     async ask(query) {
       const form = new FormData();
       form.append('version', '0');
@@ -108,7 +108,7 @@
     }
 
     static async synthesizeAnswers({ key, query, access_token}) {
-      const server = new PolymathServer();
+      const server = new Polymath();
       const openai = new OpenAI(key);
       const result = {
         error: null,
@@ -122,7 +122,7 @@
         return result;
       }
 
-      const query_embedding = PolymathServer.encode_embedding(embedding.result);
+      const query_embedding = Polymath.encode_embedding(embedding.result);
       access_token = access_token || ''
       const polymath_results = await server.ask({ query_embedding, access_token });
       if (polymath_results.error) {
@@ -130,7 +130,7 @@
         return result;
       }
 
-      const context = PolymathServer.create_prompt({
+      const context = Polymath.create_prompt({
         query: query,
         results: polymath_results,
       });
@@ -294,7 +294,7 @@
       this.store.clear();
       this.start();
     }
-    
+
     async start() {
       this.views.clear();
       if (!this.store.openai_api_key) {
@@ -304,7 +304,7 @@
         this.views.query(this, query);
         if (query) {
           this.views.loading(this);
-          const answers = await PolymathServer.synthesizeAnswers({
+          const answers = await Polymath.synthesizeAnswers({
             query: query,
             key: this.store.openai_api_key,
             access_token: this.store.access_token,
