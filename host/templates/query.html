@@ -313,20 +313,23 @@
         this.views.show('request-key', this);
       } else {
         const query = this.url.searchParams.get('query');
+        if (!query) {
+          this.views.show('query', this, '');
+          return;
+        }
+        this.views.show('loading', this);
+        this.views.hide('query');
+        const answers = await Polymath.synthesizeAnswers({
+          query: query,
+          key: this.store.openai_api_key,
+          access_token: this.store.access_token,
+        });
+        this.views.hide('loading')
         this.views.show('query', this, query);
-        if (query) {
-          this.views.show('loading', this);
-          const answers = await Polymath.synthesizeAnswers({
-            query: query,
-            key: this.store.openai_api_key,
-            access_token: this.store.access_token,
-          });
-          this.views.hide('loading')
-          if (answers.error) {
-            this.views.show('error', this, answers.error);
-          } else {
-            this.views.show('results', answers.completion, answers.infos);
-          }
+        if (answers.error) {
+          this.views.show('error', this, answers.error);
+        } else {
+          this.views.show('results', answers.completion, answers.infos);
         }
       }
       if (this.results && this.results.error) {
