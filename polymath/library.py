@@ -209,7 +209,14 @@ class Library:
     @omit.setter
     def omit(self, value):
         _, _, canonical_value = _keys_to_omit(value)
+        if canonical_value == self._data['omit']:
+            return
         self._data['omit'] = canonical_value
+        if self.omit_whole_chunk:
+            self._data['content'] = {}
+            return
+        for chunk_id, chunk in self.chunks:
+            self.set_chunk(chunk_id, chunk)
 
     @property
     def seed(self):
