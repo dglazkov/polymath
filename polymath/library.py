@@ -599,13 +599,7 @@ class Library:
         for chunk_id, similarity in similarities.items():
             self.set_chunk_field(chunk_id, similarity=similarity)
 
-    def new_query(self, version=None, query_embedding=None, query_embedding_model=None, count=0, count_type='token', sort='similarity', sort_reversed=False, seed=None, omit='embedding', access_token=''):
-        
-        # This is the implementation of query that will wone day replace the
-        # legacy query() However currently it doesn't work, and the kids just
-        # woke up so I'm checking it in so I can tweak to get it to work and
-        # later swap it out with the real query().
-        
+    def query(self, version=None, query_embedding=None, query_embedding_model=None, count=0, count_type='token', sort='similarity', sort_reversed=False, seed=None, omit='embedding', access_token=''):                
         # We do our own defaulting so that servers that call us can pass the result
         # of request.get() directly and if it's None, we'll use the default.
         if count_type == None:
@@ -656,120 +650,6 @@ class Library:
         result.omit = omit
 
         include_restricted_count, restricted_message = restricted_configuration()
-
-        if include_restricted_count:
-            result.count_restricted = restricted_count
-
-        if restricted_message and restricted_count > 0:
-            result.message = 'Restricted results were omitted. ' + restricted_message
-
-        return result
-
-    def query(self, version=None, query_embedding=None, query_embedding_model=None, count=0, count_type='token', sort='similarity', sort_reversed=False, seed=None, omit='embedding', access_token=''):
-        # We do our own defaulting so that servers that call us can pass the result
-        # of request.get() directly and if it's None, we'll use the default.
-        if count_type == None:
-            count_type = 'token'
-        if sort == None:
-            sort = 'similarity'
-        if omit == None:
-            omit = 'embedding'
-
-        if count == 0:
-            raise Exception('count must be greater than 0')
-
-        if version == None or version != CURRENT_VERSION:
-            raise Exception(f'version must be set to {CURRENT_VERSION}')
-
-        if query_embedding and query_embedding_model != EMBEDDINGS_MODEL_ID:
-            raise Exception(
-                f'If query_embedding is passed, query_embedding_model must be {EMBEDDINGS_MODEL_ID} but it was {query_embedding_model}')
-
-        if sort not in LEGAL_SORTS:
-            raise Exception(
-                f'sort {sort} is not one of the legal options: {LEGAL_SORTS}')
-            
-        if sort == 'manual':
-            raise Exception('sort of manual is not allowed in query')
-
-        if count_type not in LEGAL_COUNT_TYPES:
-            raise Exception(
-                f'count_type {count_type} is not one of the legal options: {LEGAL_COUNT_TYPES}')
-
-        result = Library()
-        # TODO: when we fix #52 then we won't use this. But for now ensure that all of the items are in insertion order.
-        result.sort = 'manual'
-
-        omit_whole_chunk, _, canonical_omit_configuration = _keys_to_omit(
-            omit)
-
-        result.omit = canonical_omit_configuration
-
-        similarities_dict = None
-        if query_embedding:
-            # TODO: support query_embedding being base64 encoded or a raw vector of
-            # floats
-            embedding = vector_from_base64(query_embedding)
-            similarities_dict = self.similarities(embedding)
-
-        # The default sort for 'any' or 'similarity' if there was no query set.
-        chunk_ids = None
-        if sort == 'similarity':
-            if not similarities_dict:
-                raise Exception('similarity sort passed without a query')
-            chunk_ids = list(similarities_dict.keys())
-        elif sort == 'random':
-            chunk_ids = list(self.chunk_ids)
-            rng = random.Random()
-            rng.seed(None if not seed else seed)
-            rng.shuffle(chunk_ids)
-            # TODO: this is a smell; technically it's possible to have a sort of
-            # random and still want embeddings. Likely we should change other
-            # systems that want the random behavior to also pass the desired
-            # omit behavior and not force it.
-            result.omit = 'embedding,similarity'
-        elif sort == 'any':
-            chunk_ids = list(self.chunk_ids)
-
-        if not chunk_ids:
-            raise Exception('Invalid type of sort was specified')
-
-        if sort_reversed:
-            chunk_ids.reverse()
-
-        count_type_is_chunk = count_type == 'chunk'
-
-        chunk_dict = _get_context(chunk_ids, self, count,
-                                  count_type_is_chunk=count_type_is_chunk)
-
-        include_restricted_count, restricted_message = restricted_configuration()
-
-        print(f"access_token: {access_token}")
-        visible_access_tags = permitted_access(access_token)
-
-        chunk_count = 0
-        restricted_count = 0
-
-        for chunk_id, chunk_text in chunk_dict.items():
-            chunk = copy.deepcopy(self.chunk(chunk_id))
-            if 'access_tag' in chunk:
-                if chunk['access_tag'] not in visible_access_tags:
-                    restricted_count += 1
-                    continue
-
-            chunk_count += 1
-
-            if omit_whole_chunk:
-                continue
-
-            # Note: if the text was truncated then technically the embedding isn't
-            # necessarily right anymore. But, like, whatever.
-            chunk['text'] = chunk_text
-            if similarities_dict:
-                chunk['similarity'] = similarities_dict[chunk_id]
-            result.set_chunk(chunk_id, chunk)
-
-        result.count_chunks = chunk_count
 
         if include_restricted_count:
             result.count_restricted = restricted_count
