@@ -121,6 +121,8 @@ class Library:
             self._data.get('embedding_model', ''), 0)
         omit_whole_chunks, fields_to_omit, _ = _keys_to_omit(
             self._data.get('omit', ''))
+        if 'content' not in self._data:
+            raise Exception('content is a required field')
         if omit_whole_chunks and len(self._data['content']):
             raise Exception(
                 'omit configured to omit all chunks but they were present')
