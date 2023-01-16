@@ -291,7 +291,7 @@ class Library:
             rng = random.Random()
             rng.seed(self.seed)
             rng.shuffle(ids)
-        elif sort_type == 'similiarity':
+        elif sort_type == 'similarity':
             ids_to_sort = []
             # TODO: use a list comprehension or whatever
             for chunk_id, chunk in self.chunks:
