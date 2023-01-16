@@ -19,7 +19,7 @@ MAX_CONTEXT_LEN_IN_TOKENS = 2048
 
 CURRENT_VERSION = 0
 
-LEGAL_SORTS = set(['similarity', 'any', 'random'])
+LEGAL_SORTS = set(['similarity', 'any', 'random', 'manual'])
 LEGAL_COUNT_TYPES = set(['token', 'chunk'])
 LEGAL_OMIT_KEYS = set(
     ['*', '', 'similarity', 'embedding', 'token_count', 'info', 'access_tag'])
@@ -258,6 +258,9 @@ class Library:
                 ids_to_sort.append((similarity, chunk_id))
             ids_to_sort.sort(reverse=True)
             ids = ids_to_sort
+        elif sort_type == 'manual':
+            # sort type of manual we expliclity want left in the previous order.
+            pass
         else:
             # effectively any, which means any order is fine.
             pass
@@ -466,6 +469,9 @@ class Library:
         if sort not in LEGAL_SORTS:
             raise Exception(
                 f'sort {sort} is not one of the legal options: {LEGAL_SORTS}')
+            
+        if sort == 'manual':
+            raise Exception('sort of manual is not allowed in query')
 
         if count_type not in LEGAL_COUNT_TYPES:
             raise Exception(
