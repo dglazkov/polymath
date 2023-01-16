@@ -194,6 +194,27 @@ class Library:
         self._data['omit'] = canonical_value
 
     @property
+    def sort(self):
+        if 'sort' not in self._data:
+            return 'any'
+        return self._data['sort'].get('type', 'any')
+    
+    @sort.setter
+    def sort(self, value):
+        if value == self.sort:
+            return
+        if value not in LEGAL_SORTS:
+            raise Exception(f'Illegal sort: {value}')
+        if 'sort' not in self._data:
+            self._data['sort'] = {}
+        self._data['sort']['type'] = value
+        if self._data['sort']['type'] == 'any':
+            del self._data['sort']['type']
+        if len(self._data['sort']) == 0:
+            del self._data['sort']
+        # TODO: resort by the new key
+
+    @property
     def _details(self):
         if 'details' not in self._data:
             return {}

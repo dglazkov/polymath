@@ -5,7 +5,12 @@ The format of the library files is as follows:
   //Currently the only supported model is 'openai.com:text-embedding-ada-002'. That might change in the future.
   embedding_model: 'openai.com:text-embedding-ada-002',
   //Omit is optional. If provided, it is a string or array of strings that specify which keys in chunks are expected to be missing. '' means nothing is supposed to be missing, and '*' means all chunks are totally gone, that is content: {}.
-  omit: 'embedding'
+  omit: 'embedding',
+  //sort may be omitted if it is empty. It contains information about the sort of the library.
+  sort: {
+    //The type of the sort. May be omitted if type is 'any'. Legal values are 'any', 'similarity', and 'random'.
+    type: 'random'
+  },
   //details is optional. It's typically only set for libraries generated from Library.query()
   details: {
     //Message is optional and will be displayed when 
