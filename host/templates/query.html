@@ -107,7 +107,7 @@
 
     clear() {
       localStorage.removeItem('openai_api_key');
-      localStorage.removeItem('access_key');
+      localStorage.removeItem('access_token');
     }
   }
 
@@ -312,6 +312,13 @@
       if (!this.store.openai_api_key) {
         this.views.show('request-key', this);
       } else {
+        const access_token = this.url.searchParams.get('secret');
+        if (access_token) {
+          this.store.access_token = access_token;
+          this.url.searchParams.delete('secret');
+          window.location.assign(this.url);
+          return;
+        }
         const query = this.url.searchParams.get('query');
         if (!query) {
           this.views.show('query', this, '');
@@ -327,7 +334,7 @@
         this.views.hide('loading')
         this.views.show('query', this, query);
         if (answers.error) {
-          this.views.show('error', this, answers.error);
+          this.views.show('error', answers.error);
         } else {
           this.views.show('results', answers.completion, answers.infos);
         }
