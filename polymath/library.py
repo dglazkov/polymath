@@ -138,12 +138,14 @@ class Library:
         if sort_type != 'any' and not sort_ids:
             raise Exception('sort.ids is required if sort type is not any')
         if sort_ids:
-            sort_ids_dict = {key: True for key in sort_ids}
-            if len(sort_ids_dict) != len(self._data['content']):
-                raise Exception('sort.ids if provided must contain an entry for each content chunk')
-            for chunk_id in self._data['content'].keys():
-                if chunk_id not in sort_ids_dict:
-                    raise Exception(f'sort.ids if provided must have an entry for each chunk_id. Missing {chunk_id}')
+            sort_ids_set = set(sort_ids)
+            content_ids_set = set(self._data['content'].keys())
+            keys_in_sort_not_content = sort_ids_set - content_ids_set
+            keys_in_content_not_sort = content_ids_set - sort_ids_set
+            if len(keys_in_sort_not_content):
+                raise Exception(f'sort.ids must contain precisely one entry for each content chunk if provided. It has extra keys {keys_in_sort_not_content}')
+            if len(keys_in_content_not_sort):
+                raise Exception(f'sort.ids must contain precisely one entry for each content chunk if provided. It is missing keys {keys_in_content_not_sort}')
         for chunk_id, chunk in self._data['content'].items():
             for field in fields_to_omit:
                 if field in chunk:
