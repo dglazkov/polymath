@@ -222,7 +222,10 @@ class Library:
         if 'sort' not in self._data:
             self._data['sort'] = {}
         self._data['sort']['type'] = value
-        if value != 'any':
+        if value == 'any':
+            if 'ids' in self._data['sort']:
+                del self._data['sort']['ids']
+        else:
             if 'ids' not in self._data['sort']:
                 self._data['sort']['ids'] = list(self.chunk_ids)
         if self._data['sort']['type'] == 'any':
