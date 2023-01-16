@@ -405,6 +405,29 @@ class Library:
             if 'ids' in self._data['sort']:
                 self._data['sort']['ids'] = []
 
+    def delete_restricted_chunks(self, access_token=None):
+        """
+        Deletes all chunks that are restricted, unless access_token grants access.
+
+        Returns the number of items that were removed.
+        """
+        visible_access_tags = permitted_access(access_token)
+        chunk_ids = list(self.chunk_ids)
+
+        restricted_count = 0
+        
+        for chunk_id in chunk_ids:
+            chunk = self.chunk(chunk_id)
+            if 'access_tag' not in chunk:
+                continue
+            if chunk['access_tag'] in visible_access_tags:
+                continue
+        
+            self.delete_chunk(chunk_id)
+            restricted_count += 1
+        
+        return restricted_count
+
     @property
     def chunk_ids(self):
         """
