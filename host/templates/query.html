@@ -93,7 +93,7 @@
       return btoa(String.fromCharCode(...(new Uint8Array(new Float32Array(data).buffer))));
     }
 
-    static create_prompt({query, results}) {
+    static create_prompt({ query, results }) {
       const context = Object.values(results.content).map(chunk => chunk.text).join('\n');
       return `Answer the question as truthfully as possible using the provided context, and if the answer is not contained within the text below, say \"I don't know.\"\n\nContext:\n${context} \n\nQuestion:\n${query}\n\nAnswer:`;
     }
@@ -121,6 +121,17 @@
       return {
         result: getter(result)
       };
+    }
+
+    async validate() {
+      const url = `https://api.openai.com/v1/models`;
+      const result = await (await fetch(url, {
+        method: 'GET',
+        headers: {
+          'Authorization': `Bearer ${this._key}`,
+        }
+      })).json();
+      return !result.error;
     }
 
     async completion(prompt) {
@@ -213,7 +224,15 @@
       this.results = null;
     }
 
-    storeKey(key) {
+    async storeKey(key) {
+      const openai = new OpenAI(key);
+      if (!await openai.validate()) {
+        this.results = {
+          error: 'Invalid API key'
+        };
+        this.start();
+        return;
+      }
       this.store.openai_api_key = key;
       this.results = null;
       this.start();
@@ -250,11 +269,11 @@
       this.views.clear();
       if (!this.store.openai_api_key) {
         this.views.requestKey(this);
-        return;
+      } else {
+        this.views.query(this);
       }
-      this.views.query(this);
       if (!this.results)
-        return; 
+        return;
       if (this.results.error) {
         this.views.error(this);
       } else {
