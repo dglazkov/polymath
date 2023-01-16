@@ -243,13 +243,21 @@
 
     show(viewId, ...data) {
       const templateId = `${viewId}-view`;
+      const instanceId = `${templateId}-instance`;
+      let instance = document.getElementById(instanceId);
+      if (instance) {
+        instance.hidden = false;
+        return;
+      }
+
       const template = document.getElementById(templateId);
       const clone = template.content.cloneNode(true);
       const logic = viewLogic[viewId];
       logic && logic(clone, ...data);
-      const instance = document.createElement('div');
+
+      instance = document.createElement('div');
       instance.appendChild(clone);
-      instance.id = `${templateId}-instance`;
+      instance.id = instanceId;
       this._surface.appendChild(instance);
     }
 
