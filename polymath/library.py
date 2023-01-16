@@ -479,7 +479,7 @@ class Library:
         content[chunk_id] = chunk
         self._strip_chunk(chunk)
 
-    def set_chunk_field(self, chunk_id, text=None, embedding=None, token_count=None, info=None, access_tag=None):
+    def set_chunk_field(self, chunk_id, text=None, embedding=None, token_count=None, info=None, access_tag=None, similarity=None):
         if self.omit_whole_chunk:
             return
         chunk = self._data["content"].get(chunk_id, {})
@@ -493,6 +493,8 @@ class Library:
             chunk["info"] = info
         if access_tag != None:
             chunk["access_tag"] = access_tag
+        if similarity != None:
+            chunk["similarity"] = similarity
         self.set_chunk(chunk_id, chunk)
 
     def delete_chunk_field(self, chunk_id, fields=None):
