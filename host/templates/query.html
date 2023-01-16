@@ -1,22 +1,27 @@
 <!DOCTYPE html>
-<h1>Polymath Endpoint</h1>
-<p>
-  This is a <a href="https://github.com/dglazkov/polymath">polymath</a> endpoint.
-</p>
-<div id="surface"></div>
-<p>
-  See more about how to get started at <a
-    href="https://github.com/dglazkov/polymath#readme">https://github.com/dglazkov/polymath</a>
-</p>
-{% if restricted_message %}
-<p>This server has additional private content that requires an access token to access. {{ restricted_message }}</p>
-{% endif %}
+<link rel="stylesheet" href="static/mvp.css" />
+<header>
+  <h1>Polymath Endpoint</h1>
+  <p>
+    This is a <a href="https://github.com/dglazkov/polymath">polymath</a> endpoint.
+  </p>
+</header>
+<main id="surface"></main>
+<footer>
+  {% if restricted_message %}
+  <p>This server has additional private content that requires an access token to access. {{ restricted_message }}</p>
+  {% endif %}
+  <p>
+    See more about how to get started at <a
+      href="https://github.com/dglazkov/polymath#readme">https://github.com/dglazkov/polymath</a>
+  </p>
+</footer>
 <template id="query-view">
   <p>
     <label>Query:
       <input type="text" id="query">
     </label>
-    <button id="ask">Ask</button>
+    <button id="ask">Ask endpoint a question</button>
   </p>
   <details>
     <summary>More options</summary>
@@ -175,7 +180,7 @@
       this._key = key;
     }
 
-    async _call_api(type, payload, getter) {
+    async _call_api(type, payload, result_getter) {
       const url = `https://api.openai.com/v1/${type}`;
       const result = await (await fetch(url, {
         method: 'POST',
@@ -190,7 +195,7 @@
           error: result.error.message
         }
       return {
-        result: getter(result)
+        result: result_getter(result)
       };
     }
 

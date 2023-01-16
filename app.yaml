@@ -6,3 +6,6 @@ entrypoint: gunicorn -b :$PORT host.server:app
 handlers:
 - url: /
   script: host.server
+
+- url: /static
+  static_dir: static
