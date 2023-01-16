@@ -106,6 +106,43 @@
       const context = Object.values(results.content).map(chunk => chunk.text).join('\n');
       return `Answer the question as truthfully as possible using the provided context, and if the answer is not contained within the text below, say \"I don't know.\"\n\nContext:\n${context} \n\nQuestion:\n${query}\n\nAnswer:`;
     }
+
+    static async synthesizeAnswers({ key, query, access_token}) {
+      const server = new PolymathServer();
+      const openai = new OpenAI(key);
+      const result = {
+        error: null,
+        infos: null,
+        completion: null,
+      }
+
+      const embedding = await openai.embedding(query);
+      if (embedding.error) {
+        result.error = embedding.error;
+        return result;
+      }
+
+      const query_embedding = PolymathServer.encode_embedding(embedding.result);
+      access_token = access_token || ''
+      const polymath_results = await server.ask({ query_embedding, access_token });
+      if (polymath_results.error) {
+        result.error = polymath_results.error;
+        return result;
+      }
+
+      const context = PolymathServer.create_prompt({
+        query: query,
+        results: polymath_results,
+      });
+      const completion_result = await openai.completion(context);
+      if (completion_result.error) {
+        result.error = completion_result.error;
+        return result;
+      }
+      result.infos = Object.values(polymath_results.content).map(entry => entry.info);
+      result.completion = completion_result.result;
+      return result;
+    }
   }
 
   class OpenAI {
@@ -208,20 +245,17 @@
       });
     }
 
-    results(controller) {
+    results(controller, completion, infos) {
       this._render('results-view', (view) => {
-        const sources = view.querySelector('#sources');
-        const completion = view.querySelector('#completion');
-        completion.textContent = controller.completion.result;
-        const infos = Object.values(controller.results.content).map(entry => entry.info);
-        sources.innerHTML = infos.map(info => `<li><a href="${info.url}">${info.title}</a></li>`).join('\n');
+        view.querySelector('#completion').textContent = completion;
+        view.querySelector('#sources').innerHTML = infos.map(info => `<li><a href="${info.url}">${info.title}</a></li>`).join('\n');
       })
     }
 
-    error(controller) {
+    error(controller, error) {
       this._render('error-view', (view) => {
         const message = view.querySelector('#message');
-        message.textContent = controller.results.error;
+        message.textContent = error;
       })
     }
 
@@ -248,7 +282,7 @@
       this.results = null;
       this.start();
     }
-    
+
     askServer({ query, access_token }) {
       this.url.searchParams.set('query', query);
       if (access_token)
@@ -260,41 +294,32 @@
       this.store.clear();
       this.start();
     }
-
+    
     async start() {
       this.views.clear();
       if (!this.store.openai_api_key) {
         this.views.requestKey(this);
       } else {
         const query = this.url.searchParams.get('query');
+        this.views.query(this, query);
         if (query) {
           this.views.loading(this);
-          const server = new PolymathServer();
-          const openai = new OpenAI(this.store.openai_api_key);
-          const embedding = await openai.embedding(query);
-          if (embedding.error) {
-            this.results = embedding;
+          const answers = await PolymathServer.synthesizeAnswers({
+            query: query,
+            key: this.store.openai_api_key,
+            access_token: this.store.access_token,
+          });
+          if (answers.error) {
+            this.views.error(this, answers.error);
           } else {
-            const query_embedding = PolymathServer.encode_embedding(embedding.result);
-            const access_token = this.store.access_token || '';
-            this.results = await server.ask({ query_embedding, access_token });
-            if (!this.results.error) {
-              const context = PolymathServer.create_prompt({
-                query: query,
-                results: this.results,
-              });
-              this.completion = await openai.completion(context);
-            }
+            this.views.results(this, answers.completion, answers.infos);
           }
         }
-        this.views.query(this, query);
       }
       if (!this.results)
         return;
       if (this.results.error) {
-        this.views.error(this);
-      } else {
-        this.views.results(this);
+        this.views.error(this, this.results.error);
       }
     }
   }
