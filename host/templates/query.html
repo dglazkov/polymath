@@ -202,7 +202,8 @@
     }
   }
 
-  const viewLogic = {
+  // Contains logic that is bound to respective templates.
+  const VIEW_LOGIC = {
     'request-key': (view, controller) => {
       const button = view.querySelector('button');
       const input = view.querySelector('input');
@@ -231,8 +232,9 @@
   }
 
   class Views {
-    constructor() {
+    constructor(viewLogic) {
       this._surface = document.querySelector('#surface');
+      this._viewLogic = viewLogic;
     }
 
     hide(viewId) {
@@ -252,7 +254,7 @@
 
       const template = document.getElementById(templateId);
       const clone = template.content.cloneNode(true);
-      const logic = viewLogic[viewId];
+      const logic = this._viewLogic[viewId];
       logic && logic(clone, ...data);
 
       instance = document.createElement('div');
@@ -269,7 +271,7 @@
   class Controller {
     constructor() {
       this.store = new Keystore();
-      this.views = new Views();
+      this.views = new Views(VIEW_LOGIC);
       this.results = null;
       this.url = new URL(window.location);
     }
