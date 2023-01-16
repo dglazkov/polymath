@@ -496,6 +496,44 @@ class Library:
                 chunk['embedding']).decode('ascii')
         return result
 
+    def slice(self, count, count_type_is_chunk=False, chunk_ids=None):
+        """
+        Returns a new library that contains a subset of the first items of self
+        up to size count.
+
+        By default, count is of type token, meaning that the last item might be
+        a subset of that chunk's content.
+
+        If count_type_is_chunk is true, then it will return a library with up to
+        that many chunks.
+
+        A count of negative means 'all items'
+        """
+        result = self.copy()
+        result.delete_all_chunks()
+        context_len = 0
+        counter = 0
+
+        if chunk_ids == None:
+            chunk_ids = list(self.chunk_ids)
+
+        # TODO: Account for separator tokens, but do so without invoking a tokenizer in this method.
+        for id in chunk_ids:
+            if count_type_is_chunk and count >= 0 and counter >= count:
+                break
+            chunk = copy.deepcopy(self.chunk(id))
+            tokens = chunk['token_count']
+            text = chunk['text']
+            context_len += tokens
+            if not count_type_is_chunk and count >= 0 and context_len > count:
+                if len(result.chunk_ids) == 0:
+                    chunk['text'] = text[:(count)]
+                    result.set_chunk(id, chunk)
+                break
+            result.set_chunk(id, chunk)
+            counter += 1
+        return result
+
     def save(self, filename):
         result = self.serializable()
         with open(filename, 'w') as f:
