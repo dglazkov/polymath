@@ -257,7 +257,7 @@ class Library:
                 del self._data['sort']['ids']
         else:
             if 'ids' not in self._data['sort']:
-                self._data['sort']['ids'] = list(self.chunk_ids)
+                self._data['sort']['ids'] = list(self._data['content'].keys())
         if self._data['sort']['type'] == 'any':
             del self._data['sort']['type']
         if len(self._data['sort']) == 0:
