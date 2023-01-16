@@ -135,7 +135,7 @@ class Library:
             sort_ids_dict = {key: True for key in sort_ids}
             if len(sort_ids_dict) != len(self._data['content']):
                 raise Exception('sort.ids if provided must contain an entry for each content chunk')
-            for chunk_id in self._data['content'].values():
+            for chunk_id in self._data['content'].keys():
                 if chunk_id not in sort_ids_dict:
                     raise Exception(f'sort.ids if provided must have an entry for each chunk_id. Missing {chunk_id}')
         for chunk_id, chunk in self._data['content'].items():
