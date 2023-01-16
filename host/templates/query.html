@@ -238,17 +238,17 @@
       this.start();
     }
 
-    async askServer(query) {
+    async askServer({ query, access_token }) {
       this.views.clear();
       this.views.loading(this);
       const server = new PolymathServer();
       const openai = new OpenAI(this.store.openai_api_key);
-      const embedding = await openai.embedding(query.query);
+      const embedding = await openai.embedding(query);
       if (embedding.error) {
         this.results = embedding;
       } else {
-        query.query_embedding = PolymathServer.encode_embedding(embedding.result);
-        this.results = await server.ask(query);
+        const query_embedding = PolymathServer.encode_embedding(embedding.result);
+        this.results = await server.ask({ query_embedding, access_token });
         if (!this.results.error) {
           const context = PolymathServer.create_prompt({
             query: query.query,
