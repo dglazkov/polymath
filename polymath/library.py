@@ -327,6 +327,10 @@ class Library:
 
     def delete_chunk(self, chunk_id):
         del self._data["content"][chunk_id]
+        sort = self._data.get('sort', {})
+        ids = sort.get('ids', None)
+        if ids:
+            ids.remove(chunk_id)
 
     def _strip_chunk(self, chunk):
         if self.omit_whole_chunk:
@@ -338,15 +342,20 @@ class Library:
     def set_chunk(self, chunk_id, chunk):
         if self.omit_whole_chunk:
             return
-        self._data["content"][chunk_id] = chunk
+        content = self._data['content']
+        if chunk_id not in content:
+            sort = self._data.get('sort', {})
+            sort_ids = sort.get('ids', None)
+            if sort_ids:
+                # TODO: resort, ideally an insertion because we assume it's already sorted.
+                sort_ids.append(chunk_id)
+        content[chunk_id] = chunk
         self._strip_chunk(chunk)
 
     def set_chunk_field(self, chunk_id, text=None, embedding=None, token_count=None, info=None, access_tag=None):
         if self.omit_whole_chunk:
             return
-        if chunk_id not in self._data["content"]:
-            self._data["content"][chunk_id] = {}
-        chunk = self._data["content"][chunk_id]
+        chunk = self._data["content"].get(chunk_id, {})
         if text != None:
             chunk["text"] = text
         if embedding != None:
@@ -357,7 +366,7 @@ class Library:
             chunk["info"] = info
         if access_tag != None:
             chunk["access_tag"] = access_tag
-        self._strip_chunk(chunk)
+        self.set_chunk(chunk_id, chunk)
 
     def delete_chunk_field(self, chunk_id, fields=None):
         if isinstance(fields, str):
