@@ -218,6 +218,10 @@ class Library:
         self._data['omit'] = canonical_value
         if self.omit_whole_chunk:
             self._data['content'] = {}
+            sort = self._data.get('sort', {})
+            ids = sort.get('ids', None)
+            if ids:
+                self._data['sort']['ids'] = []
             return
         for chunk_id, chunk in self.chunks:
             self.set_chunk(chunk_id, chunk)
