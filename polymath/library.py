@@ -208,6 +208,21 @@ class Library:
         self._data['omit'] = canonical_value
 
     @property
+    def seed(self):
+        if 'sort' not in self._data:
+            return None
+        return self._data['sort'].get('seed', None)
+
+    @seed.setter
+    def seed(self, value):
+        if value == self.seed:
+            return
+        if 'sort' not in self._data:
+            self._data['sort'] = {}
+        self._data['sort']['seed'] = value
+        self._re_sort()
+
+    @property
     def sort(self):
         if 'sort' not in self._data:
             return 'any'
@@ -245,8 +260,7 @@ class Library:
         sort_type = sort.get('type', 'any')
         if sort_type == 'random':
             rng = random.Random()
-            # TODO: allow using sort.seed if it exists
-            rng.seed(None)
+            rng.seed(self.seed)
             rng.shuffle(ids)
         elif sort_type == 'similiarity':
             ids_to_sort = []
