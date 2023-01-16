@@ -126,6 +126,18 @@ class Library:
         if omit_whole_chunks and len(self._data['content']):
             raise Exception(
                 'omit configured to omit all chunks but they were present')
+        sort = self._data.get('sort', {})
+        sort_type = sort.get('type', 'any')
+        sort_ids = sort.get('ids', None)
+        if sort_type != 'any' and not sort_ids:
+            raise Exception('sort.ids is required if sort type is not any')
+        if sort_ids:
+            sort_ids_dict = {key: True for key in sort_ids}
+            if len(sort_ids_dict) != len(self._data['content']):
+                raise Exception('sort.ids if provided must contain an entry for each content chunk')
+            for chunk_id in self._data['content'].values():
+                if chunk_id not in sort_ids_dict:
+                    raise Exception(f'sort.ids if provided must have an entry for each chunk_id. Missing {chunk_id}')
         for chunk_id, chunk in self._data['content'].items():
             for field in fields_to_omit:
                 if field in chunk:
@@ -210,6 +222,9 @@ class Library:
         if 'sort' not in self._data:
             self._data['sort'] = {}
         self._data['sort']['type'] = value
+        if value != 'any':
+            if 'ids' not in self._data['sort']:
+                self._data['sort']['ids'] = list(self.chunk_ids)
         if self._data['sort']['type'] == 'any':
             del self._data['sort']['type']
         if len(self._data['sort']) == 0:

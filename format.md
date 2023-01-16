@@ -9,7 +9,9 @@ The format of the library files is as follows:
   //sort may be omitted if it is empty. It contains information about the sort of the library.
   sort: {
     //The type of the sort. May be omitted if type is 'any'. Legal values are 'any', 'similarity', and 'random'.
-    type: 'random'
+    type: 'random',
+    //Ids is the sorted order of ids, sorted according to 'type'. May be omitted only if type is equivalent to 'any'. If ids is not empty, then it must contain an entry for every chunk in the content dict.
+    ids: ['abc', 'def', '123', ...]
   },
   //details is optional. It's typically only set for libraries generated from Library.query()
   details: {
