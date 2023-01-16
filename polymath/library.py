@@ -433,6 +433,7 @@ class Library:
 
         include_restricted_count, restricted_message = restricted_configuration()
 
+        print(f"access_token: {access_token}")
         visible_access_tags = permitted_access(access_token)
 
         chunk_count = 0

@@ -25,7 +25,7 @@
       <input type="text" name="access_token" id="access_token">
     </p>
     <p>
-      <button id="clear">Clear Key</button>
+      <button id="clear">Clear Key and Access Token</button>
     </p>
   </details>
 </template>
@@ -67,8 +67,17 @@
       localStorage.setItem('openai_api_key', value);
     }
 
+    get access_token() {
+      return localStorage.getItem('access_token');
+    }
+
+    set access_token(value) {
+      localStorage.setItem('access_token', value);
+    }
+
     clear() {
       localStorage.removeItem('openai_api_key');
+      localStorage.removeItem('access_key');
     }
   }
 
@@ -184,9 +193,10 @@
       this._render('loading-view');
     }
 
-    query(controller) {
+    query(controller, query_value) {
       this._render('query-view', (view) => {
         const query = view.querySelector('#query');
+        query.value = query_value;
         const access_token = view.querySelector('#access_token');
         view.querySelector('#ask').addEventListener('click',
           () => controller.askServer({
@@ -222,6 +232,7 @@
       this.store = new Keystore();
       this.views = new Views();
       this.results = null;
+      this.url = new URL(window.location);
     }
 
     async storeKey(key) {
@@ -237,27 +248,12 @@
       this.results = null;
       this.start();
     }
-
-    async askServer({ query, access_token }) {
-      this.views.clear();
-      this.views.loading(this);
-      const server = new PolymathServer();
-      const openai = new OpenAI(this.store.openai_api_key);
-      const embedding = await openai.embedding(query);
-      if (embedding.error) {
-        this.results = embedding;
-      } else {
-        const query_embedding = PolymathServer.encode_embedding(embedding.result);
-        this.results = await server.ask({ query_embedding, access_token });
-        if (!this.results.error) {
-          const context = PolymathServer.create_prompt({
-            query: query,
-            results: this.results,
-          });
-          this.completion = await openai.completion(context);
-        }
-      }
-      this.start();
+    
+    askServer({ query, access_token }) {
+      this.url.searchParams.set('query', query);
+      if (access_token)
+        this.store.access_token = access_token;
+      window.location.assign(this.url);
     }
 
     clearKeys() {
@@ -265,12 +261,33 @@
       this.start();
     }
 
-    start() {
+    async start() {
       this.views.clear();
       if (!this.store.openai_api_key) {
         this.views.requestKey(this);
       } else {
-        this.views.query(this);
+        const query = this.url.searchParams.get('query');
+        if (query) {
+          this.views.loading(this);
+          const server = new PolymathServer();
+          const openai = new OpenAI(this.store.openai_api_key);
+          const embedding = await openai.embedding(query);
+          if (embedding.error) {
+            this.results = embedding;
+          } else {
+            const query_embedding = PolymathServer.encode_embedding(embedding.result);
+            const access_token = this.store.access_token || '';
+            this.results = await server.ask({ query_embedding, access_token });
+            if (!this.results.error) {
+              const context = PolymathServer.create_prompt({
+                query: query,
+                results: this.results,
+              });
+              this.completion = await openai.completion(context);
+            }
+          }
+        }
+        this.views.query(this, query);
       }
       if (!this.results)
         return;
