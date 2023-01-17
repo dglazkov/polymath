@@ -144,7 +144,11 @@ def unset_command(args):
     property = args.property
     access_file = args.file
     data = load_config_file(access_file)
-    del data[property]
+    if property in data:
+        del data[property]
+    else:
+        print(f'{property} was not configured, nothing to do')
+        return
     save_config_file(data, access_file=access_file)
     print(f'Unset {property}')
 
