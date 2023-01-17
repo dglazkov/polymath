@@ -81,12 +81,15 @@ def add_token_for_user(user_id, tags=None, access_file=DEFAULT_CONFIG_FILE, forc
         save_config_file(data, access_file)
 
     token = user['token']
+    endpoint = data.get('endpoint', '')
 
+    show_token_message(token, endpoint)
+
+
+def show_token_message(token, endpoint=''):
     print('Pass the following line to the user to add to their client.SECRET.json for this endpoint:')
     print('')
     print(token)
-    
-    endpoint = data.get('endpoint', '')
     print('')
     if endpoint:
         print('You can share the following URL with the target to quickly demo the private content on your site:')
@@ -95,6 +98,21 @@ def add_token_for_user(user_id, tags=None, access_file=DEFAULT_CONFIG_FILE, forc
         print('This command can also generate an easy demo URL for this private content.')
         print('To do that, run `python3 -m config.host set endpoint https://yourdomain.com`')
 
+
+def show_token_for_user(user_id, access_file=DEFAULT_CONFIG_FILE):
+    data = load_config_file(access_file)
+    if 'tokens' not in data:
+        print('No tokens.')
+        return
+    tokens = data['tokens']
+    if user_id not in tokens:
+        print('No token for that user.')
+        return
+    user = tokens[user_id]
+    token = user['token']
+    endpoint = data.get('endpoint', '')
+    show_token_message(token, endpoint)
+    
 
 def revoke_token_for_user(user_id, access_file=DEFAULT_CONFIG_FILE, force=False):
     data = load_config_file(access_file)
@@ -131,6 +149,8 @@ def access_command(args):
         add_token_for_user(user_id, tags=tags, access_file=file, force=force)
     elif command == 'revoke':
         revoke_token_for_user(user_id, access_file=file, force=force)
+    elif command == 'show':
+        show_token_for_user(user_id, access_file=file)
     else:
         print(f'Unknown command {command}')
 
@@ -213,7 +233,7 @@ base_parser.add_argument("--file", help="The config file to operate on", default
 sub_parser = parser.add_subparsers(title='action')
 sub_parser.required = True
 access_parser = sub_parser.add_parser('access', parents=[base_parser])
-access_parser.add_argument("command", help="The command to run", choices=['grant', 'revoke'],
+access_parser.add_argument("command", help="The command to run", choices=['grant', 'revoke', 'show'],
                     default='grant')
 access_parser.add_argument("user_id", help="The id of the user to modify")
 access_parser.add_argument("access_tags", help="Optional access tags to set", nargs='*')
