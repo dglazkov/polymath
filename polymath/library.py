@@ -474,7 +474,9 @@ class Library:
         ids = sort.get('ids', None)
         if ids:
             ids.remove(chunk_id)
-            self._re_sort()
+            # TODO: technically if this is a random sort with seed we do need a
+            # resort, but in all other cases it's unnecessarily slower to sort
+            # on every chunk you remove.
 
     def _strip_chunk(self, chunk):
         if self.omit_whole_chunk:
