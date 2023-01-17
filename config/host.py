@@ -126,13 +126,15 @@ def access_command(args):
 def set_property_in_data(data, property, value):
     property_parts = property.split('.')
     if len(property_parts) == 1:
+        if property in data and data[property] == value:
+            return False
         data[property] = value
-        return
+        return True
     first_property_part = property_parts[0]
     rest = '.'.join(property_parts[1:])
     if first_property_part not in data:
         data[first_property_part] = {}
-    set_property_in_data(data[first_property_part], rest, value)
+    return set_property_in_data(data[first_property_part], rest, value)
         
 
 def unset_property_in_data(data, property):
@@ -170,7 +172,10 @@ def set_command(args):
             raise Exception(f'Unknown value for a boolean property: {value} (known values are {known_strings})')
         value = BOOLEAN_STRINGS[value]
     data = load_config_file(access_file)
-    set_property_in_data(data, property, value)
+    changes_made = set_property_in_data(data, property, value)
+    if not changes_made:
+        print(f'{property} was already set to {value} so no changes to be made.')
+        return
     save_config_file(data, access_file=access_file)
     print(f'Set {property} to {original_value}')
 
