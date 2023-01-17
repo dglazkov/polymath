@@ -80,8 +80,20 @@ def add_token_for_user(user_id, tags=None, access_file=DEFAULT_CONFIG_FILE, forc
     if changes_made:
         save_config_file(data, access_file)
 
+    token = user['token']
+
     print('Pass the following line to the user to add to their client.SECRET.json for this endpoint:')
-    print(user['token'])
+    print('')
+    print(token)
+    
+    endpoint = data.get('endpoint', '')
+    print('')
+    if endpoint:
+        print('You can share the following URL with the target to quickly demo the private content on your site:')
+        print(f'{endpoint}/?secret={token}')
+    else:
+        print('This command can also generate an easy demo URL for this private content.')
+        print('To do that, run `python3 -m config.host set endpoint https://yourdomain.com`')
 
 
 def revoke_token_for_user(user_id, access_file=DEFAULT_CONFIG_FILE, force=False):
