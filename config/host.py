@@ -8,6 +8,17 @@ import re
 
 DEFAULT_CONFIG_FILE = 'host.SECRET.json'
 
+# A map of property name to example
+SETTABLE_PROPERTIES = {
+    'endpoint': 'https://example.com'
+}
+
+BOOLEAN_STRINGS = {
+    'true': True,
+    'false': False,
+    '0': False,
+    '1': True
+}
 
 def generate_token_for_user(user_id):
     base = base64.urlsafe_b64encode(secrets.token_bytes(32)).decode('utf-8')
@@ -110,6 +121,23 @@ def access_command(args):
         print(f'Unknown command {command}')
 
 
+def set_command(args):
+    property = args.property
+    value = args.value
+    config_for_property = SETTABLE_PROPERTIES[property]
+    access_file = args.file
+    if isinstance(config_for_property, int):
+        value = int(value)
+    if isinstance(config_for_property, bool):
+        if value not in BOOLEAN_STRINGS:
+            known_strings = list(BOOLEAN_STRINGS.keys())
+            raise Exception(f'Unknown value for a boolean property: {value} (known values are {known_strings})')
+        value = BOOLEAN_STRINGS[value]
+    data = load_config_file(access_file)
+    data[property] = value
+    save_config_file(data, access_file=access_file)
+
+
 parser = argparse.ArgumentParser()
 
 base_parser = argparse.ArgumentParser(add_help=False)
@@ -124,6 +152,10 @@ access_parser.add_argument("command", help="The command to run", choices=['grant
 access_parser.add_argument("user_id", help="The id of the user to modify")
 access_parser.add_argument("access_tags", help="Optional access tags to set", nargs='*')
 access_parser.set_defaults(func=access_command)
+set_parser = sub_parser.add_parser('set', parents=[base_parser])
+set_parser.add_argument('property', help='The name of the property to set', choices=list(SETTABLE_PROPERTIES.keys()))
+set_parser.add_argument('value', help='The value to set')
+set_parser.set_defaults(func=set_command)
 
 args = parser.parse_args()
 args.func(args)
