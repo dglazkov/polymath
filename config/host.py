@@ -11,7 +11,8 @@ DEFAULT_CONFIG_FILE = 'host.SECRET.json'
 # A map of property name to example
 SETTABLE_PROPERTIES = {
     'endpoint': 'https://example.com',
-    'restricted.message': 'Contact alex@komoroske.com for a token'
+    'restricted.message': 'Contact alex@komoroske.com for a token',
+    'restricted.count': True
 }
 
 BOOLEAN_STRINGS = {
