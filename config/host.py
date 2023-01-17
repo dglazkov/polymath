@@ -10,7 +10,8 @@ DEFAULT_CONFIG_FILE = 'host.SECRET.json'
 
 # A map of property name to example
 SETTABLE_PROPERTIES = {
-    'endpoint': 'https://example.com'
+    'endpoint': 'https://example.com',
+    'restricted.message': 'Contact alex@komoroske.com for a token'
 }
 
 BOOLEAN_STRINGS = {
@@ -121,6 +122,38 @@ def access_command(args):
         print(f'Unknown command {command}')
 
 
+def set_property_in_data(data, property, value):
+    property_parts = property.split('.')
+    if len(property_parts) == 1:
+        data[property] = value
+        return
+    first_property_part = property_parts[0]
+    rest = '.'.join(property_parts[1:])
+    if first_property_part not in data:
+        data[first_property_part] = {}
+    set_property_in_data(data[first_property_part], rest, value)
+        
+
+def unset_property_in_data(data, property):
+    """
+    Returns True if it made a change, False if not
+    """
+    property_parts = property.split('.')
+    if len(property_parts) == 1:
+        if property in data:
+            del data[property]
+            return True
+        return False
+    first_property_part = property_parts[0]
+    rest = '.'.join(property_parts[1:])
+    if first_property_part not in data:
+        return False
+    result = unset_property_in_data(data[first_property_part], rest)
+    if len(data[first_property_part]) == 0:
+        del data[first_property_part]
+    return result
+
+
 def set_command(args):
     property = args.property
     value = args.value
@@ -135,7 +168,7 @@ def set_command(args):
             raise Exception(f'Unknown value for a boolean property: {value} (known values are {known_strings})')
         value = BOOLEAN_STRINGS[value]
     data = load_config_file(access_file)
-    data[property] = value
+    set_property_in_data(data, property, value)
     save_config_file(data, access_file=access_file)
     print(f'Set {property} to {original_value}')
 
@@ -144,9 +177,8 @@ def unset_command(args):
     property = args.property
     access_file = args.file
     data = load_config_file(access_file)
-    if property in data:
-        del data[property]
-    else:
+    made_change = unset_property_in_data(data, property)
+    if not made_change:
         print(f'{property} was not configured, nothing to do')
         return
     save_config_file(data, access_file=access_file)
