@@ -124,6 +124,7 @@ def access_command(args):
 def set_command(args):
     property = args.property
     value = args.value
+    original_value = args.value
     config_for_property = SETTABLE_PROPERTIES[property]
     access_file = args.file
     if isinstance(config_for_property, int):
@@ -136,6 +137,7 @@ def set_command(args):
     data = load_config_file(access_file)
     data[property] = value
     save_config_file(data, access_file=access_file)
+    print(f'Set {property} to {original_value}')
 
 
 def unset_command(args):
@@ -144,6 +146,7 @@ def unset_command(args):
     data = load_config_file(access_file)
     del data[property]
     save_config_file(data, access_file=access_file)
+    print(f'Unset {property}')
 
 
 parser = argparse.ArgumentParser()
