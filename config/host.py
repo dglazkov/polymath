@@ -163,14 +163,14 @@ def set_command(args):
     original_value = args.value
     config_for_property = SETTABLE_PROPERTIES[property]
     access_file = args.file
-    if isinstance(config_for_property, int):
-        value = int(value)
     if isinstance(config_for_property, bool):
         value = value.lower()
         if value not in BOOLEAN_STRINGS:
             known_strings = list(BOOLEAN_STRINGS.keys())
             raise Exception(f'Unknown value for a boolean property: {value} (known values are {known_strings})')
         value = BOOLEAN_STRINGS[value]
+    elif isinstance(config_for_property, int):
+        value = int(value)
     data = load_config_file(access_file)
     changes_made = set_property_in_data(data, property, value)
     if not changes_made:
