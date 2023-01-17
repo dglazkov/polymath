@@ -138,6 +138,14 @@ def set_command(args):
     save_config_file(data, access_file=access_file)
 
 
+def unset_command(args):
+    property = args.property
+    access_file = args.file
+    data = load_config_file(access_file)
+    del data[property]
+    save_config_file(data, access_file=access_file)
+
+
 parser = argparse.ArgumentParser()
 
 base_parser = argparse.ArgumentParser(add_help=False)
@@ -156,6 +164,9 @@ set_parser = sub_parser.add_parser('set', parents=[base_parser])
 set_parser.add_argument('property', help='The name of the property to set', choices=list(SETTABLE_PROPERTIES.keys()))
 set_parser.add_argument('value', help='The value to set')
 set_parser.set_defaults(func=set_command)
+unset_parser = sub_parser.add_parser('unset', parents=[base_parser])
+unset_parser.add_argument('property', help='The name of the property to unset', choices=list(SETTABLE_PROPERTIES.keys()))
+unset_parser.set_defaults(func=unset_command)
 
 args = parser.parse_args()
 args.func(args)
