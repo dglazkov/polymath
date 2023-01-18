@@ -4,6 +4,7 @@ import hashlib
 import json
 import os
 import random
+import bisect
 
 import numpy as np
 
@@ -283,6 +284,26 @@ class Library:
             del self._data['sort']
         self._re_sort()
 
+    def _insert_chunk_into_ids(self, chunk_id):
+        # sort_ids is already in sorted order so we can do a bisect into it
+        # instead of resorting after every insert, considerably faster.
+        sort = self._data.get('sort', {})
+        sort_ids = sort.get('ids', None)
+        if sort_ids == None:
+            return
+        sort_type = sort.get('type', 'any')
+        if sort_type == 'similarity':
+            def get_similarity(chunk_id):
+                chunk = self.chunk(chunk_id)
+                if not chunk:
+                    return -1
+                return chunk.get('similarity', -1)
+            similarity = get_similarity(chunk_id)
+            index = bisect.bisect_left(sort_ids, similarity, key=get_similarity)
+            sort_ids.insert(index, chunk_id)
+        else:
+            sort_ids.append(chunk_id)
+
     def _re_sort(self):
         """
         Called when the sort type might have changed and _data.sort.ids needs to be resorted
@@ -493,11 +514,7 @@ class Library:
         content[chunk_id] = chunk
         self._strip_chunk(chunk)
         if chunk_inserted:
-            sort = self._data.get('sort', {})
-            sort_ids = sort.get('ids', None)
-            if sort_ids != None:
-                sort_ids.append(chunk_id)
-                self._re_sort()
+            self._insert_chunk_into_ids(chunk_id)
 
     def set_chunk_field(self, chunk_id, text=None, embedding=None, token_count=None, info=None, access_tag=None, similarity=None):
         if self.omit_whole_chunk:
