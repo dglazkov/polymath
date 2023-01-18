@@ -87,7 +87,7 @@ def add_token_for_user(user_id, tags=None, access_file=DEFAULT_CONFIG_FILE, forc
 
 
 def show_token_message(token, endpoint=''):
-    print('Pass the following line to the user to add to their client.SECRET.json for this endpoint:')
+    print('Pass the following line to the user to add to their directory.SECRET.json for this endpoint:')
     print('')
     print(token)
     print('')

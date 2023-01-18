@@ -13,7 +13,7 @@ from polymath import (Library, get_chunk_infos_for_library,
 # TODO: Make this computed from the number of servers.
 CONTEXT_TOKEN_COUNT = 1500
 
-DEFAULT_CONFIG_FILE = "client.SECRET.json"
+DEFAULT_CONFIG_FILE = "directory.SECRET.json"
 
 
 def query_server(query_embedding, random, server):
