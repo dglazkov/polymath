@@ -10,11 +10,13 @@ from polymath import LIBRARY_DIR, Library, get_embedding, get_token_count
 from .medium import MediumImporter
 from .nakedlibrary import NakedLibraryImporter
 from .substack import SubstackImporter
+from .twitter import TwitterArchiveImporter
 
 IMPORTERS = {
     'library': NakedLibraryImporter(),
     'substack': SubstackImporter(),
-    'medium': MediumImporter()
+    'medium': MediumImporter(),
+    'twitter': TwitterArchiveImporter(),
 }
 
 load_dotenv()
