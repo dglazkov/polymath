@@ -123,7 +123,7 @@ So, for the hackiest of hacks, after you unzip you data, do the following:
 - cp archivedirectory/data/tweet.js archivedirectory/data/tweet.json
 - take out the "window.YTD.tweets.part0 =" piece so it's just an array "[" on the first line.
 
-## Usage
+#### Usage
 
 % python3 -m convert.main --importer twitter --twitter-include regular path/to/twitter-archive/data/tweets.json
 
