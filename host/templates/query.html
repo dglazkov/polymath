@@ -84,8 +84,19 @@
   <ul id="sources">
   </ul>
   <script arguments="completion,infos">
+    function removeDuplicates(arr) {
+      let seen = new Set();
+      return arr.filter(item => {
+        if (!seen.has(item.url)) {
+          seen.add(item.url);
+          return true;
+        }
+        return false;
+      });
+    }
+
     this.querySelector('#completion').textContent = completion;
-    this.querySelector('#sources').innerHTML = infos.map(info => `<li><a href="${info.url}">${info.title || info.url}</a></li>`).join('\n');
+    this.querySelector('#sources').innerHTML = removeDuplicates(infos).map(info => `<li><a href="${info.url}">${info.title || info.url}</a></li>`).join('\n');
   </script>
 </template>
 <template id="error-view">
