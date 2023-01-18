@@ -41,6 +41,7 @@ A few public content servers you can try:
   - https://polymath.komoroske.com
   - https://polymath.glazkov.com
   - https://polymath.fluxcollective.org
+  - https://polymath.almaer.com
 
 If someone who runs a polymath server sent you a private token, see the section below on `Private Content` and its own getting started guide.
 
@@ -109,6 +110,35 @@ In the root of the snapshot, create a `config.json` file, formatted as:
 Then run:
 
 `python3 -m convert.main --importer substack path/to/substack/root/`
+
+### `twitter` : An import of a Twitter archive
+
+[How to get your archive](https://help.twitter.com/en/managing-your-account/how-to-download-your-twitter-archive)
+
+There is a JSON structure that contains your tweets, but it is wrapped 
+in a JavaScript object: window.YTD.tweets.part0
+
+So, for the hackiest of hacks, after you unzip you data, do the following:
+
+- cp archivedirectory/data/tweet.js archivedirectory/data/tweet.json
+- take out the "window.YTD.tweets.part0 =" piece so it's just an array "[" on the first line.
+
+## Usage
+
+% python3 -m convert.main --importer twitter --twitter-include regular path/to/twitter-archive/data/tweets.json
+
+
+First, generate a snapshot of your Twitter account by following `https://help.twitter.com/en/managing-your-account/how-to-download-your-twitter-archive`. This will result in an email and notification in your Twitter client with a link to the archive.
+
+When you have the snapshot, download it and unzip it. Then run:
+
+`python3 -m convert.main --importer twitter --twitter-include regular --twitter-include $your_twitter_username path/to/twitter-archive/data/tweets.json`
+
+You can choose if you want all tweets to be used, retweets, replies, or all but those types via `--twitter-include [all, regular, retweets, replies]`.
+
+To see how many of the different type of tweets you have, there is a helper tool that you run:
+
+`python3 twitter-scanner.py path/to/twitter-archive/data/tweets.json`
 
 ### Running the server
 
