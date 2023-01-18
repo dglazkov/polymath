@@ -85,7 +85,7 @@
   </ul>
   <script arguments="completion,infos">
     this.querySelector('#completion').textContent = completion;
-    this.querySelector('#sources').innerHTML = infos.map(info => `<li><a href="${info.url}">${info.title}</a></li>`).join('\n');
+    this.querySelector('#sources').innerHTML = infos.map(info => `<li><a href="${info.url}">${info.title || info.url}</a></li>`).join('\n');
   </script>
 </template>
 <template id="error-view">
