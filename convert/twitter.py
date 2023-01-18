@@ -26,6 +26,8 @@ The command line has the following options:
   . regular: only put in tweets that are NOT retweets, nor replies
   . retweets: put in retweets
   . replies: put in replies
+- --twitter-username:
+  . if you don't put in your username, it will use "twitter" which still works!
 - Pass in the path to the actual JSON file
 
 ## Future tasks
@@ -37,6 +39,7 @@ class TwitterArchiveImporter:
 
     def __init__(self):
         self._include = 'all'
+        self._username = 'twitter'
 
     def install_arguments(self, parser: ArgumentParser):
         """
@@ -49,14 +52,17 @@ class TwitterArchiveImporter:
         e.g. don't import your retweets
         """
         twitter_group = parser.add_argument_group('twitter')
-        twitter_group.add_argument('--twitter-include', help='If provided and the importer is medium, which set to include',
+        twitter_group.add_argument('--twitter-include', help='If provided and the importer is twitter, which tweets to include',
                                   choices=['all', 'regular', 'retweets', 'replies'], default='all')
+        twitter_group.add_argument('--twitter-username', help='If provided and the importer is twitter, which @username to put into the URL')
+
 
     def retrieve_arguments(self, args: Namespace):
         """
         An opportunity to retrieve arguments configured via install_arguments.
         """
         self._include = args.twitter_include
+        self._username = args.twitter_username
 
     def output_base_filename(self, filename):
         return 'twitterarchive-' + self._include
@@ -77,16 +83,21 @@ class TwitterArchiveImporter:
                             print("Skipping this retweet as the option '" + self._include + "' was passed in to the CLI.")
                             continue
 
-                    if text.startswith("@"):
+                    elif text.startswith("@"):
                         if self._include != 'replies' and self._include != 'all':
                             print("Skipping this reply as the option '" + self._include + "' was passed in to the CLI.")
+                            continue
+
+                    else:
+                        if self._include != 'regular' and self._include != 'all':
+                            print("Skipping this regular tweet as the option '" + self._include + "' was passed in to the CLI.")
                             continue
 
                     id = realTweet["id_str"] 
                     print(id + ": " + text)
 
                     info = {
-                        'url': "https://twitter.com/twitter/status/" + id,
+                        'url': "https://twitter.com/" + self._username + "/status/" + id,
                         'description': text
                     }
 
