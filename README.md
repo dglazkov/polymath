@@ -190,6 +190,10 @@ The config file should be formatted like this:
 }
 ```
 
+You can also use the convenience script to set any proeprties and work with this file, like so:
+
+`python3 -m config.directory set wdl endpoint https://polymath.wdl.com`
+
 ### Standing up a polymath endpoint
 
 This project can be used to stand up your own polymath endpoint on Google App Engine.
@@ -220,16 +224,10 @@ Run `python3 -m config.host access grant <email_address>` to generate a token. C
 
 They then add their token to their `client.SECRET.config` like this:
 
-```
-{
-  "hosts": {
-    "their_server_vanity_id": {
-      "endpoint": "https://polymath.theirserver.com",
-      "token": "<token_you_sent_them>"
-    }
-  }
-}
-```
+`python3 -m config.directory set wdl token sk_seret_key_123`
+
+(If they haven't also run 
+`python3 -m config.directory set wdl endpoint https://polymath.wdl.com` then they should also)
 
 Then they run their client like: `python3 -m sample.client "query"`.
 
