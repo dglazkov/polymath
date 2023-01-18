@@ -91,6 +91,13 @@ def show_token_message(token, endpoint=''):
     print('')
     print(token)
     print('')
+    print('They can easily add this to their directory.SECRET.json like so (replacing <SHORT_NAME> with a short string of their choice):')
+    print('python3 -m config.directory set <SHORT_NAME> token ' + token)
+    print('')
+    print('If they have not configured your endpoint they will also need to run:')
+    endpoint_for_message = endpoint if endpoint else 'https;//your.endpoint.com'
+    print(f'python3 -m config.directory set <SHORT_NAME> endpoint {endpoint_for_message}')
+    print('')
     if endpoint:
         print('You can share the following URL with the target to quickly demo the private content on your site:')
         print(f'{endpoint}/?secret={token}')
