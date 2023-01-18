@@ -177,7 +177,7 @@ The config file should be formatted like this:
 
 ```
 {
-  "servers": {
+  "hosts": {
     //The name of the server can be whatever you want it to be, it's just a distinctive shortname for your own use.
     "wdl": {
       "endpoint": "https://polymath.wdl.com",
@@ -222,7 +222,7 @@ They then add their token to their `client.SECRET.config` like this:
 
 ```
 {
-  "servers": {
+  "hosts": {
     "their_server_vanity_id": {
       "endpoint": "https://polymath.theirserver.com",
       "token": "<token_you_sent_them>"
@@ -239,7 +239,7 @@ You might chose to have your own `directory.SECRET.json` that looks like this:
 
 ```
 {
-  "servers": {
+  "hosts": {
     "your_server_vanity_id": {
       "endpoint": "https://polymath.yourserver.com",
       //Including this will switch to the local endpoint and provide the same token if `--dev` is passed to sample.client

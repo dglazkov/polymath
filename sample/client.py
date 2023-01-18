@@ -46,8 +46,8 @@ parser.add_argument(
     "--config", help=f"A path to a config file to use. If not provided it will try to use {DEFAULT_CONFIG_FILE} if it exists. Pass \"\" explicitly to proactively ignore that file even if it exists", default=None)
 parser.add_argument("--server", help="A server to use for querying",
                     action="append"),
-parser.add_argument("--only", help=f"If provided, will ignore any servers without this name or endpoint in {DEFAULT_CONFIG_FILE}", action="append")
-parser.add_argument("--exclude", help=f"If provided, will ignore any servers that have this name or endpoint in {DEFAULT_CONFIG_FILE}", action="append")
+parser.add_argument("--only", help=f"If provided, will ignore any hosts without this name or endpoint in {DEFAULT_CONFIG_FILE}", action="append")
+parser.add_argument("--exclude", help=f"If provided, will ignore any hosts that have this name or endpoint in {DEFAULT_CONFIG_FILE}", action="append")
 parser.add_argument("--completion", help="Request completion based on the query and context",
                     action=argparse.BooleanOptionalAction, default=True)
 parser.add_argument("--random", help="Ask for a random set of chunks",
@@ -91,8 +91,8 @@ if not server_list:
 
 server_tokens = {}
 
-if 'servers' in config:
-    for (server_name, server_config) in config['servers'].items():
+if 'hosts' in config:
+    for (server_name, server_config) in config['hosts'].items():
         endpoint = server_config.get('endpoint', '')
         if dev_mode and 'dev_endpoint' in server_config:
             endpoint = server_config['dev_endpoint']
@@ -108,7 +108,7 @@ if 'servers' in config:
         server_tokens[endpoint] = server_config.get('token', '')
 
 if len(server_list) == 0:
-    print('No servers provided.')
+    print('No hosts provided.')
 
 if args.verbose:
     if args.random:
