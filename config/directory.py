@@ -9,7 +9,8 @@ DEFAULT_CONFIG_FILE = 'directory.SECRET.json'
 HOST_SETTABLE_PROPERTIES = {
     'endpoint': 'https://example.com',
     'token': 'sk-SECRET-token',
-    'dev_endpoint': 'http://127.0.0.1:8080'
+    'dev_endpoint': 'http://127.0.0.1:8080',
+    'note': 'Any extra information you want to store about the host'
 }
 
 # TODO: factor to share with host.py
