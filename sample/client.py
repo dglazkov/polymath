@@ -26,6 +26,7 @@ def query_server(query_embedding, random, server):
     }
     if random:
         fields["sort"] = "random"
+        fields["omit"] = "similarity,embedding"
     else:
         fields["query_embedding"] = query_embedding
     response = http.request(

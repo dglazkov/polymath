@@ -1,4 +1,4 @@
-from polymath.library import Library
+from polymath.library import Library, CURRENT_VERSION, EMBEDDINGS_MODEL_ID
 from polymath.ask_embeddings import (
     LIBRARY_DIR,
     get_embedding,
