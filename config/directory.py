@@ -70,16 +70,41 @@ def unset_property_in_data(data, property):
     return result
 
 
+def host_name_from_input(input, data):
+    """
+    Returns the short_name where this host is stored.
+
+    input may be the short_name, or an endpoint.
+    """
+    hosts = data.get('hosts', {})
+    # It's a straightforward short_name
+    if input in hosts:
+        return input
+    for id, value in hosts.items():
+        if value.get('endpoint', None) == input:
+            return id
+        if value.get('dev_endpoint', None) == input:
+            return id
+    # TODO: suggest other names based on edit distance?
+    return None
+
+
 def host_property(host_name, property):
     return 'hosts.' + host_name + '.' + property
 
 
 def host_set_command(args):
-    property = host_property(args.host, args.property)
+    access_file = args.file
+    data = load_config_file(access_file)
+    raw_host = args.host
+    host_name = host_name_from_input(raw_host, data)
+    if not host_name:
+        print(f'{raw_host} was not a valid host_name or endpoint')
+        return
+    property = host_property(host_name, args.property)
     value = args.value
     original_value = args.value
     config_for_property = HOST_SETTABLE_PROPERTIES[args.property]
-    access_file = args.file
     if isinstance(config_for_property, bool):
         value = value.lower()
         if value not in BOOLEAN_STRINGS:
@@ -88,7 +113,6 @@ def host_set_command(args):
         value = BOOLEAN_STRINGS[value]
     elif isinstance(config_for_property, int):
         value = int(value)
-    data = load_config_file(access_file)
     changes_made = set_property_in_data(data, property, value)
     if not changes_made:
         print(f'{property} was already set to {value} so no changes to be made.')
@@ -98,9 +122,14 @@ def host_set_command(args):
 
 
 def host_unset_command(args):
-    property = host_property(args.host, args.property)
     access_file = args.file
     data = load_config_file(access_file)
+    raw_host = args.host
+    host_name = host_name_from_input(raw_host, data)
+    if not host_name:
+        print(f'{raw_host} was not a valid host_name or endpoint')
+        return
+    property = host_property(host_name, args.property)
     made_change = unset_property_in_data(data, property)
     if not made_change:
         print(f'{property} was not configured, nothing to do')
@@ -117,12 +146,12 @@ base_parser.add_argument("--file", help="The config file to operate on", default
 sub_parser = parser.add_subparsers(title='action')
 sub_parser.required = True
 host_set_parser = sub_parser.add_parser('set', parents=[base_parser])
-host_set_parser.add_argument('host', help='The vanity name of the host to set the property on')
+host_set_parser.add_argument('host', help='The vanity name or endpoint of the host to set the property on')
 host_set_parser.add_argument('property', help='The name of the property to set', choices=list(HOST_SETTABLE_PROPERTIES.keys()))
 host_set_parser.add_argument('value', help='The value to set')
 host_set_parser.set_defaults(func=host_set_command)
 host_unset_parser = sub_parser.add_parser('unset', parents=[base_parser])
-host_unset_parser.add_argument('host', help='The vanity name of the host to unset the property on')
+host_unset_parser.add_argument('host', help='The vanity name or endpoint of the host to unset the property on')
 host_unset_parser.add_argument('property', help='The name of the property to unset', choices=list(HOST_SETTABLE_PROPERTIES.keys()))
 host_unset_parser.set_defaults(func=host_unset_command)
 
