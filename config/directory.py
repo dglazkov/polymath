@@ -70,23 +70,38 @@ def unset_property_in_data(data, property):
     return result
 
 
-def host_name_from_input(input, data):
+def host_name_from_input(input : str, data):
     """
     Returns the short_name where this host is stored.
 
     input may be the short_name, or an endpoint.
+
+    returns the hostname and a boolean of whether it exists or not
     """
     hosts = data.get('hosts', {})
     # It's a straightforward short_name
     if input in hosts:
-        return input
+        return input, True
     for id, value in hosts.items():
         if value.get('endpoint', None) == input:
-            return id
+            return id, True
         if value.get('dev_endpoint', None) == input:
-            return id
+            return id, True
     # TODO: suggest other names based on edit distance?
-    return None
+    # We don't have a name, but let's see if we can suggest one if it's an endpoint url.
+    if not input.startswith('http'):
+        return None, False
+    input = input.removeprefix('https://')
+    input = input.removeprefix('http://')
+    parts = input.split('.')
+    # throw out the TLD
+    parts = parts[:-1]
+    # throw out the polymath subdomain if it starts with that
+    if parts[0] == 'polymath':
+        parts = parts[1:]
+    if len(parts) == 0:
+        return None, False
+    return parts[0], False
 
 
 def host_property(host_name, property):
@@ -97,10 +112,13 @@ def host_set_command(args):
     access_file = args.file
     data = load_config_file(access_file)
     raw_host = args.host
-    host_name = host_name_from_input(raw_host, data)
+    host_name, host_exists = host_name_from_input(raw_host, data)
     if not host_name:
         print(f'{raw_host} was not a valid host_name or endpoint')
         return
+    if not host_exists:
+        endpoint_property = host_property(host_name, 'endpoint')
+        set_property_in_data(data, endpoint_property, raw_host)
     property = host_property(host_name, args.property)
     value = args.value
     original_value = args.value
@@ -125,7 +143,7 @@ def host_unset_command(args):
     access_file = args.file
     data = load_config_file(access_file)
     raw_host = args.host
-    host_name = host_name_from_input(raw_host, data)
+    host_name, _ = host_name_from_input(raw_host, data)
     if not host_name:
         print(f'{raw_host} was not a valid host_name or endpoint')
         return
