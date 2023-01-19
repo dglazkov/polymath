@@ -117,8 +117,12 @@ def host_set_command(args):
         print(f'{raw_host} was not a valid host_name or endpoint')
         return
     if not host_exists:
+        if not args.create:
+            print(f'{raw_host} did not exist yet. If you pass --create, will create a new host with the short_name {host_name}')
+            return
         endpoint_property = host_property(host_name, 'endpoint')
         set_property_in_data(data, endpoint_property, raw_host)
+        print(f'Set {endpoint_property} to {raw_host}')
     property = host_property(host_name, args.property)
     value = args.value
     original_value = args.value
@@ -164,6 +168,7 @@ base_parser.add_argument("--file", help="The config file to operate on", default
 sub_parser = parser.add_subparsers(title='action')
 sub_parser.required = True
 host_set_parser = sub_parser.add_parser('set', parents=[base_parser])
+host_set_parser.add_argument('--create', help='Whether to create a new host entry from the endpoint if one doesn\'t exist', action='store_true')
 host_set_parser.add_argument('host', help='The vanity name or endpoint of the host to set the property on')
 host_set_parser.add_argument('property', help='The name of the property to set', choices=list(HOST_SETTABLE_PROPERTIES.keys()))
 host_set_parser.add_argument('value', help='The value to set')
