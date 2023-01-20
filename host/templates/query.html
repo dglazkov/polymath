@@ -2,15 +2,37 @@
 <html lang="en">
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>Polymath Client</title>
+<title>Polymath</title>
 <link rel="stylesheet" href="static/mvp.css" />
+<style type="text/css">
+  header, main {
+    padding: 1rem;
+  }
+
+  #query {
+    padding: 1rem;
+    --border-radius: 1em;
+  }
+
+  #sources li {
+    font-size: smaller;
+  }
+
+  #more-options {
+    text-align: right;
+  }
+
+  #completion {
+    margin-bottom: 2em;
+  }
+</style>
 <link rel="apple-touch-icon" sizes="180x180" href="static/apple-touch-icon.png">
 <link rel="icon" type="image/png" sizes="32x32" href="static/favicon-32x32.png">
 <link rel="icon" type="image/png" sizes="16x16" href="static/favicon-16x16.png">
 <link rel="shortcut icon" href="static/favicon.ico">
 <link rel="manifest" href="static/site.webmanifest">
 <header>
-  <h1>Polymath Client</h1>
+  <h1>Polymath</h1>
   <p>
     This is a <a href="https://github.com/dglazkov/polymath">polymath</a> endpoint.
   </p>
@@ -21,19 +43,17 @@
   <p>This server has additional private content that requires an access token to access. {{ restricted_message }}</p>
   {% endif %}
   <p>
-    See more about how to get started at <a
-      href="https://github.com/dglazkov/polymath#readme">https://github.com/dglazkov/polymath</a>
+    Want your own Polymath? <a
+      href="https://github.com/dglazkov/polymath#readme">Come get started!</a>
   </p>
 </footer>
 <template id="query-view">
   <p>
-    <label>Query:
-      <input type="text" id="query" placeholder="Enter your question here">
-    </label>
-    <button id="ask">Ask</button>
+    <input type="text" id="query" placeholder="Enter your question here">
+    <button id="ask">Ask Me</button>
   </p>
   <details>
-    <summary>More options</summary>
+    <summary id="more-options">More options</summary>
     <p>
       <label for="access_token">access_token (optional):</label>
       <input type="text" name="access_token" id="access_token">
