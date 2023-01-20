@@ -13,6 +13,8 @@ HOST_SETTABLE_PROPERTIES = {
     'note': 'Any extra information you want to store about the host'
 }
 
+FORCE_PROPERTIES = ['token']
+
 # TODO: factor to share with host.py
 BOOLEAN_STRINGS = {
     'true': True,
@@ -152,6 +154,11 @@ def host_unset_command(args):
     if not host_name:
         print(f'{raw_host} was not a valid host_name or endpoint')
         return
+    force = args.force
+    raw_property = args.property
+    if raw_property in FORCE_PROPERTIES and not force:
+        print(f'You must use --force to unset {raw_property}')
+        return
     property = host_property(host_name, args.property)
     made_change = unset_property_in_data(data, property)
     if not made_change:
@@ -165,6 +172,7 @@ parser = argparse.ArgumentParser()
 
 base_parser = argparse.ArgumentParser(add_help=False)
 base_parser.add_argument("--file", help="The config file to operate on", default=DEFAULT_CONFIG_FILE)
+base_parser.add_argument("--force", help="Forces the action", action="store_true")
 
 sub_parser = parser.add_subparsers(title='action')
 sub_parser.required = True
