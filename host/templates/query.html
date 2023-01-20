@@ -49,7 +49,7 @@
 </footer>
 <template id="query-view">
   <p>
-    <input type="text" id="query" placeholder="Enter your question here">
+    <input type="text" id="query" placeholder="">
     <button id="ask">Ask Me</button>
   </p>
   <details>
@@ -104,7 +104,7 @@
   </script>
 </template>
 <template id="loading-view">
-  <p>Loading...</p>
+  <p>Loading</p>
 </template>
 <template id="results-view">
   <h3>Results</h3>
@@ -360,6 +360,23 @@
       this.start();
     }
 
+    showLoading() {
+      this.views.show('loading', this);
+
+      let loadingView = document.getElementById("loading-view-instance");
+      let dots = 0;
+
+      this.loadingInterval = setInterval(() => {
+        dots = (dots + 1) % 4;
+        loadingView.innerHTML = "<p>Loading " + ".".repeat(dots) + "</p>";
+      }, 300);
+    }
+
+    hideLoading() {
+      if (this.loadingInterval) clearInterval(this.loadingInterval);
+      this.views.hide('loading');
+    }
+
     async start() {
       this.views.clear();
       if (!this.store.openai_api_key) {
@@ -377,14 +394,14 @@
           this.views.show('query', this, '');
           return;
         }
-        this.views.show('loading', this);
+        this.showLoading();
         this.views.hide('query');
         const answers = await Polymath.synthesizeAnswers({
           query: query,
           key: this.store.openai_api_key,
           access_token: this.store.access_token,
         });
-        this.views.hide('loading')
+        this.hideLoading();
         this.views.show('query', this, query);
         if (answers.error) {
           this.views.show('error', answers.error);
