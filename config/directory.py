@@ -72,6 +72,20 @@ def unset_property_in_data(data, property):
     return result
 
 
+def property_set_in_data(data, property):
+    """
+    Returns true if that property is set in data, false otherwise
+    """
+    property_parts = property.split('.')
+    if len(property_parts) == 1:
+        return property in data
+    first_property_part = property_parts[0]
+    rest = '.'.join(property_parts[1:])
+    if first_property_part not in data:
+        return False
+    return property_set_in_data(data[first_property_part], rest)
+
+
 def host_name_from_input(input : str, data):
     """
     Returns the short_name where this host is stored.
@@ -154,16 +168,16 @@ def host_unset_command(args):
     if not host_name:
         print(f'{raw_host} was not a valid host_name or endpoint')
         return
+    property = host_property(host_name, args.property)
+    if not property_set_in_data(data, property):
+        print(f'{property} was not configured, nothing to do')
+        return
     force = args.force
     raw_property = args.property
     if raw_property in FORCE_PROPERTIES and not force:
         print(f'You must use --force to unset {raw_property}')
         return
-    property = host_property(host_name, args.property)
-    made_change = unset_property_in_data(data, property)
-    if not made_change:
-        print(f'{property} was not configured, nothing to do')
-        return
+    unset_property_in_data(data, property)
     save_config_file(data, access_file=access_file)
     print(f'Unset {property}')
 
