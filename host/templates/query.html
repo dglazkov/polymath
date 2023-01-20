@@ -126,8 +126,9 @@
 
     this.querySelector('#completion').textContent = completion;
     this.querySelector('#sources').innerHTML = removeDuplicates(infos).map(info => {
-      let shortDescription = (info.description.length > 100) ? info.description.substring(0, 40) + "..." : info.description;
-      return `<li><a href="${info.url}" title="${info.description || info.title}">${info.title || shortDescription || info.url}</a></li>`;
+      let shortDescription = (info.description.length > 100) ? info.description.substring(0, 100) + "..." : info.description;
+      let escapedTitle = (info.description || info.title).replace(/"/g, "\\\"");
+      return `<li><a href="${info.url}" title="${escapedTitle}">${info.title || shortDescription || info.url}</a></li>`;
     }).join('\n');
   </script>
 </template>
