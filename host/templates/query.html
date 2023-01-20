@@ -2,7 +2,7 @@
 <html lang="en">
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>A Polymath Client</title>
+<title>Polymath Client</title>
 <link rel="stylesheet" href="static/mvp.css" />
 <link rel="apple-touch-icon" sizes="180x180" href="static/apple-touch-icon.png">
 <link rel="icon" type="image/png" sizes="32x32" href="static/favicon-32x32.png">
@@ -10,7 +10,7 @@
 <link rel="shortcut icon" href="static/favicon.ico">
 <link rel="manifest" href="static/site.webmanifest">
 <header>
-  <h1>A Polymath Client</h1>
+  <h1>Polymath Client</h1>
   <p>
     This is a <a href="https://github.com/dglazkov/polymath">polymath</a> endpoint.
   </p>
@@ -330,7 +330,9 @@
       this.url.searchParams.set('query', query);
       if (access_token)
         this.store.access_token = access_token;
-      window.location.assign(this.url);
+
+      window.history.pushState({}, '', this.url);
+      this.start();
     }
 
     clearKeys() {
