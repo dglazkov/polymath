@@ -181,6 +181,22 @@ def host_unset_command(args):
     save_config_file(data, access_file=access_file)
     print(f'Unset {property}')
 
+def host_show_command(args):
+    access_file = args.file
+    data = load_config_file(access_file)
+    raw_host = args.host
+    host_name, _ = host_name_from_input(raw_host, data)
+    if not host_name:
+        print(f'{raw_host} was not a valid host_name or endpoint')
+        return
+    property = host_property(host_name, args.property)
+    value = get_property_in_data(data, property)
+    if value == None:
+        print(f'{property} was not set')
+        return
+    print(f'{property} is set to:')
+    print(f'{value}')
+
 
 parser = argparse.ArgumentParser()
 
@@ -200,6 +216,10 @@ host_unset_parser = sub_parser.add_parser('unset', parents=[base_parser])
 host_unset_parser.add_argument('host', help='The vanity name or endpoint of the host to unset the property on')
 host_unset_parser.add_argument('property', help='The name of the property to unset', choices=list(HOST_SETTABLE_PROPERTIES.keys()))
 host_unset_parser.set_defaults(func=host_unset_command)
+host_show_parser = sub_parser.add_parser('show', parents=[base_parser])
+host_show_parser.add_argument('host', help='The vanity name or endpoint of the host to show the property of')
+host_show_parser.add_argument('property', help='The name of the property to show', choices=list(HOST_SETTABLE_PROPERTIES.keys()))
+host_show_parser.set_defaults(func=host_show_command)
 
 args = parser.parse_args()
 args.func(args)
