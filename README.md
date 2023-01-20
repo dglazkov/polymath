@@ -140,7 +140,7 @@ To see how many of the different type of tweets you have, there is a helper tool
 
 `python3 twitter-scanner.py path/to/twitter-archive/data/tweets.json`
 
-### Running the server
+## Running the server
 
 To start the host server, run `python3 -m host.server`. It will start a Flask app as a local server. Go to `http://127.0.0.1:8080/api/query` to see the API endpoint.
 
