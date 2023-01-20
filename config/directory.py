@@ -72,18 +72,18 @@ def unset_property_in_data(data, property):
     return result
 
 
-def property_set_in_data(data, property):
+def get_property_in_data(data, property):
     """
-    Returns true if that property is set in data, false otherwise
+    Returns the value or None if it doesn't exit
     """
     property_parts = property.split('.')
     if len(property_parts) == 1:
-        return property in data
+        return data.get(property, None)
     first_property_part = property_parts[0]
     rest = '.'.join(property_parts[1:])
     if first_property_part not in data:
-        return False
-    return property_set_in_data(data[first_property_part], rest)
+        return None
+    return get_property_in_data(data[first_property_part], rest)
 
 
 def host_name_from_input(input : str, data):
@@ -169,7 +169,7 @@ def host_unset_command(args):
         print(f'{raw_host} was not a valid host_name or endpoint')
         return
     property = host_property(host_name, args.property)
-    if not property_set_in_data(data, property):
+    if get_property_in_data(data, property) == None:
         print(f'{property} was not configured, nothing to do')
         return
     force = args.force
