@@ -125,7 +125,10 @@
     }
 
     this.querySelector('#completion').textContent = completion;
-    this.querySelector('#sources').innerHTML = removeDuplicates(infos).map(info => `<li><a href="${info.url}">${info.title || info.url}</a></li>`).join('\n');
+    this.querySelector('#sources').innerHTML = removeDuplicates(infos).map(info => {
+      let shortDescription = (info.description.length > 100) ? info.description.substring(0, 40) + "..." : info.description;
+      return `<li><a href="${info.url}" title="${info.description || info.title}">${info.title || shortDescription || info.url}</a></li>`;
+    }).join('\n');
   </script>
 </template>
 <template id="error-view">
