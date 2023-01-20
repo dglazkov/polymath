@@ -79,6 +79,7 @@ def host_name_from_input(input : str, data):
     returns the hostname and a boolean of whether it exists or not
     """
     hosts = data.get('hosts', {})
+    input = input.lower()
     # It's a straightforward short_name
     if input in hosts:
         return input, True
