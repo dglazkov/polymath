@@ -126,11 +126,16 @@ class Chunk:
         result = Chunk(id=self.id, data=data)
         return result
 
+    def remove(self):
+        if not self.library:
+            return
+        self.library.remove_chunk(self)
+
     def __str__(self):
         return self.text
 
     @property
-    def library(self):
+    def library(self) -> 'Library':
         # There is no library setter. Call library.insert_chunk or library.remove_chunk to reparent.
         return self._library
 
