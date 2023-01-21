@@ -5,7 +5,8 @@
 <title>Polymath</title>
 <link rel="stylesheet" href="static/mvp.css" />
 <style type="text/css">
-  header, main {
+  header,
+  main {
     padding: 1rem;
   }
 
@@ -43,8 +44,7 @@
   <p>This server has additional private content that requires an access token to access. {{ restricted_message }}</p>
   {% endif %}
   <p>
-    Want your own Polymath? <a
-      href="https://github.com/dglazkov/polymath#readme">Come get started!</a>
+    Want your own Polymath? <a href="https://github.com/dglazkov/polymath#readme">Come get started!</a>
   </p>
 </footer>
 <template id="query-view">
@@ -62,7 +62,7 @@
       <button id="clear">Clear Key and Access Token</button>
     </p>
   </details>
-  <script arguments="controller,query_value">
+  <script action="init" arguments="controller,query_value">
     const textInput = this.querySelector('#query');
     textInput.value = query_value;
     const access_token = this.querySelector('#access_token');
@@ -97,7 +97,7 @@
   <p>
     <em>Your Open AI API key is stored locally and only ever transmitted directly to openai.com</em>
   </p>
-  <script arguments="controller">
+  <script action="init" arguments="controller">
     const button = this.querySelector('button');
     const input = this.querySelector('input');
     button.addEventListener('click', () => controller.storeKey(input.value));
@@ -105,6 +105,18 @@
 </template>
 <template id="loading-view">
   <p>Loading</p>
+  <script action="show">
+    let loadingView = document.getElementById("loading-view-instance");
+    let dots = 0;
+
+    this.loadingInterval = setInterval(() => {
+      dots = (dots + 1) % 4;
+      loadingView.innerHTML = "<p>Loading " + ".".repeat(dots) + "</p>";
+    }, 300);
+  </script>
+  <script action="hide">
+    if (this.loadingInterval) clearInterval(this.loadingInterval);
+  </script>
 </template>
 <template id="results-view">
   <h3>Results</h3>
@@ -112,7 +124,7 @@
   <h3>Sources</h3>
   <ul id="sources">
   </ul>
-  <script arguments="completion,infos">
+  <script action="show" arguments="completion,infos">
     function removeDuplicates(arr) {
       let seen = new Set();
       return arr.filter(item => {
@@ -135,7 +147,7 @@
 <template id="error-view">
   <h3>Error</h3>
   <div id="message"></div>
-  <script arguments="error">
+  <script action="show" arguments="error">
     const message = this.querySelector('#message');
     message.textContent = error;
   </script>
@@ -292,35 +304,58 @@
       this._surface = document.querySelector('#surface');
     }
 
-    hide(viewId) {
-      const instance = document.getElementById(`${viewId}-view-instance`);
-      if (instance)
-        instance.hidden = true;
+    _makeIds(viewId) {
+      return {
+        templateId: `${viewId}-view`,
+        instanceId: `${viewId}-view-instance`,
+      };
     }
 
-    show(viewId, ...data) {
-      const templateId = `${viewId}-view`;
-      const instanceId = `${templateId}-instance`;
+    _runLogic(viewId, name, data) {
+      const { templateId, instanceId } = this._makeIds(viewId);
       let instance = document.getElementById(instanceId);
-      if (instance) {
-        instance.hidden = false;
-        return;
+      let template = document.getElementById(templateId);
+      let script = template.content.querySelector(`script[action="${name}"]`);
+      if (script) {
+        const attr = script.getAttribute('arguments');
+        const args = attr ? script.getAttribute('arguments').split(',') : [];
+        const f = Function(...args, script.textContent);
+        f.call(instance, ...data);
       }
+      return null;
+    }
 
+    init(viewId, ...data) {
+      const { templateId, instanceId } = this._makeIds(viewId);
       const template = document.getElementById(templateId);
       const clone = template.content.cloneNode(true);
-      let logicScript = clone.querySelector('script[arguments]');
-      if (logicScript) {
-        let args = logicScript.getAttribute('arguments').split(',');
-        const logic = new Function(...args, logicScript.textContent);
-        logicScript.remove();
-        logic.call(clone, ...data);
-      }
-
-      instance = document.createElement('div');
+      [...clone.querySelectorAll('script')].forEach(script => script.remove());
+      const instance = document.createElement('div');
       instance.appendChild(clone);
       instance.id = instanceId;
       this._surface.appendChild(instance);
+
+      this._runLogic(viewId, 'init', data);
+    }
+
+    show(viewId, ...data) {
+      const { templateId, instanceId } = this._makeIds(viewId);
+      let instance = document.getElementById(instanceId);
+      if (instance) {
+        instance.hidden = false;
+      } else {
+        this.init(viewId, ...data);
+      }
+      this._runLogic(viewId, 'show', data);
+    }
+
+    hide(viewId, ...data) {
+      const instance = document.getElementById(`${viewId}-view-instance`);
+      if (!instance) {
+        return;
+      }
+      instance.hidden = true;
+      this._runLogic(viewId, 'hide', data);
     }
 
     clear() {
@@ -364,23 +399,6 @@
       this.start();
     }
 
-    showLoading() {
-      this.views.show('loading', this);
-
-      let loadingView = document.getElementById("loading-view-instance");
-      let dots = 0;
-
-      this.loadingInterval = setInterval(() => {
-        dots = (dots + 1) % 4;
-        loadingView.innerHTML = "<p>Loading " + ".".repeat(dots) + "</p>";
-      }, 300);
-    }
-
-    hideLoading() {
-      if (this.loadingInterval) clearInterval(this.loadingInterval);
-      this.views.hide('loading');
-    }
-
     async start() {
       this.views.clear();
       if (!this.store.openai_api_key) {
@@ -398,14 +416,14 @@
           this.views.show('query', this, '');
           return;
         }
-        this.showLoading();
+        this.views.show('loading', this);
         this.views.hide('query');
         const answers = await Polymath.synthesizeAnswers({
           query: query,
           key: this.store.openai_api_key,
           access_token: this.store.access_token,
         });
-        this.hideLoading();
+        this.views.hide('loading');
         this.views.show('query', this, query);
         if (answers.error) {
           this.views.show('error', answers.error);
