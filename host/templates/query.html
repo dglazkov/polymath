@@ -278,7 +278,7 @@
 
     static create_prompt({ query, results }) {
       const context = Object.values(results.content).map(chunk => chunk.text).join('\n');
-      return `Answer the question as truthfully as possible using the provided context, and if the answer is not contained within the text below, say \"I don't know.\"\n\nContext:\n${context} \n\nQuestion:\n${query}\n\nAnswer:`;
+      return `Answer the question as truthfully as possible using the provided context, and if the answer is not contained within the text below, reply with an informal version of \"I don't know.\"\n\nContext:\n${context} \n\nQuestion:\n${query}\n\nAnswer:`;
     }
 
     static async synthesizeAnswers({ key, query, access_token }) {
