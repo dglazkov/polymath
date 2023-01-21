@@ -106,12 +106,11 @@
 <template id="loading-view">
   <p>Loading</p>
   <script action="show">
-    let loadingView = document.getElementById("loading-view-instance");
     let dots = 0;
 
     this.loadingInterval = setInterval(() => {
       dots = (dots + 1) % 4;
-      loadingView.innerHTML = "<p>Loading " + ".".repeat(dots) + "</p>";
+      this.innerHTML = "<p>Loading " + ".".repeat(dots) + "</p>";
     }, 300);
   </script>
   <script action="hide">
