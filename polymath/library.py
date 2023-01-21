@@ -126,6 +126,9 @@ class Chunk:
         result = Chunk(id=self.id, data=data)
         return result
 
+    def __str__(self):
+        return self.text
+
     @property
     def library(self):
         # There is no library setter. Call library.insert_chunk or library.remove_chunk to reparent.
