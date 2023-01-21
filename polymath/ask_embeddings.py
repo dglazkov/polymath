@@ -120,10 +120,10 @@ def ask(query, context_query=None, library_file=None):
     library = load_libraries(library_file)
 
     query_embedding = get_embedding(context_query)
-    similiarities_dict = library.similarities(query_embedding)
-    context_dict = Library.get_context(similiarities_dict.keys(), library)
+    library.add_similarities(query_embedding)
+    library.sort = 'similarity'
 
-    context = list(context_dict.values())
+    context = library.text
     chunk_ids = list(context_dict.keys())
 
     infos = [library.chunk(chunk_id)['info'] for chunk_id in chunk_ids]
