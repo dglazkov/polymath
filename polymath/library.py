@@ -593,6 +593,19 @@ class Library:
     def text(self) -> List[str]:
         return [chunk.text for chunk in self.chunks]
 
+    @property
+    def unique_infos(self: 'Library') -> List[ChunkInfo]:
+        seen_infos = set()
+        result = []
+        for chunk in self.chunks:
+            info = chunk.info
+            key = info.contents
+            if key in seen_infos:
+                continue
+            seen_infos.add(key)
+            result.append(info)
+        return result
+
     def extend(self, other: 'Library'):
         if other.embedding_model != self.embedding_model:
             raise Exception(
