@@ -567,6 +567,10 @@ class Library:
         self._details = self._details
         self._details['message'] = value
 
+    @property
+    def text(self) -> List[str]:
+        return [chunk.text for chunk in self.chunks]
+
     def extend(self, other: 'Library'):
         if other.embedding_model != self.embedding_model:
             raise Exception(

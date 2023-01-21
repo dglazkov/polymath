@@ -69,13 +69,6 @@ def get_token_count(text):
     return len(tokenizer.tokenize(text))
 
 
-def get_context_for_library(library: Library):
-    """
-    Returns an array of all text for every chunk in library
-    """
-    return [chunk.text for chunk in library.chunks]
-
-
 def get_chunk_infos_for_library(library: Library):
     """
     Returns all infos for all chunks in library
