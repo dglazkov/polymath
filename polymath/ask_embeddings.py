@@ -73,7 +73,7 @@ def get_context_for_library(library: Library):
     """
     Returns an array of all text for every chunk in library
     """
-    return [chunk.text for (_, chunk) in library.chunks]
+    return [chunk.text for chunk in library.chunks]
 
 
 def get_chunk_infos_for_library(library: Library):
@@ -86,10 +86,10 @@ def get_chunk_infos_for_library(library: Library):
     # point in the future it can stop defensively re-sorting.
     infos = []
     if "similarity" in library.fields_to_omit:
-        infos = [(_, chunk.info) for (_, chunk) in library.chunks]
+        infos = [(_, chunk.info) for chunk in library.chunks]
     else:
         infos = [(chunk.similarity, chunk.info)
-                 for (_, chunk) in library.chunks]
+                 for chunk in library.chunks]
         infos.sort(reverse=True)
     unique_infos = []
     urls = []

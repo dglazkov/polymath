@@ -283,7 +283,7 @@ class Library:
             self._chunks[chunk_id] = Chunk(id=chunk_id, library=self, data=data)
 
         if access_tag:
-            for _, chunk in self.chunks:
+            for chunk in self.chunks:
                  chunk.access_tag = access_tag
     
 
@@ -370,7 +370,7 @@ class Library:
             if ids:
                 self._data['sort']['ids'] = []
             return
-        for _, chunk in self.chunks:
+        for chunk in self.chunks:
             chunk.strip()
 
     @property
@@ -568,7 +568,7 @@ class Library:
             # the one from the other library. If the other one is also 'any'
             # then this will basically be a no op.
             self.sort = other.sort
-        for _, chunk in other.chunks:
+        for chunk in other.chunks:
             self.insert_chunk(chunk.copy())
 
     def copy(self):
@@ -634,10 +634,9 @@ class Library:
     @property
     def chunks(self):
         """
-        Returns an iterator of (chunk_id, chunk)
+        Returns an iterator of each chunk in order
         """
-        # TODO: return just an array of chunks
-        return [(chunk_id, self.chunk(chunk_id)) for chunk_id in self.chunk_ids]
+        return [self.chunk(chunk_id) for chunk_id in self.chunk_ids]
 
     def remove_chunk(self, chunk):
         if not chunk:
@@ -722,11 +721,11 @@ class Library:
             json.dump(result, f, indent='\t')
 
     def similarities(self, query_embedding):
-        items = sorted([
-            (vector_similarity(query_embedding, item.embedding), issue_id)
-            for issue_id, item
+        chunks = sorted([
+            (vector_similarity(query_embedding, chunk.embedding), chunk.id)
+            for chunk
             in self.chunks], reverse=True)
-        return {key: value for value, key in items}
+        return {key: value for value, key in chunks}
 
     def add_similarities(self, query_embedding):
         # if we won't store the similarities anyway then don't bother.

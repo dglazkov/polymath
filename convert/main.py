@@ -111,8 +111,8 @@ for id, raw_chunk in importer.get_chunks(filename):
 print(f'Loaded {count} new lines')
 
 if truncate:
-    for chunk_id, chunk in [id for id in result.chunks]:
-        if chunk_id in seen_ids:
+    for chunk in result.chunks:
+        if chunk.id in seen_ids:
             continue
         result.remove_chunk(chunk)
 
