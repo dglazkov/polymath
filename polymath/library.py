@@ -32,13 +32,6 @@ def _load_data_file(file):
         return json.load(f)
 
 
-def canonical_id_for_chunk(chunk):
-    text = chunk.get('text', '')
-    info = chunk.get('info', {})
-    url = info.get('url', {})
-    return canonical_id(text, url)
-
-
 def canonical_id(chunk_text, url=''):
     """
     Returns the canonical ID for a given chunk of text.
@@ -145,6 +138,10 @@ class Chunk:
     def id(self):
         if self._id is not None:
             return self._id
+        return self.canonical_id
+
+    @property
+    def canonical_id(self):
         if self._canonical_id is None:
             self._canonical_id = canonical_id(self.text, self.url)
         return self._canonical_id
