@@ -125,7 +125,7 @@ class Chunk:
 
     @property
     def embedding(self):
-        if self._cached_embedding == None:
+        if self._cached_embedding is None:
             raw_embedding = self._data.get('embedding', None)
             if not raw_embedding:
                 return None
