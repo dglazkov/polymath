@@ -155,6 +155,83 @@
 
 <script type="module">
 
+  // Contains all UI-specific logic.
+  class Controller {
+    constructor() {
+      this.store = new Keystore();
+      this.views = new Views();
+      this.results = null;
+      this.url = new URL(window.location);
+    }
+
+    async storeKey(key) {
+      const openai = new OpenAI(key);
+      if (!await openai.validate()) {
+        this.results = {
+          error: 'Invalid API key'
+        };
+        this.start();
+        return;
+      }
+      this.store.openai_api_key = key;
+      this.results = null;
+      this.start();
+    }
+
+    askServer({ query, access_token }) {
+      this.url.searchParams.set('query', query);
+      if (access_token)
+        this.store.access_token = access_token;
+
+      window.history.pushState({}, '', this.url);
+      this.start();
+    }
+
+    clearKeys() {
+      this.store.clear();
+      this.start();
+    }
+
+    async start() {
+      this.views.clear();
+      if (!this.store.openai_api_key) {
+        this.views.show('request-key', this);
+      } else {
+        const access_token = this.url.searchParams.get('secret');
+        if (access_token) {
+          this.store.access_token = access_token;
+          this.url.searchParams.delete('secret');
+          window.location.assign(this.url);
+          return;
+        }
+        const query = this.url.searchParams.get('query');
+        if (!query) {
+          this.views.show('query', this, '');
+          return;
+        }
+        this.views.show('loading', this);
+        this.views.hide('query');
+        const answers = await Polymath.synthesizeAnswers({
+          query: query,
+          key: this.store.openai_api_key,
+          access_token: this.store.access_token,
+        });
+        this.views.hide('loading');
+        this.views.show('query', this, query);
+        if (answers.error) {
+          this.views.show('error', answers.error);
+        } else {
+          this.views.show('results', answers.completion, answers.infos);
+        }
+      }
+      if (this.results && this.results.error) {
+        this.views.show('error', this.results.error);
+      }
+    }
+  }
+
+  // Boring support classes.
+
   class Keystore {
     get openai_api_key() {
       return localStorage.getItem('openai_api_key');
@@ -363,80 +440,7 @@
     }
   }
 
-  class Controller {
-    constructor() {
-      this.store = new Keystore();
-      this.views = new Views();
-      this.results = null;
-      this.url = new URL(window.location);
-    }
-
-    async storeKey(key) {
-      const openai = new OpenAI(key);
-      if (!await openai.validate()) {
-        this.results = {
-          error: 'Invalid API key'
-        };
-        this.start();
-        return;
-      }
-      this.store.openai_api_key = key;
-      this.results = null;
-      this.start();
-    }
-
-    askServer({ query, access_token }) {
-      this.url.searchParams.set('query', query);
-      if (access_token)
-        this.store.access_token = access_token;
-
-      window.history.pushState({}, '', this.url);
-      this.start();
-    }
-
-    clearKeys() {
-      this.store.clear();
-      this.start();
-    }
-
-    async start() {
-      this.views.clear();
-      if (!this.store.openai_api_key) {
-        this.views.show('request-key', this);
-      } else {
-        const access_token = this.url.searchParams.get('secret');
-        if (access_token) {
-          this.store.access_token = access_token;
-          this.url.searchParams.delete('secret');
-          window.location.assign(this.url);
-          return;
-        }
-        const query = this.url.searchParams.get('query');
-        if (!query) {
-          this.views.show('query', this, '');
-          return;
-        }
-        this.views.show('loading', this);
-        this.views.hide('query');
-        const answers = await Polymath.synthesizeAnswers({
-          query: query,
-          key: this.store.openai_api_key,
-          access_token: this.store.access_token,
-        });
-        this.views.hide('loading');
-        this.views.show('query', this, query);
-        if (answers.error) {
-          this.views.show('error', answers.error);
-        } else {
-          this.views.show('results', answers.completion, answers.infos);
-        }
-      }
-      if (this.results && this.results.error) {
-        this.views.show('error', this.results.error);
-      }
-    }
-  }
-
   const controller = new Controller();
   controller.start();
+
 </script>
