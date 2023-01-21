@@ -86,6 +86,8 @@ class Chunk:
         self._data = data if data else {}
         self._id = id
 
+        self._cached_embedding = None
+
     def copy(self):
         """
         Returns a copy of self, but not attached to any library
@@ -123,13 +125,17 @@ class Chunk:
 
     @property
     def embedding(self):
-        # TODO: at the first fetch expand the base64 encoding to a live one and
-        # cache, not touching ._data
-        return self._data.get('embedding', None)
+        if self._cached_embedding == None:
+            raw_embedding = self._data.get('embedding', None)
+            if not raw_embedding:
+                return None
+            self._cached_embedding = vector_from_base64(raw_embedding)
+        return self._cached_embedding
 
     @embedding.setter
     def embedding(self, value):
-        self._data['embedding'] = value
+        self._cached_embedding = value
+        self._data['embedding'] = _base64_from_vector(value).decode('ascii')
 
     @property
     def similarity(self):
@@ -238,11 +244,6 @@ class Library:
         if access_tag == True:
             access_tag = DEFAULT_PRIVATE_ACCESS_TAG
 
-        for _, chunk in self._data['content'].items():
-            if 'embedding' not in chunk:
-                continue
-            chunk['embedding'] = vector_from_base64(chunk['embedding'])
-
         if access_tag:
             for _, chunk in self.chunks:
                  chunk.access_tag = access_tag
@@ -287,9 +288,10 @@ class Library:
             if 'embedding' not in fields_to_omit:
                 if 'embedding' not in chunk:
                     raise Exception(f'{chunk_id} is missing embedding')
-                if len(chunk['embedding']) != expected_embedding_length:
-                    raise Exception(
-                        f'{chunk_id} had the wrong length of embedding, expected {expected_embedding_length}')
+                # TODO: reenable this checking in chunk.validate()
+                # if len(chunk['embedding']) != expected_embedding_length:
+                #     raise Exception(
+                #         f'{chunk_id} had the wrong length of embedding, expected {expected_embedding_length}')
             if 'token_count' not in fields_to_omit:
                 if 'token_count' not in chunk:
                     raise Exception(f'{chunk_id} is missing token_count')
@@ -656,10 +658,6 @@ class Library:
         for _, chunk in result['content'].items():
             if not include_access_tag and 'access_tag' in chunk:
                 del chunk['access_tag']
-            if 'embedding' not in chunk:
-                continue
-            chunk['embedding'] = _base64_from_vector(
-                chunk['embedding']).decode('ascii')
         return result
 
     def slice(self, count, count_type_is_chunk=False, chunk_ids=None):
