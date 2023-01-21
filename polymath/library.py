@@ -88,6 +88,7 @@ class Chunk:
         self._id = id
 
         self._cached_embedding = None
+        self._canonical_id = None
         self.validate()
 
     def validate(self):
@@ -142,7 +143,11 @@ class Chunk:
 
     @property
     def id(self):
-        return self._id if self._id else canonical_id(self.text, self.url)
+        if self._id is not None:
+            return self._id
+        if self._canonical_id is None:
+            self._canonical_id = canonical_id(self.text, self.url)
+        return self._canonical_id
 
     @property
     def text(self):
@@ -153,6 +158,8 @@ class Chunk:
         if self.text == value:
             return
         self._data['text'] = value
+        # canonical ID depends on text.
+        self._canonical_id = None
 
     @property
     def token_count(self):
@@ -211,6 +218,8 @@ class Chunk:
         info = self.info
         info['url'] = value
         self.info = info
+        # canonical ID depends on url.
+        self._canonical_id = None
 
     @property
     def image_url(self):
