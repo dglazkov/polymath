@@ -72,6 +72,60 @@ def vector_similarity(x, y):
     # covert to a float64 now.
     return float(np.dot(np.array(x), np.array(y)))
 
+class ChunkInfo:
+    def __init__(self, chunk:'Chunk'=None, data=None):
+        self._data = data if data else {}
+        self._chunk = chunk
+    
+    @property
+    def url(self):
+        return self._data.get('url', '')
+
+    @url.setter
+    def url(self, value):
+        if value == self.url:
+            return
+        self._data['url'] = value
+        if self._chunk:
+            self._chunk.info = self
+
+    @property
+    def image_url(self):
+        return self._data.get('image_url', '')
+    
+    @image_url.setter
+    def image_url(self, value):
+        if value == self.image_url:
+            return
+        self._data['image_url'] = value
+        if self._chunk:
+            self._chunk.info = self
+
+    @property
+    def title(self):
+        return self._data.get('title', '')
+
+    @title.setter
+    def title(self, value):
+        if value == self.title:
+            return
+        self._data['title'] = value
+        if self._chunk:
+            self._chunk.info = self
+
+    @property
+    def description(self):
+        return self._data.get('description', '')
+
+    @description.setter
+    def description(self, value):
+        if value == self.description:
+            return
+        self._data['description'] = value
+        if self._chunk:
+            self._chunk.info = self
+
+    
 
 class Chunk:
     def __init__(self, id=None, library=None, data=None):
@@ -80,6 +134,7 @@ class Chunk:
         self._data = data if data else {}
         self._id = id
 
+        self._cached_info = None
         self._cached_embedding = None
         self._canonical_id = None
         self.validate()
@@ -143,7 +198,7 @@ class Chunk:
     @property
     def canonical_id(self):
         if self._canonical_id is None:
-            self._canonical_id = canonical_id(self.text, self.url)
+            self._canonical_id = canonical_id(self.text, self.info.url)
         return self._canonical_id
 
     @property
@@ -197,56 +252,15 @@ class Chunk:
         self._data['access_tag'] = value
 
     @property
-    def info(self):
-        return self._data.get('info', {})
+    def info(self) -> ChunkInfo:
+        if self._cached_info is None:
+            self._cached_info = ChunkInfo(chunk=self, data=self._data.get('info', None))
+        return self._cached_info
 
     @info.setter
-    def info(self, value):
-        self._data['info'] = value
-
-    @property
-    def url(self):
-        return self.info.get('url', '')
-
-    @url.setter
-    def url(self, value):
-        if value == self.url:
-            return
-        info = self.info
-        info['url'] = value
-        self.info = info
-        # canonical ID depends on url.
-        self._canonical_id = None
-
-    @property
-    def image_url(self):
-        return self.info.get('image_url', '')
-    
-    @image_url.setter
-    def image_url(self, value):
-        info = self.info
-        info['image_url'] = value
-        self.info = info
-
-    @property
-    def title(self):
-        return self.info.get('title', '')
-
-    @title.setter
-    def title(self, value):
-        info = self.info
-        info['title'] = value
-        self.info = info
-
-    @property
-    def description(self):
-        return self.info.get('description', '')
-
-    @description.setter
-    def description(self, value):
-        info = self.info
-        info['description'] = value
-        self.info = info
+    def info(self, value: ChunkInfo):
+        self._cached_info = value
+        self._data['info'] = value._data
 
     def strip(self):
         # Called when it should strip any values that its library has configured

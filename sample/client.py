@@ -128,8 +128,8 @@ for server in server_list:
     if library.message:
         print(f'{server} said: ' + library.message)
     context.extend(library.text)
-    sources.extend([chunk["url"]
-                   for chunk in get_chunk_infos_for_library(library)])
+    sources.extend([info.url
+                   for info in get_chunk_infos_for_library(library)])
 
 sources = "\n  ".join(sources)
 

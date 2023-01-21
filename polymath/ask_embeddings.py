@@ -87,10 +87,10 @@ def get_chunk_infos_for_library(library: Library):
     unique_infos = []
     urls = []
     for _, info in infos:
-        url = info["url"]
+        url = info.url
         if url not in urls:
             unique_infos.append(info)
-            urls.append(info["url"])
+            urls.append(url)
     return unique_infos
 
 
