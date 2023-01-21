@@ -87,6 +87,36 @@ class Chunk:
         self._id = id
 
         self._cached_embedding = None
+        self.validate()
+
+    def validate(self):
+        fields_to_omit = self.library.fields_to_omit if self.library else set()
+        chunk_id = self.id
+        embedding_model = self.library.embedding_model if self.library else ''
+        expected_embedding_length = EXPECTED_EMBEDDING_LENGTH.get(embedding_model, 0) if embedding_model else None
+        for field in fields_to_omit:
+            if field in self._data:
+                raise Exception(
+                    f"Expected {field} to be omitted but it was included")
+        if 'text' not in fields_to_omit and 'text' not in self._data:
+            raise Exception(f'{chunk_id} is missing text')
+        if 'embedding' not in fields_to_omit:
+            if 'embedding' not in self._data:
+                raise Exception(f'{chunk_id} is missing embedding')
+            if expected_embedding_length != None:
+                if len(self.embedding) != expected_embedding_length:
+                    raise Exception(
+                        f'{chunk_id} had the wrong length of embedding, expected {expected_embedding_length}')
+        if 'token_count' not in fields_to_omit:
+            if 'token_count' not in self._data:
+                raise Exception(f'{chunk_id} is missing token_count')
+        # TODO: verify token_count is a reasonable length.
+        if 'info' not in fields_to_omit:
+            if 'info' not in self._data:
+                raise Exception(f'{chunk_id} is missing info')
+            info = self._data['info']
+            if 'url' not in info:
+                raise Exception(f'{chunk_id} info is missing required url')
 
     def copy(self):
         """
@@ -261,9 +291,7 @@ class Library:
             raise Exception('Version invalid')
         if self._data.get('embedding_model', '') != EMBEDDINGS_MODEL_ID:
             raise Exception('Invalid model name')
-        expected_embedding_length = EXPECTED_EMBEDDING_LENGTH.get(
-            self._data.get('embedding_model', ''), 0)
-        omit_whole_chunks, fields_to_omit, _ = _keys_to_omit(
+        omit_whole_chunks, _, _ = _keys_to_omit(
             self._data.get('omit', ''))
         if 'content' not in self._data:
             raise Exception('content is a required field')
@@ -284,30 +312,7 @@ class Library:
                 raise Exception(f'sort.ids must contain precisely one entry for each content chunk if provided. It has extra keys {keys_in_sort_not_content}')
             if len(keys_in_content_not_sort):
                 raise Exception(f'sort.ids must contain precisely one entry for each content chunk if provided. It is missing keys {keys_in_content_not_sort}')
-        for chunk_id, chunk in self._data['content'].items():
-            for field in fields_to_omit:
-                if field in chunk:
-                    raise Exception(
-                        f"Expected {field} to be omitted but it was included")
-            if 'text' not in fields_to_omit and 'text' not in chunk:
-                raise Exception(f'{chunk_id} is missing text')
-            if 'embedding' not in fields_to_omit:
-                if 'embedding' not in chunk:
-                    raise Exception(f'{chunk_id} is missing embedding')
-                # TODO: reenable this checking in chunk.validate()
-                # if len(chunk['embedding']) != expected_embedding_length:
-                #     raise Exception(
-                #         f'{chunk_id} had the wrong length of embedding, expected {expected_embedding_length}')
-            if 'token_count' not in fields_to_omit:
-                if 'token_count' not in chunk:
-                    raise Exception(f'{chunk_id} is missing token_count')
-            # TODO: verify token_count is a reasonable length.
-            if 'info' not in fields_to_omit:
-                if 'info' not in chunk:
-                    raise Exception(f'{chunk_id} is missing info')
-                info = chunk['info']
-                if 'url' not in info:
-                    raise Exception(f'{chunk_id} info is missing required url')
+        # no need to validate Chunks, they were already validated at creation time.
 
     @property
     def version(self):
