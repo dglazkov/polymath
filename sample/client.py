@@ -28,6 +28,7 @@ def query_server(query_embedding, random, server):
         fields["omit"] = "similarity,embedding"
     else:
         fields["query_embedding"] = query_embedding
+        fields["sort"] = "similarity"
     response = http.request(
         'POST', server, fields=fields).data
     obj = json.loads(response)
