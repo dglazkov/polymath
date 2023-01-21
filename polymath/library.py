@@ -125,6 +125,14 @@ class ChunkInfo:
         if self._chunk:
             self._chunk.info = self
 
+    @property
+    def contents(self : 'ChunkInfo'):
+        """
+        Returns the contents of the whole info as a string, appropriate for
+        checking equality via string comparison.
+        """
+        return '\n'.join([self.url, self.image_url, self.title, self.description])
+
     
 
 class Chunk:
