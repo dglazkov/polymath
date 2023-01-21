@@ -813,33 +813,6 @@ class Library:
         return result
 
 
-def _get_context(chunk_ids, library: Library, count=MAX_CONTEXT_LEN_IN_TOKENS, count_type_is_chunk=False):
-    """
-    Returns a dict of chunk_id to possibly_truncated_chunk_text.
-
-    A count of negative means 'all items'
-    """
-    result = {}
-    context_len = 0
-    counter = 0
-
-    # TODO: Account for separator tokens, but do so without invoking a tokenizer in this method.
-    for id in chunk_ids:
-        if count_type_is_chunk and count >= 0 and counter >= count:
-            break
-        chunk = library.chunk(id)
-        tokens = chunk.token_count
-        text = chunk.text
-        context_len += tokens
-        if not count_type_is_chunk and count >= 0 and context_len > count:
-            if len(result) == 0:
-                result[id] = text[:(count)]
-            break
-        result[id] = text
-        counter += 1
-    return result
-
-
 def _keys_to_omit(configuration=''):
     """
     Takes a configuration, either None, a single string, or a list of strings
@@ -878,6 +851,5 @@ def _keys_to_omit(configuration=''):
 
 Library.EMBEDDINGS_MODEL_ID = EMBEDDINGS_MODEL_ID
 Library.CURRENT_VERSION = CURRENT_VERSION
-Library.get_context = _get_context
 Library.load_data_file = _load_data_file
 Library.base64_from_vector = _base64_from_vector
