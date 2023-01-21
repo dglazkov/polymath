@@ -5,7 +5,7 @@ import re
 import openai
 from dotenv import load_dotenv
 
-from polymath import LIBRARY_DIR, Library, get_embedding, get_token_count
+from polymath import LIBRARY_DIR, Library, Chunk, get_embedding, get_token_count
 
 from .medium import MediumImporter
 from .nakedlibrary import NakedLibraryImporter
@@ -89,7 +89,7 @@ count = 0
 
 seen_ids = {}
 
-for id, chunk in importer.get_chunks(filename):
+for id, raw_chunk in importer.get_chunks(filename):
     seen_ids[id] = True
     if max_lines >= 0 and count >= max_lines:
         print('Reached max lines')
@@ -97,23 +97,24 @@ for id, chunk in importer.get_chunks(filename):
     if result.chunk(id):
         continue
     print(f'Processing new chunk {id} ({count + 1})')
-    text = strip_emoji(chunk.get('text', ''))
-    if 'embedding' not in chunk:
+    text = strip_emoji(raw_chunk.get('text', ''))
+    if 'embedding' not in raw_chunk:
         print(f'Fetching embedding for {id}')
-        chunk['embedding'] = get_embedding(text)
-    if 'token_count' not in chunk:
+        raw_chunk['embedding'] = get_embedding(text)
+    if 'token_count' not in raw_chunk:
         print(f'Fetching token_count for {id}')
-        chunk['token_count'] = get_token_count(text)
-    result.set_chunk(id, chunk)
+        raw_chunk['token_count'] = get_token_count(text)
+    chunk = Chunk(id=id, data=raw_chunk)
+    result.insert_chunk(chunk)
     count += 1
 
 print(f'Loaded {count} new lines')
 
 if truncate:
-    for chunk_id in [id for id in result.chunk_ids]:
+    for chunk_id, chunk in [id for id in result.chunks]:
         if chunk_id in seen_ids:
             continue
-        result.delete_chunk(chunk_id)
+        result.remove_chunk(chunk)
 
 if not os.path.exists(LIBRARY_DIR):
     os.mkdir(LIBRARY_DIR)

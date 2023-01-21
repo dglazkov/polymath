@@ -79,6 +79,136 @@ def vector_similarity(x, y):
     return float(np.dot(np.array(x), np.array(y)))
 
 
+class Chunk:
+    def __init__(self, id=None, library=None, data=None):
+        # data is the direct object backing store within library.content
+        self._library = library
+        self._data = data if data else {}
+        self._id = id
+
+    def copy(self):
+        """
+        Returns a copy of self, but not attached to any library
+        """
+        data = copy.deepcopy(self._data)
+        result = Chunk(id=self.id, data=data)
+        return result
+
+    @property
+    def library(self):
+        # There is no library setter. Call library.insert_chunk or library.remove_chunk to reparent.
+        return self._library
+
+    @property
+    def id(self):
+        return self._id if self._id else canonical_id(self.text, self.url)
+
+    @property
+    def text(self):
+        return self._data.get('text', '')
+
+    @text.setter
+    def text(self, value):
+        if self.text == value:
+            return
+        self._data['text'] = value
+
+    @property
+    def token_count(self):
+        return self._data.get('token_count', -1)
+
+    @token_count.setter
+    def token_count(self, value):
+        self._data['token_count'] = value
+
+    @property
+    def embedding(self):
+        # TODO: at the first fetch expand the base64 encoding to a live one and
+        # cache, not touching ._data
+        return self._data.get('embedding', None)
+
+    @embedding.setter
+    def embedding(self, value):
+        self._data['embedding'] = value
+
+    @property
+    def similarity(self):
+        return self._data.get('similarity', -1)
+
+    @similarity.setter
+    def similarity(self, value):
+        self._data['similarity'] = value
+
+    @property
+    def access_tag(self):
+        return self._data.get('access_tag', None)
+
+    @access_tag.setter
+    def access_tag(self, value):
+        self._data['access_tag'] = value
+
+    @property
+    def info(self):
+        return self._data.get('info', {})
+
+    @info.setter
+    def info(self, value):
+        self._data['info'] = value
+
+    @property
+    def url(self):
+        return self.info.get('url', '')
+
+    @url.setter
+    def url(self, value):
+        if value == self.url:
+            return
+        info = self.info
+        info['url'] = value
+        self.info = info
+
+    @property
+    def image_url(self):
+        return self.info.get('image_url', '')
+    
+    @image_url.setter
+    def image_url(self, value):
+        info = self.info
+        info['image_url'] = value
+        self.info = info
+
+    @property
+    def title(self):
+        return self.info.get('title', '')
+
+    @title.setter
+    def title(self, value):
+        info = self.info
+        info['title'] = value
+        self.info = info
+
+    @property
+    def description(self):
+        return self.info.get('description', '')
+
+    @description.setter
+    def description(self, value):
+        info = self.info
+        info['description'] = value
+        self.info = info
+
+    def strip(self):
+        # Called when it should strip any values that its library has configured
+        # to omit
+        if not self.library:
+            return
+        if self.library.omit_whole_chunk:
+            self.clear()
+        for field_to_omit in self.library.fields_to_omit:
+            if field_to_omit in self._data:
+                del self._data[field_to_omit]
+
+
 class Library:
     def __init__(self, data=None, blob=None, filename=None, access_tag=None):
 
@@ -114,8 +244,8 @@ class Library:
             chunk['embedding'] = vector_from_base64(chunk['embedding'])
 
         if access_tag:
-            for chunk_id in self.chunk_ids:
-                self.set_chunk_field(chunk_id, access_tag=access_tag)
+            for _, chunk in self.chunks:
+                 chunk.access_tag = access_tag
 
         self.validate()
 
@@ -224,8 +354,8 @@ class Library:
             if ids:
                 self._data['sort']['ids'] = []
             return
-        for chunk_id, chunk in self.chunks:
-            self.set_chunk(chunk_id, chunk)
+        for _, chunk in self.chunks:
+            chunk.strip()
 
     @property
     def seed(self):
@@ -297,7 +427,7 @@ class Library:
                 chunk = self.chunk(chunk_id)
                 if not chunk:
                     return -1
-                return chunk.get('similarity', -1)
+                return chunk.similarity
             similarity = get_similarity(chunk_id)
             index = bisect.bisect_left(sort_ids, similarity, key=get_similarity)
             sort_ids.insert(index, chunk_id)
@@ -333,8 +463,8 @@ class Library:
                     if len(keys_in_content_not_sort):
                         raise Exception(f'sort.ids must contain precisely one entry for each content chunk if provided. It is missing keys {keys_in_content_not_sort}')
                     raise Exception(f'similarity sort started with a chunk that no longer exists: {chunk_id}')
-                similarity = chunk.get('similarity', None)
-                if similarity == None:
+                similarity = chunk.similarity
+                if similarity == -1:
                     raise Exception(f'sort of similarity passed but {chunk_id} had no similarity')
                 ids_to_sort.append((similarity, chunk_id))
             ids_to_sort.sort(reverse=True)
@@ -422,8 +552,8 @@ class Library:
             # the one from the other library. If the other one is also 'any'
             # then this will basically be a no op.
             self.sort = other.sort
-        for chunk_id, chunk in other.chunks:
-            self.set_chunk(chunk_id, chunk)
+        for _, chunk in other.chunks:
+            self.insert_chunk(chunk.copy())
 
     def copy(self):
         result = Library()
@@ -456,12 +586,12 @@ class Library:
         
         for chunk_id in chunk_ids:
             chunk = self.chunk(chunk_id)
-            if 'access_tag' not in chunk:
+            if chunk.access_tag == None:
                 continue
-            if chunk['access_tag'] in visible_access_tags:
+            if chunk.access_tag in visible_access_tags:
                 continue
         
-            self.delete_chunk(chunk_id)
+            self.remove_chunk(chunk)
             restricted_count += 1
         
         return restricted_count
@@ -477,19 +607,27 @@ class Library:
             return self._data['content'].keys()
         return ids
 
-    def chunk(self, chunk_id):
+    def chunk(self, chunk_id) -> Chunk:
         if chunk_id not in self._data["content"]:
             return None
-        return self._data["content"][chunk_id]
+        # TODO: cache chunk wrapper creation
+        return Chunk(id=chunk_id, library=self, data=self._data["content"][chunk_id])
 
     @property
     def chunks(self):
         """
         Returns an iterator of (chunk_id, chunk)
         """
+        # TODO: return just an array of chunks
         return [(chunk_id, self.chunk(chunk_id)) for chunk_id in self.chunk_ids]
 
-    def delete_chunk(self, chunk_id):
+    def remove_chunk(self, chunk):
+        if not chunk:
+            return
+        if chunk.library != self:
+            return
+        chunk._library = None
+        chunk_id = chunk.id
         del self._data["content"][chunk_id]
         sort = self._data.get('sort', {})
         ids = sort.get('ids', None)
@@ -499,51 +637,15 @@ class Library:
             # resort, but in all other cases it's unnecessarily slower to sort
             # on every chunk you remove.
 
-    def _strip_chunk(self, chunk):
-        if self.omit_whole_chunk:
-            chunk.clear()
-        for field_to_omit in self.fields_to_omit:
-            if field_to_omit in chunk:
-                del chunk[field_to_omit]
-
-    def set_chunk(self, chunk_id, chunk):
+    def insert_chunk(self, chunk : Chunk):
         if self.omit_whole_chunk:
             return
         content = self._data['content']
-        chunk_inserted = chunk_id not in content
-        content[chunk_id] = chunk
-        self._strip_chunk(chunk)
+        chunk_inserted = chunk.id not in content
+        content[chunk.id] = chunk._data
+        chunk._library = self
         if chunk_inserted:
-            self._insert_chunk_into_ids(chunk_id)
-
-    def set_chunk_field(self, chunk_id, text=None, embedding=None, token_count=None, info=None, access_tag=None, similarity=None):
-        if self.omit_whole_chunk:
-            return
-        chunk = self._data["content"].get(chunk_id, {})
-        if text != None:
-            chunk["text"] = text
-        if embedding != None:
-            chunk["embedding"] = embedding
-        if token_count != None:
-            chunk["token_count"] = token_count
-        if info != None:
-            chunk["info"] = info
-        if access_tag != None:
-            chunk["access_tag"] = access_tag
-        if similarity != None:
-            chunk["similarity"] = similarity
-        self.set_chunk(chunk_id, chunk)
-
-    def delete_chunk_field(self, chunk_id, fields=None):
-        if isinstance(fields, str):
-            fields = [fields]
-        if chunk_id not in self._data["content"]:
-            return
-        chunk = self._data["content"][chunk_id]
-        for field in fields:
-            del chunk[field]
-        if len(chunk) == 0:
-            self.delete_chunk(chunk_id)
+            self._insert_chunk_into_ids(chunk.id)
 
     def serializable(self, include_access_tag=False):
         """
@@ -585,16 +687,16 @@ class Library:
         for id in chunk_ids:
             if count_type_is_chunk and count >= 0 and counter >= count:
                 break
-            chunk = copy.deepcopy(self.chunk(id))
-            tokens = chunk['token_count']
-            text = chunk['text']
+            chunk = self.chunk(id).copy()
+            tokens = chunk.token_count
+            text = chunk.text
             context_len += tokens
             if not count_type_is_chunk and count >= 0 and context_len > count:
                 if len(result.chunk_ids) == 0:
-                    chunk['text'] = text[:(count)]
-                    result.set_chunk(id, chunk)
+                    chunk.text = text[:(count)]
+                    result.insert_chunk(chunk)
                 break
-            result.set_chunk(id, chunk)
+            result.insert_chunk(chunk)
             counter += 1
         return result
 
@@ -605,7 +707,7 @@ class Library:
 
     def similarities(self, query_embedding):
         items = sorted([
-            (vector_similarity(query_embedding, item['embedding']), issue_id)
+            (vector_similarity(query_embedding, item.embedding), issue_id)
             for issue_id, item
             in self.chunks], reverse=True)
         return {key: value for value, key in items}
@@ -616,7 +718,8 @@ class Library:
             return
         similarities = self.similarities(query_embedding)
         for chunk_id, similarity in similarities.items():
-            self.set_chunk_field(chunk_id, similarity=similarity)
+            chunk = self.chunk(chunk_id)
+            chunk.similarity = similarity
 
     def query(self, version=None, query_embedding=None, query_embedding_model=None, count=0, count_type='token', sort='similarity', sort_reversed=False, seed=None, omit='embedding', access_token=''):                
         # We do our own defaulting so that servers that call us can pass the result
@@ -694,8 +797,8 @@ def _get_context(chunk_ids, library: Library, count=MAX_CONTEXT_LEN_IN_TOKENS, c
         if count_type_is_chunk and count >= 0 and counter >= count:
             break
         chunk = library.chunk(id)
-        tokens = chunk['token_count']
-        text = chunk['text']
+        tokens = chunk.token_count
+        text = chunk.text
         context_len += tokens
         if not count_type_is_chunk and count >= 0 and context_len > count:
             if len(result) == 0:
