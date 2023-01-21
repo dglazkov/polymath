@@ -10,6 +10,11 @@
     padding: 1rem;
   }
 
+  details {
+    text-align: right;
+    margin-top: -50px;
+  }
+
   #query {
     padding: 1rem;
     --border-radius: 1em;
@@ -19,12 +24,12 @@
     font-size: smaller;
   }
 
-  #more-options {
-    text-align: right;
-  }
-
   #completion {
     margin-bottom: 2em;
+  }
+
+  #results {
+    margin-block-start: 2em;
   }
 </style>
 <link rel="apple-touch-icon" sizes="180x180" href="static/apple-touch-icon.png">
@@ -118,7 +123,7 @@
   </script>
 </template>
 <template id="results-view">
-  <h3>Results</h3>
+  <h3 id="results">Results</h3>
   <div id="completion"></div>
   <h3>Sources</h3>
   <ul id="sources">
