@@ -244,9 +244,15 @@ class Library:
         if access_tag == True:
             access_tag = DEFAULT_PRIVATE_ACCESS_TAG
 
+        content = self._data.get('content', {})
+        self._chunks = {}
+        for chunk_id, data in content.items():
+            self._chunks[chunk_id] = Chunk(id=chunk_id, library=self, data=data)
+
         if access_tag:
             for _, chunk in self.chunks:
                  chunk.access_tag = access_tag
+    
 
         self.validate()
 
@@ -560,6 +566,9 @@ class Library:
     def copy(self):
         result = Library()
         result._data = copy.deepcopy(self._data)
+        result._chunks = {}
+        for chunk_id, data in result._data.get('content', {}).items():
+            result._chunks[chunk_id] = Chunk(id=chunk_id, library=result, data=data)
         return result
 
     def reset(self):
@@ -568,9 +577,11 @@ class Library:
             'embedding_model': EMBEDDINGS_MODEL_ID,
             'content': {}
         }
+        self._chunks = {}
 
     def delete_all_chunks(self):
         self._data['content'] = {}
+        self._chunks = {}
         if 'sort' in self._data:
             if 'ids' in self._data['sort']:
                 self._data['sort']['ids'] = []
@@ -610,10 +621,7 @@ class Library:
         return ids
 
     def chunk(self, chunk_id) -> Chunk:
-        if chunk_id not in self._data["content"]:
-            return None
-        # TODO: cache chunk wrapper creation
-        return Chunk(id=chunk_id, library=self, data=self._data["content"][chunk_id])
+        return self._chunks.get(chunk_id, None)
 
     @property
     def chunks(self):
@@ -631,6 +639,7 @@ class Library:
         chunk._library = None
         chunk_id = chunk.id
         del self._data["content"][chunk_id]
+        del self._chunks[chunk_id]
         sort = self._data.get('sort', {})
         ids = sort.get('ids', None)
         if ids:
@@ -646,6 +655,7 @@ class Library:
         chunk_inserted = chunk.id not in content
         content[chunk.id] = chunk._data
         chunk._library = self
+        self._chunks[chunk.id] = chunk
         if chunk_inserted:
             self._insert_chunk_into_ids(chunk.id)
 
