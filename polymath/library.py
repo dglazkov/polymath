@@ -5,6 +5,7 @@ import json
 import os
 import random
 import bisect
+from typing import List
 
 import numpy as np
 
@@ -637,13 +638,13 @@ class Library:
         return self._chunks.get(chunk_id, None)
 
     @property
-    def chunks(self):
+    def chunks(self) -> List[Chunk]:
         """
         Returns an iterator of each chunk in order
         """
         return [self.chunk(chunk_id) for chunk_id in self.chunk_ids]
 
-    def remove_chunk(self, chunk):
+    def remove_chunk(self, chunk : Chunk):
         if not chunk:
             return
         if chunk.library != self:
