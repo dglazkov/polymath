@@ -52,6 +52,8 @@
     Want your own Polymath? <a href="https://github.com/dglazkov/polymath#readme">Come get started!</a>
   </p>
 </footer>
+
+<!-- View templates -->
 <template id="query-view">
   <p>
     <input type="text" id="query" placeholder="Enter your question here">
@@ -91,6 +93,7 @@
       () => controller.clearKeys());
   </script>
 </template>
+
 <template id="request-key-view">
   <p>
     <label>
@@ -108,20 +111,39 @@
     button.addEventListener('click', () => controller.storeKey(input.value));
   </script>
 </template>
+
 <template id="loading-view">
-  <p>Loading</p>
-  <script action="show">
+  <p>
+  <div id="past"></div>
+  <span id="current"></span><span id="ellipsis"></span>
+  </p>
+  <script action="show" arguments="onprogress">
+
+    const ellipsis = this.querySelector('#ellipsis');
+    const current = this.querySelector('#current');
+    const past = this.querySelector('#past');
     let dots = 0;
+
+    onprogress((status) => {
+      const div = document.createElement('div');
+      const currentStatus = current.textContent;
+      if (currentStatus) {
+        div.innerHTML = `${currentStatus} &#9989;`;
+        past.append(div);
+      }
+      current.textContent = status;
+    });
 
     this.loadingInterval = setInterval(() => {
       dots = (dots + 1) % 4;
-      this.innerHTML = "<p>Loading " + ".".repeat(dots) + "</p>";
+      ellipsis.textContent = '.'.repeat(dots);
     }, 300);
   </script>
   <script action="hide">
     if (this.loadingInterval) clearInterval(this.loadingInterval);
   </script>
 </template>
+
 <template id="results-view">
   <h3 id="results">Results</h3>
   <div id="completion"></div>
@@ -148,6 +170,7 @@
     }).join('\n');
   </script>
 </template>
+
 <template id="error-view">
   <h3>Error</h3>
   <div id="message"></div>
@@ -161,6 +184,11 @@
 
   // Contains all UI-specific logic.
   class Controller {
+    store;
+    views;
+    results;
+    url;
+
     constructor() {
       this.store = new Keystore();
       this.views = new Views();
@@ -213,12 +241,14 @@
           this.views.show('query', this, '');
           return;
         }
-        this.views.show('loading', this);
+        const pipe = new Pipe();
+        this.views.show('loading', pipe.out);
         this.views.hide('query');
         const answers = await Polymath.synthesizeAnswers({
           query: query,
           key: this.store.openai_api_key,
           access_token: this.store.access_token,
+          progress: pipe.in
         });
         this.views.hide('loading');
         this.views.show('query', this, query);
@@ -235,6 +265,20 @@
   }
 
   // Boring support classes.
+
+  class Pipe {
+    in;
+    out;
+    sink;
+    constructor() {
+      this.in = (message) => {
+        this.sink(message);
+      }
+      this.out = (sink) => {
+        this.sink = sink;
+      }
+    }
+  }
 
   class Keystore {
     get openai_api_key() {
@@ -285,7 +329,7 @@
       return `Answer the question as truthfully as possible using the provided context, and if the answer is not contained within the text below, say in a friendly tone that this Polymath instance does not contain the answer and suggest looking for this information elsewhere.\n\nContext:\n${context} \n\nQuestion:\n${query}\n\nAnswer:`;
     }
 
-    static async synthesizeAnswers({ key, query, access_token }) {
+    static async synthesizeAnswers({ key, query, access_token, progress }) {
       const server = new Polymath();
       const openai = new OpenAI(key);
       const result = {
@@ -294,12 +338,14 @@
         completion: null,
       }
 
+      progress('Creating embedding for the query');
       const embedding = await openai.embedding(query);
       if (embedding.error) {
         result.error = embedding.error;
         return result;
       }
 
+      progress('Asking Polymath instance to generate context');
       const query_embedding = Polymath.encode_embedding(embedding.result);
       access_token = access_token || ''
       const polymath_results = await server.ask({ query_embedding, access_token });
@@ -308,6 +354,7 @@
         return result;
       }
 
+      progress('Creating completion from context')
       const context = Polymath.create_prompt({
         query: query,
         results: polymath_results,
@@ -319,6 +366,7 @@
       }
       result.infos = Object.values(polymath_results.content).map(entry => entry.info);
       result.completion = completion_result.result;
+      progress('');
       return result;
     }
   }
