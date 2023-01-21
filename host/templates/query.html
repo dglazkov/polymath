@@ -31,18 +31,51 @@
   #results {
     margin-block-start: 2em;
   }
+
+  header {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+  }
+
+  #header-a {
+    border-radius: 25% 10%;
+    overflow: hidden;
+  }
+
+  #header-img {
+    float: left;
+  }
+
+  #header-text {
+    padding-left: 20px;
+    margin-top: -50px;
+    float: right;
+    border-bottom: none;
+  }
+
+  #header-line {
+    width: 100%;
+    height: 1px;
+    border-top: none;
+  }
+
 </style>
 <link rel="apple-touch-icon" sizes="180x180" href="static/apple-touch-icon.png">
 <link rel="icon" type="image/png" sizes="32x32" href="static/favicon-32x32.png">
 <link rel="icon" type="image/png" sizes="16x16" href="static/favicon-16x16.png">
 <link rel="shortcut icon" href="static/favicon.ico">
 <link rel="manifest" href="static/site.webmanifest">
+
 <header>
-  <h1>Polymath</h1>
-  <p>
-    This is a <a href="https://github.com/dglazkov/polymath">polymath</a> endpoint.
-  </p>
+  <a href="/" id="header-a" title="E.T. Go. Home."><img src="static/polymath-logo-120x120.png" width="120" height="120" id="header-img" alt=""></a>
+  <div id="header-text">
+    <h1>Polymath</h1>
+    <div id="header-line">This is a <a href="https://github.com/dglazkov/polymath">polymath</a> endpoint.</div>
+  </div>
 </header>
+
 <main id="surface"></main>
 <footer>
   {% if restricted_message %}
