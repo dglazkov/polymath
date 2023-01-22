@@ -101,5 +101,5 @@ def ask(query, context_query=None, library_file=None):
     context = library.text
     chunk_ids = library.chunk_ids
 
-    infos = [library.chunk(chunk_id)['info'] for chunk_id in chunk_ids]
+    infos = [library.chunk(chunk_id).info for chunk_id in chunk_ids]
     return get_completion_with_context(query, context), infos
