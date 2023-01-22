@@ -407,39 +407,33 @@ class Library:
 
     @property
     def seed(self):
-        if 'sort' not in self._data:
-            return None
-        return self._data['sort'].get('seed', None)
+        return self._data.get('seed', None)
 
     @seed.setter
     def seed(self, value):
         if value == self.seed:
             return
-        if 'sort' not in self._data:
-            self._data['sort'] = {}
-        self._data['sort']['seed'] = value
+        self._data['seed'] = value
+        if not value:
+            del self._data['seed']
         self._re_sort()
 
     @property
     def sort_reversed(self):
-        if 'sort' not in self._data:
-            return False
-        return self._data['sort'].get('reversed', False)
+        return self._data.get('reversed', False)
 
     @sort_reversed.setter
     def sort_reversed(self, value):
         if value == self.sort_reversed:
             return
-        if 'sort' not in self._data:
-            self._data['sort'] = {}
-        self._data['sort']['reversed'] = value
+        self._data['reversed'] = value
+        if not value:
+            del self._data['reversed']
         self._re_sort()
 
     @property
     def sort(self):
-        if 'sort' not in self._data:
-            return 'any'
-        return self._data['sort'].get('type', 'any')
+        return self._data.get('sort', 'any')
     
     @sort.setter
     def sort(self, value):
@@ -447,20 +441,15 @@ class Library:
             return
         if value not in LEGAL_SORTS:
             raise Exception(f'Illegal sort: {value}')
-        if 'sort' not in self._data:
-            self._data['sort'] = {}
-        self._data['sort']['type'] = value
-        if self._data['sort']['type'] == 'any':
-            del self._data['sort']['type']
-        if len(self._data['sort']) == 0:
+        self._data['sort'] = value
+        if self._data['sort'] == 'any':
             del self._data['sort']
         self._re_sort()
 
     def _insert_chunk_in_order(self, chunk):
         # bits is already in sorted order so we can do a bisect into it
         # instead of resorting after every insert, considerably faster.
-        sort = self._data.get('sort', {})
-        sort_type = sort.get('type', 'any')
+        sort_type = self._data.get('sort', 'any')
         bits = self._data['bits']
         chunks_in_order = self._chunks_in_order
         if sort_type == 'similarity':
@@ -487,9 +476,8 @@ class Library:
         """
         Called when the sort type might have changed and _data.sort.ids needs to be resorted
         """
-        sort = self._data.get('sort', {})
-        sort_type = sort.get('type', 'any')
-        sort_reversed = sort.get('reversed', False)
+        sort_type = self._data.get('sort', 'any')
+        sort_reversed = self._data.get('reversed', False)
         # We'll operate on chunks_in_order and then replicate that order in
         # self._data['bits]
         chunks_in_order = self._chunks_in_order
@@ -620,8 +608,7 @@ class Library:
                 'The other library had a different embedding model')
         # TODO: handle key collisions; keys are only guaranteed to be unique
         # within a single library.
-        self_sort = self._data.get('sort', {})
-        self_sort_type = self_sort.get('type', None)
+        self_sort_type = self._data.get('sort', None)
         if self_sort_type == None:
             # We don't have a sort type, it's just implicitly 'any'. We can use
             # the one from the other library. If the other one is also 'any'
