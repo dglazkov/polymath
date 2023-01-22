@@ -29,9 +29,8 @@ The format of the library files is as follows:
       restricted: <int>
     }
   }
-  bits: {
-    //A chunk_id is any string unique within this index to address your content. It can technically be any string, but best practice is to use the result of canonical_id().
-    <chunk_id>: {
+  bits: [
+    {
       text: <text>,
       // The full vector of floats representing the embedding, as base64-encoded string. The number of floats will depend on which embedding_model is in use.
       embedding: <embedding>,
@@ -48,8 +47,9 @@ The format of the library files is as follows:
         title: <title>,
         description: <description>
       }
-    }
-  }
+    },
+    //...
+  ]
 }
 ```
 

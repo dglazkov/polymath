@@ -89,24 +89,27 @@ count = 0
 
 seen_ids = {}
 
-for id, raw_chunk in importer.get_chunks(filename):
+for _, raw_chunk in importer.get_chunks(filename):
+    temp_chunk = Chunk(data=raw_chunk)
+    id = temp_chunk.id
     seen_ids[id] = True
     if max_lines >= 0 and count >= max_lines:
         print('Reached max lines')
         break
-    if result.chunk(id):
-        continue
-    print(f'Processing new chunk {id} ({count + 1})')
-    text = strip_emoji(raw_chunk.get('text', ''))
-    if 'embedding' not in raw_chunk:
+    chunk = result.chunk(id)
+    if not chunk:
+        count += 1
+        print(f'Processing new chunk {id} ({count})')
+        chunk = temp_chunk
+        result.insert_chunk(chunk)
+
+    if chunk.embedding is None:
         print(f'Fetching embedding for {id}')
-        raw_chunk['embedding'] = get_embedding(text)
-    if 'token_count' not in raw_chunk:
+        chunk.embedding = get_embedding(chunk.text)
+    if chunk.token_count < 0:
         print(f'Fetching token_count for {id}')
-        raw_chunk['token_count'] = get_token_count(text)
-    chunk = Chunk(id=id, data=raw_chunk)
-    result.insert_chunk(chunk)
-    count += 1
+        chunk.token_count = get_token_count(chunk.text)
+
 
 print(f'Loaded {count} new lines')
 

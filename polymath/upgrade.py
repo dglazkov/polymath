@@ -6,6 +6,19 @@ def _upgrade_from_0(library_data):
     library_data['version'] = 1
     library_data['bits'] = library_data['content']
     del library_data['content']
+    sort = library_data.get('sort', {})
+    sort_ids = sort.get('ids', [])
+    bits_dict = library_data.get('bits', {})
+    if not sort_ids:
+        sort_ids =[key for key in bits_dict.keys()]
+    bits = []
+    for bit_id in sort_ids:
+        bits.append(bits_dict.get(bit_id, {}))
+    library_data['bits'] = bits
+    if sort.get('ids', None):
+        del sort['ids']
+    if len(sort) == 0 and 'sort' in library_data:
+        del library_data['sort']
     return True
 
 # Each upgrader knows how to upgrade from the version integer at key, up by one
