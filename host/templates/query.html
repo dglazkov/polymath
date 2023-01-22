@@ -393,7 +393,7 @@
 
     static create_prompt({ query, results }) {
       const context = Object.values(results.content).map(chunk => chunk.text).join('\n');
-      return `Answer the question as truthfully as possible using the provided context, and if the answer is not contained within the text below, say in a friendly tone that this Polymath instance does not contain the answer and suggest looking for this information elsewhere.\n\nContext:\n${context} \n\nQuestion:\n${query}\n\nAnswer:`;
+      return `Answer the question as truthfully as possible using the provided context, and if don't have the answer, say in a friendly tone that this Polymath instance does not contain the answer and suggest looking for this information elsewhere.\n\nContext:\n${context} \n\nQuestion:\n${query}\n\nAnswer:`;
     }
 
     static async synthesizeAnswers({ key, query, access_token, progress }) {
