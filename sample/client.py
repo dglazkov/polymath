@@ -120,26 +120,31 @@ if args.verbose:
 query_vector = None if args.random else Library.base64_from_vector(
     get_embedding(query))
 
-context = []
-sources = []
-
 # TODO: allow setting the answer_length (see issue #49)
 answer_length = 256
 # TODO: we need to allow room for the actual prompt, as well as separators
 # between chunks. This is a hand-tuned margin, but it should be calculated
 # automatically.
-context_count = get_max_tokens_for_completion_model() - 250
-# TODO: ask for more from server and combine into one library
-context_per_server = int((context_count - answer_length) / len(server_list))
+context_count = get_max_tokens_for_completion_model() - 500
+
+# We ask each endpoint for content assuming that all of its results will be
+# better than any other server. We then trim down to the best content across all
+# servers.
+context_per_server = context_count - answer_length
+
+combined_library = Library()
 
 for server in server_list:
     print(f"Querying {server} ...") if args.verbose else None
-    # for now, just combine contexts
-    library = query_server(query_vector, server, random=args.random, count=context_per_server)
+    library = query_server(query_vector, server, random=args.random, count=context_count)
     if library.message:
         print(f'{server} said: ' + library.message)
-    context.extend(library.text)
-    sources.extend([info.url for info in library.unique_infos])
+    combined_library.extend(library)
+
+sliced_library = combined_library.slice(context_count)
+
+sources = [info.url for info in sliced_library.unique_infos]
+context = sliced_library.text
 
 sources = "\n  ".join(sources)
 
