@@ -477,8 +477,11 @@ class Library:
                 chunk = self.chunk(chunk_id)
                 if not chunk:
                     return -1
-                return chunk.similarity
+                # We want to revese the similarity, because bisect assumes keys
+                # are sorted ascending and ours are sorted descending.
+                return chunk.similarity * -1
             similarity = get_similarity(chunk_id)
+            #bisect and friends only work for lists sorted in ascending order. So... 
             index = bisect.bisect_left(sort_ids, similarity, key=get_similarity)
             sort_ids.insert(index, chunk_id)
         else:
