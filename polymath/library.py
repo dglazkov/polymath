@@ -136,14 +136,13 @@ class ChunkInfo:
 
 
 class Chunk:
-    def __init__(self, id=None, library=None, data=None):
+    def __init__(self, library=None, data=None):
         self._cached_info = None
         self._cached_embedding = None
         self._canonical_id = None
 
         # data is the direct object backing store within library.content
         self._data = data if data else {}
-        self._id = id
         self._set_library(library)
 
 
@@ -184,7 +183,7 @@ class Chunk:
         Returns a copy of self, but not attached to any library
         """
         data = copy.deepcopy(self._data)
-        result = Chunk(id=self._id, data=data)
+        result = Chunk(data=data)
         return result
 
     def remove(self):
@@ -207,12 +206,6 @@ class Chunk:
 
     @property
     def id(self):
-        if self._id is not None:
-            return self._id
-        return self.canonical_id
-
-    @property
-    def canonical_id(self):
         if self._canonical_id is None:
             self._canonical_id = canonical_id(self.text, self.info.url)
         return self._canonical_id
