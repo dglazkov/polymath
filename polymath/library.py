@@ -622,6 +622,11 @@ class Library:
             # the one from the other library. If the other one is also 'any'
             # then this will basically be a no op.
             self.sort = other.sort
+        self_omit = self._data.get('omit')
+        if not self_omit:
+            # We don't have an omit type, so just absorb the omit type from the
+            # other. If it also doesn't have an omit type this will be a no-op.
+            self.omit = other.omit
         for chunk in other.chunks:
             self.insert_chunk(chunk.copy())
 
