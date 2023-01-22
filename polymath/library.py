@@ -747,7 +747,7 @@ class Library:
                 del chunk['access_tag']
         return result
 
-    def slice(self, count, count_type_is_chunk=False, chunk_ids=None):
+    def slice(self, count, count_type_is_chunk=False):
         """
         Returns a new library that contains a subset of the first items of self
         up to size count.
@@ -764,15 +764,12 @@ class Library:
         result.delete_all_chunks()
         context_len = 0
         counter = 0
-
-        if chunk_ids == None:
-            chunk_ids = list(self.chunk_ids)
-
+       
         # TODO: Account for separator tokens, but do so without invoking a tokenizer in this method.
-        for id in chunk_ids:
+        for original_chunk in self.chunks:
             if count_type_is_chunk and count >= 0 and counter >= count:
                 break
-            chunk = self.chunk(id).copy()
+            chunk = original_chunk.copy()
             tokens = chunk.token_count
             text = chunk.text
             context_len += tokens
