@@ -131,7 +131,7 @@ class ChunkInfo:
         Returns the contents of the whole info as a string, appropriate for
         checking equality via string comparison.
         """
-        return '\n'.join([self.url, self.image_url, self.title, self.description])
+        return '\n'.join([self.url or '', self.image_url or '', self.title or '', self.description or ''])
 
     
 
