@@ -20,15 +20,17 @@ def _get_access_data():
     return _access_data
 
 
-def restricted_configuration():
+def host_config():
     """
-    Returns a boolean of whether to include restricted count, and the message
+    Return the full config
     """
     data = _get_access_data()
     restricted = data.get('restricted', {})
     include_restricted_count = restricted.get('count', False)
     restricted_message = restricted.get('message', "")
-    return include_restricted_count, restricted_message
+    data["include_restricted_count"] = include_restricted_count
+    data["restricted_message"] = restricted_message
+    return data
 
 
 def permitted_access(access_token):

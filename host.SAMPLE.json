@@ -1,0 +1,27 @@
+{
+
+    "default_private_access_tag": "unpublished",
+    
+    "restricted": {
+      "count": true,
+      "message": "Contact alex@komoroske.com for an access_token."
+    },
+
+    "twitter": {
+        "handle": "dalmaer"
+    },
+
+    "webclient": {
+        "headername": "Dion's",
+        "placeholder": "What is the best side effect of using an AI assistant?"
+    },
+
+    "tokens": {
+        "dimitri@glazyglaz.com": {
+          "token": "<A cryptographically secure string that is treated as a secret. It should be given to the user so they can put it in their \"token\" field in their `directory.SECRET.json` associated with this endpoint.>",
+          "description": "<An optional stirng where you can store notes about this user or record.>",
+          "access_tags": ["unpublished"]
+      }
+    }
+
+  }

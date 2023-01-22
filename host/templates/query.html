@@ -2,7 +2,7 @@
 <html lang="en">
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>Polymath</title>
+<title>{{ config.webclient.headername }} Polymath</title>
 <link rel="stylesheet" href="static/mvp.css" />
 <style type="text/css">
   header,
@@ -71,15 +71,15 @@
 <header>
   <a href="/" id="header-a" title="E.T. Go. Home."><img src="static/polymath-logo-120x120.png" width="120" height="120" id="header-img" alt=""></a>
   <div id="header-text">
-    <h1>Polymath</h1>
+    <h1>{{ config.webclient.headername }} Polymath</h1>
     <div id="header-line">This is a <a href="https://github.com/dglazkov/polymath">polymath</a> endpoint.</div>
   </div>
 </header>
 
 <main id="surface"></main>
 <footer>
-  {% if restricted_message %}
-  <p>This server has additional private content that requires an access token to access. {{ restricted_message }}</p>
+  {% if config.restricted_message %}
+  <p>This server has additional private content that requires an access token to access. {{ config.restricted_message }}</p>
   {% endif %}
   <p>
     Want your own Polymath? <a href="https://github.com/dglazkov/polymath#readme">Come get started!</a>
@@ -89,7 +89,7 @@
 <!-- View templates -->
 <template id="query-view">
   <p>
-    <input type="text" id="query" placeholder="Enter your question here">
+    <input type="text" id="query" placeholder="{{ config.webclient.placeholder }}">
     <button id="ask">Ask Me</button>
   </p>
   <details>

@@ -9,7 +9,7 @@ from typing import List
 
 import numpy as np
 
-from .access import DEFAULT_PRIVATE_ACCESS_TAG, permitted_access, restricted_configuration
+from .access import DEFAULT_PRIVATE_ACCESS_TAG, permitted_access, host_config
 
 EMBEDDINGS_MODEL_ID = "openai.com:text-embedding-ada-002"
 
@@ -840,7 +840,9 @@ class Library:
         # remove all chunks.
         result.omit = omit
 
-        include_restricted_count, restricted_message = restricted_configuration()
+        config = host_config()
+        include_restricted_count = config["include_restricted_count"]
+        restricted_message = config["restricted_message"]
 
         if include_restricted_count:
             result.count_restricted = restricted_count
