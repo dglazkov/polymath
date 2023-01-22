@@ -671,12 +671,10 @@ class Library:
         Returns the number of items that were removed.
         """
         visible_access_tags = permitted_access(access_token)
-        chunk_ids = list(self.chunk_ids)
 
         restricted_count = 0
         
-        for chunk_id in chunk_ids:
-            chunk = self.chunk(chunk_id)
+        for chunk in self.chunks:
             if chunk.access_tag == None:
                 continue
             if chunk.access_tag in visible_access_tags:
@@ -774,7 +772,7 @@ class Library:
             text = chunk.text
             context_len += tokens
             if not count_type_is_chunk and count >= 0 and context_len > count:
-                if len(result.chunk_ids) == 0:
+                if len(result.chunks) == 0:
                     chunk.text = text[:(count)]
                     result.insert_chunk(chunk)
                 break
@@ -853,7 +851,7 @@ class Library:
         count_type_is_chunk = count_type == 'chunk'
         restricted_count = result.delete_restricted_chunks(access_token)
         result = result.slice(count, count_type_is_chunk=count_type_is_chunk)
-        result.count_chunks = len(result.chunk_ids)
+        result.count_chunks = len(result.chunks)
         # Now that we know how many chunks exist we can set omit, which might
         # remove all chunks.
         result.omit = omit
