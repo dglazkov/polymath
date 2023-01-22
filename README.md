@@ -61,8 +61,8 @@ To create a new library file for a source, first, create a json object like this
 
 ```
 {
-  content: {
-    <chunk_id>: {
+  bits: [
+    {
       text: '<raw text>',
       info: {
         url: '<URL>',
@@ -71,8 +71,9 @@ To create a new library file for a source, first, create a json object like this
         title: '<TITLE>',
         description: '<DESCRIPTION>',
       }
-    }
-  }
+    },
+    //...
+  ]
 }
 ```
 

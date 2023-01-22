@@ -10,14 +10,13 @@ class NakedLibraryImporter:
         # Will return a generator of chunks, possibly missing embedding and token_count.
         data = Library.load_data_file(filename)
 
-        chunks = data.get('content')
+        chunks = data.get('bits')
         if not chunks:
             raise Exception('Data did not have content as expected')
-        for id, chunk in chunks.items():
+        for chunk in chunks:
             text = chunk.get('text')
             if not text:
-                print('Skipping a row with id ' +
-                      id + ' that was missing text')
+                print('Skipping a row that was missing text')
                 continue
 
             for text_chunk in generate_chunks([[text]]):
