@@ -275,8 +275,14 @@ The mapping of `asset_token` to `access_tag` they give access to is configured i
   "webclient": {
     "headername": "Dion's",
     "placeholder": "What is the best side effect of using an AI assistant?"
+    "fun_queries": [
+      "What is the best side effect of using an AI assistant?",
+      "Tell me a story about OrderedJSON",
+      "What is an Ajaxian?",
+      "What happened to webOS?"
+    ]
   },
-  
+
   "tokens": {
       //user_vanity_id can be any user-understable name, typically an email address like 'alex@komoroske.com'
       <user_vanity_id>: {
