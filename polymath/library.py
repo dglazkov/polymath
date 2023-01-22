@@ -20,6 +20,15 @@ EXPECTED_EMBEDDING_LENGTH = {
 
 MAX_CONTEXT_LEN_IN_TOKENS = 2048
 
+# CURRENT_VERSION should be upped every time there is a change that breaks
+# backwards-compatibility in the library format.
+#
+# When updating it, add an item to upgrade.py:_UPGRADERS whose key is one lower
+# than the new CURRENT_VERSION.
+# 
+# Old libraries will continue to work, just being upgraded every time they are
+# loaded. When a new version is released, ping the discord and remind everyone
+# to run `python3 -m convert.upgrade` to upgrade all of their libraries.
 CURRENT_VERSION = 1
 
 LEGAL_SORTS = set(['similarity', 'any', 'random', 'manual'])
