@@ -10,6 +10,7 @@ from typing import List
 import numpy as np
 
 from .access import DEFAULT_PRIVATE_ACCESS_TAG, permitted_access, host_config
+from .upgrade import upgrade_library_data
 
 EMBEDDINGS_MODEL_ID = "openai.com:text-embedding-ada-002"
 
@@ -19,7 +20,7 @@ EXPECTED_EMBEDDING_LENGTH = {
 
 MAX_CONTEXT_LEN_IN_TOKENS = 2048
 
-CURRENT_VERSION = 0
+CURRENT_VERSION = 1
 
 LEGAL_SORTS = set(['similarity', 'any', 'random', 'manual'])
 LEGAL_COUNT_TYPES = set(['token', 'chunk'])
@@ -304,6 +305,8 @@ class Library:
             self._data = data
         else:
             self.reset()
+
+        upgrade_library_data(self._data)
 
         if access_tag == None and filename:
             next_directory_is_access_tag = False

@@ -1,7 +1,7 @@
 The format of the library files is as follows:
 ```
 {
-  version: 0,
+  version: 1,
   //Currently the only supported model is 'openai.com:text-embedding-ada-002'. That might change in the future.
   embedding_model: 'openai.com:text-embedding-ada-002',
   //Omit is optional. If provided, it is a string or array of strings that specify which keys in chunks are expected to be missing. '' means nothing is supposed to be missing, and '*' means all chunks are totally gone, that is content: {}.

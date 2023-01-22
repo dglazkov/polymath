@@ -373,7 +373,7 @@
   class Polymath {
     async ask(query) {
       const form = new FormData();
-      form.append('version', '0');
+      form.append('version', '1');
       form.append('query_embedding_model', 'openai.com:text-embedding-ada-002');
       form.append('sort', 'similarity');
       for (const [key, value] of Object.entries(query)) {
