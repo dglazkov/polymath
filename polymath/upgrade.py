@@ -4,6 +4,8 @@ def _upgrade_from_0(library_data):
     if library_data.get('version', 0) == 1:
         return False
     library_data['version'] = 1
+    library_data['bits'] = library_data['content']
+    del library_data['content']
     return True
 
 # Each upgrader knows how to upgrade from the version integer at key, up by one

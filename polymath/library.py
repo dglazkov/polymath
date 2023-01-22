@@ -322,7 +322,7 @@ class Library:
         if access_tag == True:
             access_tag = DEFAULT_PRIVATE_ACCESS_TAG
 
-        content = self._data.get('content', {})
+        content = self._data.get('bits', {})
         self._chunks = {}
         for chunk_id, data in content.items():
             self._chunks[chunk_id] = Chunk(id=chunk_id, library=self, data=data)
@@ -341,9 +341,9 @@ class Library:
             raise Exception('Invalid model name')
         omit_whole_chunks, _, _ = _keys_to_omit(
             self._data.get('omit', ''))
-        if 'content' not in self._data:
+        if 'bits' not in self._data:
             raise Exception('content is a required field')
-        if omit_whole_chunks and len(self._data['content']):
+        if omit_whole_chunks and len(self._data['bits']):
             raise Exception(
                 'omit configured to omit all chunks but they were present')
         sort = self._data.get('sort', {})
@@ -353,7 +353,7 @@ class Library:
             raise Exception('sort.ids is required if sort type is not any')
         if sort_ids:
             sort_ids_set = set(sort_ids)
-            content_ids_set = set(self._data['content'].keys())
+            content_ids_set = set(self._data['bits'].keys())
             keys_in_sort_not_content = sort_ids_set - content_ids_set
             keys_in_content_not_sort = content_ids_set - sort_ids_set
             if len(keys_in_sort_not_content):
@@ -409,7 +409,7 @@ class Library:
             return
         self._data['omit'] = canonical_value
         if self.omit_whole_chunk:
-            self._data['content'] = {}
+            self._data['bits'] = {}
             sort = self._data.get('sort', {})
             ids = sort.get('ids', None)
             if ids:
@@ -468,7 +468,7 @@ class Library:
                 del self._data['sort']['ids']
         else:
             if 'ids' not in self._data['sort']:
-                self._data['sort']['ids'] = list(self._data['content'].keys())
+                self._data['sort']['ids'] = list(self._data['bits'].keys())
         if self._data['sort']['type'] == 'any':
             del self._data['sort']['type']
         if len(self._data['sort']) == 0:
@@ -519,7 +519,7 @@ class Library:
                 chunk = self.chunk(chunk_id)
                 if not chunk:
                     sort_ids_set = set(ids)
-                    content_ids_set = set(self._data['content'].keys())
+                    content_ids_set = set(self._data['bits'].keys())
                     keys_in_sort_not_content = sort_ids_set - content_ids_set
                     keys_in_content_not_sort = content_ids_set - sort_ids_set
                     if len(keys_in_sort_not_content):
@@ -645,7 +645,7 @@ class Library:
         result = Library()
         result._data = copy.deepcopy(self._data)
         result._chunks = {}
-        for chunk_id, data in result._data.get('content', {}).items():
+        for chunk_id, data in result._data.get('bits', {}).items():
             result._chunks[chunk_id] = Chunk(id=chunk_id, library=result, data=data)
         return result
 
@@ -653,12 +653,12 @@ class Library:
         self._data = {
             'version': CURRENT_VERSION,
             'embedding_model': EMBEDDINGS_MODEL_ID,
-            'content': {}
+            'bits': {}
         }
         self._chunks = {}
 
     def delete_all_chunks(self):
-        self._data['content'] = {}
+        self._data['bits'] = {}
         self._chunks = {}
         if 'sort' in self._data:
             if 'ids' in self._data['sort']:
@@ -695,7 +695,7 @@ class Library:
         sort = self._data.get('sort', {})
         ids = sort.get('ids', None)
         if not ids:
-            return self._data['content'].keys()
+            return self._data['bits'].keys()
         return ids
 
     def chunk(self, chunk_id) -> Chunk:
@@ -715,7 +715,7 @@ class Library:
             return
         chunk._set_library(None)
         chunk_id = chunk.id
-        del self._data["content"][chunk_id]
+        del self._data["bits"][chunk_id]
         del self._chunks[chunk_id]
         sort = self._data.get('sort', {})
         ids = sort.get('ids', None)
@@ -728,7 +728,7 @@ class Library:
     def insert_chunk(self, chunk : Chunk):
         if self.omit_whole_chunk:
             return
-        content = self._data['content']
+        content = self._data['bits']
         chunk_inserted = chunk.id not in content
         content[chunk.id] = chunk._data
         chunk._set_library(self)
@@ -742,7 +742,7 @@ class Library:
         being serialized e.g. into JSON.
         """
         result = copy.deepcopy(self._data)
-        for _, chunk in result['content'].items():
+        for _, chunk in result['bits'].items():
             if not include_access_tag and 'access_tag' in chunk:
                 del chunk['access_tag']
         return result

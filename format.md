@@ -29,7 +29,7 @@ The format of the library files is as follows:
       restricted: <int>
     }
   }
-  content: {
+  bits: {
     //A chunk_id is any string unique within this index to address your content. It can technically be any string, but best practice is to use the result of canonical_id().
     <chunk_id>: {
       text: <text>,
