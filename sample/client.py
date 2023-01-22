@@ -6,8 +6,7 @@ import openai
 import urllib3
 from dotenv import load_dotenv
 
-from polymath import (Library, get_chunk_infos_for_library,
-                      get_completion_with_context, get_embedding)
+from polymath import (Library, get_completion_with_context, get_embedding)
 
 # TODO: Make this computed from the number of servers.
 CONTEXT_TOKEN_COUNT = 1500
@@ -129,8 +128,7 @@ for server in server_list:
     if library.message:
         print(f'{server} said: ' + library.message)
     context.extend(library.text)
-    sources.extend([info.url
-                   for info in get_chunk_infos_for_library(library)])
+    sources.extend([info.url for info in library.unique_infos])
 
 sources = "\n  ".join(sources)
 
