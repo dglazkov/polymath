@@ -131,23 +131,26 @@ class ChunkInfo:
         Returns the contents of the whole info as a string, appropriate for
         checking equality via string comparison.
         """
-        return '\n'.join([self.url, self.image_url, self.title, self.description])
+        return '\n'.join([self.url or '', self.image_url or '', self.title or '', self.description or ''])
 
     
 
 class Chunk:
     def __init__(self, id=None, library=None, data=None):
-        # data is the direct object backing store within library.content
-        self._library = library
-        self._data = data if data else {}
-        self._id = id
-
         self._cached_info = None
         self._cached_embedding = None
         self._canonical_id = None
-        self.validate()
+
+        # data is the direct object backing store within library.content
+        self._data = data if data else {}
+        self._id = id
+        self._set_library(library)
+
 
     def validate(self):
+        if not self.library:
+            # We can't validate without knowing our library, which tells us which fields to omit.
+            return
         fields_to_omit = self.library.fields_to_omit if self.library else set()
         chunk_id = self.id
         embedding_model = self.library.embedding_model if self.library else ''
@@ -194,8 +197,13 @@ class Chunk:
 
     @property
     def library(self) -> 'Library':
-        # There is no library setter. Call library.insert_chunk or library.remove_chunk to reparent.
+        # There is no exposed library setter. Call library.insert_chunk or library.remove_chunk to reparent.
         return self._library
+
+    def _set_library(self, library : 'Library'):
+        # _set_library should only be called by a library in insert_chunk or in our constructor.
+        self._library = library
+        self.validate()
 
     @property
     def id(self):
@@ -622,6 +630,11 @@ class Library:
             # the one from the other library. If the other one is also 'any'
             # then this will basically be a no op.
             self.sort = other.sort
+        self_omit = self._data.get('omit')
+        if not self_omit:
+            # We don't have an omit type, so just absorb the omit type from the
+            # other. If it also doesn't have an omit type this will be a no-op.
+            self.omit = other.omit
         for chunk in other.chunks:
             self.insert_chunk(chunk.copy())
 
@@ -697,7 +710,7 @@ class Library:
             return
         if chunk.library != self:
             return
-        chunk._library = None
+        chunk._set_library(None)
         chunk_id = chunk.id
         del self._data["content"][chunk_id]
         del self._chunks[chunk_id]
@@ -715,7 +728,7 @@ class Library:
         content = self._data['content']
         chunk_inserted = chunk.id not in content
         content[chunk.id] = chunk._data
-        chunk._library = self
+        chunk._set_library(self)
         self._chunks[chunk.id] = chunk
         if chunk_inserted:
             self._insert_chunk_into_ids(chunk.id)

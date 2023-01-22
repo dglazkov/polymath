@@ -6,21 +6,21 @@ import openai
 import urllib3
 from dotenv import load_dotenv
 
-from polymath import (Library, get_completion_with_context, get_embedding)
+from polymath import (Library, get_completion_with_context, get_embedding,
+                        get_max_tokens_for_completion_model)
 
-# TODO: Make this computed from the number of servers.
-CONTEXT_TOKEN_COUNT = 1500
+DEFAULT_CONTEXT_TOKEN_COUNT = 1500
 
 DEFAULT_CONFIG_FILE = "directory.SECRET.json"
 
 
-def query_server(query_embedding, random, server):
+def query_server(query_embedding, server, random=False, count=DEFAULT_CONTEXT_TOKEN_COUNT):
     http = urllib3.PoolManager()
     fields = {
         "version": Library.CURRENT_VERSION,
         "access_token": server_tokens.get(server, ''),
         "query_embedding_model": Library.EMBEDDINGS_MODEL_ID,
-        "count": CONTEXT_TOKEN_COUNT
+        "count": count
     }
     if random:
         fields["sort"] = "random"
@@ -109,6 +109,7 @@ if 'hosts' in config:
 
 if len(server_list) == 0:
     print('No hosts provided.')
+    os.exit(1)
 
 if args.verbose:
     if args.random:
@@ -119,16 +120,31 @@ if args.verbose:
 query_vector = None if args.random else Library.base64_from_vector(
     get_embedding(query))
 
-context = []
-sources = []
+# TODO: allow setting the answer_length (see issue #49)
+answer_length = 256
+# TODO: we need to allow room for the actual prompt, as well as separators
+# between chunks. This is a hand-tuned margin, but it should be calculated
+# automatically.
+context_count = get_max_tokens_for_completion_model() - 500
+
+# We ask each endpoint for content assuming that all of its results will be
+# better than any other server. We then trim down to the best content across all
+# servers.
+context_per_server = context_count - answer_length
+
+combined_library = Library()
+
 for server in server_list:
     print(f"Querying {server} ...") if args.verbose else None
-    # for now, just combine contexts
-    library = query_server(query_vector, args.random, server)
+    library = query_server(query_vector, server, random=args.random, count=context_count)
     if library.message:
         print(f'{server} said: ' + library.message)
-    context.extend(library.text)
-    sources.extend([info.url for info in library.unique_infos])
+    combined_library.extend(library)
+
+sliced_library = combined_library.slice(context_count)
+
+sources = [info.url for info in sliced_library.unique_infos]
+context = sliced_library.text
 
 sources = "\n  ".join(sources)
 
@@ -139,5 +155,5 @@ if args.verbose:
 
 if args.completion:
     print("Getting completion ...") if args.verbose else None
-    print(f"\nAnswer:\n{get_completion_with_context(query, context)}")
+    print(f"\nAnswer:\n{get_completion_with_context(query, context, answer_length=answer_length)}")
     print(f"\nSources:\n  {sources}")
