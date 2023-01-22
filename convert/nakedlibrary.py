@@ -7,7 +7,7 @@ from .chunker import generate_chunks
 
 class NakedLibraryImporter:
     def get_chunks(self, filename):
-        # Will return a generator of (id, chunk) of chunks, possibly missing embedding and token_count.
+        # Will return a generator of chunks, possibly missing embedding and token_count.
         data = Library.load_data_file(filename)
 
         chunks = data.get('content')
@@ -21,10 +21,10 @@ class NakedLibraryImporter:
                 continue
 
             for text_chunk in generate_chunks([[text]]):
-                yield (id, {
+                yield {
                     'text': text_chunk,
                     'info': chunk.get('info')
-                })
+                }
 
     def output_base_filename(self, input_filename):
         return Path(input_filename).stem

@@ -101,7 +101,7 @@ class TwitterArchiveImporter:
                         'description': text
                     }
 
-                    yield (f"{id}", {
+                    yield {
                         "text": text,
                         "info": info
-                    })
+                    }

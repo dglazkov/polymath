@@ -89,7 +89,7 @@ count = 0
 
 seen_ids = {}
 
-for _, raw_chunk in importer.get_chunks(filename):
+for raw_chunk in importer.get_chunks(filename):
     temp_chunk = Chunk(data=raw_chunk)
     id = temp_chunk.id
     seen_ids[id] = True
@@ -109,7 +109,6 @@ for _, raw_chunk in importer.get_chunks(filename):
     if chunk.token_count < 0:
         print(f'Fetching token_count for {id}')
         chunk.token_count = get_token_count(chunk.text)
-
 
 print(f'Loaded {count} new lines')
 

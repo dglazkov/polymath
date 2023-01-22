@@ -90,7 +90,6 @@ class MediumImporter:
                 image_url = self.extract_image_url_from_soup(soup)
                 title = self.extract_title_from_soup(soup)
                 description = self.extract_description_from_soup(soup)
-                slug = self.extract_slug_from_filename(base_filename)
                 info = {
                     'url': url,
                     'image_url': image_url,
@@ -99,8 +98,8 @@ class MediumImporter:
                 }
                 count = 0
                 for chunk in self.extract_chunks_from_soup(soup):
-                    yield (f"{slug}_{count}", {
+                    yield {
                         "text": chunk,
                         "info": info
-                    })
+                    }
                     count += 1
