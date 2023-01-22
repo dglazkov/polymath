@@ -816,8 +816,13 @@ class Library:
         if count == 0:
             raise Exception('count must be greater than 0')
 
-        if version == None or version != CURRENT_VERSION:
-            raise Exception(f'version must be set to {CURRENT_VERSION}')
+        if version == None or version < CURRENT_VERSION:
+            # We expect hosts to potentially lag in updating. We want to ensure
+            # the format they spit out is understood by the client (lower
+            # versions can be upgraded seamlessly). So as long as our current
+            # version is less than or equal to the client's version everything
+            # should work.
+            raise Exception(f'version must be at least {CURRENT_VERSION}')
 
         if query_embedding and query_embedding_model != EMBEDDINGS_MODEL_ID:
             raise Exception(
