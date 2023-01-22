@@ -373,7 +373,7 @@
   class Polymath {
     async ask(query) {
       const form = new FormData();
-      form.append('version', '0');
+      form.append('version', '1');
       form.append('query_embedding_model', 'openai.com:text-embedding-ada-002');
       form.append('sort', 'similarity');
       for (const [key, value] of Object.entries(query)) {
@@ -392,7 +392,7 @@
     }
 
     static create_prompt({ query, results }) {
-      const context = Object.values(results.content).map(chunk => chunk.text).join('\n');
+      const context = results.bits.map(chunk => chunk.text).join('\n');
       return `Answer the question as truthfully as possible using the provided context, and if don't have the answer, say in a friendly tone that this Polymath instance does not contain the answer and suggest looking for this information elsewhere.\n\nContext:\n${context} \n\nQuestion:\n${query}\n\nAnswer:`;
     }
 
@@ -431,7 +431,7 @@
         result.error = completion_result.error;
         return result;
       }
-      result.infos = Object.values(polymath_results.content).map(entry => entry.info);
+      result.infos = polymath_results.bits.map(entry => entry.info);
       result.completion = completion_result.result;
       progress('');
       return result;
