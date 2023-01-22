@@ -14,7 +14,7 @@ CONTEXT_TOKEN_COUNT = 1500
 DEFAULT_CONFIG_FILE = "directory.SECRET.json"
 
 
-def query_server(query_embedding, random, server):
+def query_server(query_embedding, server, random=False):
     http = urllib3.PoolManager()
     fields = {
         "version": Library.CURRENT_VERSION,
@@ -124,7 +124,7 @@ sources = []
 for server in server_list:
     print(f"Querying {server} ...") if args.verbose else None
     # for now, just combine contexts
-    library = query_server(query_vector, args.random, server)
+    library = query_server(query_vector, server, random=args.random)
     if library.message:
         print(f'{server} said: ' + library.message)
     context.extend(library.text)
