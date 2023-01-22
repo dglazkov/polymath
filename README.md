@@ -100,7 +100,7 @@ In the root of the snapshot, create a `config.json` file, formatted as:
 {
         "substack_url": <url of the Substack site>,
         "exclude": [
-            Optoinal, list of strings to exclude from the import. 
+            Optional, list of strings to exclude from the import. 
             Each string is a substring of the text to exclude from the import.
         ]
     }
@@ -267,7 +267,16 @@ The mapping of `asset_token` to `access_tag` they give access to is configured i
     "count": true,
     //Optional. If provided, then Library.query() will output a message field of this message if at least one chunk was filtered out due to being access restricted. This reveals that there are private results. The message will be prepended with 'Restricted results were omitted. '
     "message": "Contact alex@komoroske.com for an access_token."
-  }
+  },
+  "twitter": {
+    "handle": "dalmaer"
+  },
+
+  "webclient": {
+    "headername": "Dion's",
+    "placeholder": "What is the best side effect of using an AI assistant?"
+  },
+  
   "tokens": {
       //user_vanity_id can be any user-understable name, typically an email address like 'alex@komoroske.com'
       <user_vanity_id>: {
@@ -290,7 +299,7 @@ This will generate a new key, store it in `host.SECRET.json` and print it.
 
 You can also revoke a key with `python3 -m config.host access revoke <user_vanity_id>`
 
-### Developing
+## Developing
 
 It's recommended to use `virtualenv` to manage your python environment for this project.
 
