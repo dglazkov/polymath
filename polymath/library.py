@@ -774,18 +774,18 @@ class Library:
         with open(filename, 'w') as f:
             json.dump(result, f, indent='\t')
 
-    def similarities(self, query_embedding):
+    def _similarities(self, query_embedding):
         chunks = sorted([
             (vector_similarity(query_embedding, chunk.embedding), chunk.id)
             for chunk
             in self.chunks], reverse=True)
         return {key: value for value, key in chunks}
 
-    def add_similarities(self, query_embedding):
+    def compute_similarities(self, query_embedding):
         # if we won't store the similarities anyway then don't bother.
         if self.omit_whole_chunk or 'similarities' in self.fields_to_omit:
             return
-        similarities = self.similarities(query_embedding)
+        similarities = self._similarities(query_embedding)
         for chunk_id, similarity in similarities.items():
             chunk = self.chunk(chunk_id)
             chunk.similarity = similarity
@@ -826,7 +826,7 @@ class Library:
             # TODO: support query_embedding being base64 encoded or a raw vector of
             # floats
             embedding = vector_from_base64(query_embedding)
-            result.add_similarities(embedding)
+            result.compute_similarities(embedding)
 
         result.seed = seed
         result.sort_reversed = sort_reversed

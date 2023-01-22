@@ -95,7 +95,7 @@ def ask(query, context_query=None, library_file=None):
     library = load_libraries(library_file)
 
     query_embedding = get_embedding(context_query)
-    library.add_similarities(query_embedding)
+    library.compute_similarities(query_embedding)
     library.sort = 'similarity'
 
     context = library.text
