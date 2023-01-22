@@ -2,6 +2,7 @@ from polymath.library import Library, Chunk, CURRENT_VERSION, EMBEDDINGS_MODEL_I
 from polymath.ask_embeddings import (
     LIBRARY_DIR,
     get_embedding,
+    get_max_tokens_for_completion_model,
     load_libraries,
     get_token_count,
     get_completion,
