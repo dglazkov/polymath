@@ -307,7 +307,7 @@ class Library:
         else:
             self.reset()
 
-        upgrade_library_data(self._data)
+        self._upgraded = upgrade_library_data(self._data)
 
         if access_tag == None and filename:
             next_directory_is_access_tag = False
@@ -339,6 +339,10 @@ class Library:
     
 
         self.validate()
+
+    @property
+    def upgraded(self):
+        return self._upgraded
 
     def validate(self):
         if self._data.get('version', -1) != CURRENT_VERSION:
