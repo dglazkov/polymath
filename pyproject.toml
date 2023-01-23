@@ -8,6 +8,7 @@ version = "0.0.2"
 authors = [
   { name="Alex Komoroske", email="jkomoros@gmail.com" },
   { name="Dimitri Glazkov", email="dimitri@glazkov.com" },
+  { name="Dion Almaer", email="dion@almaer.com" },
 ]
 description = "Federating wisdom one library at a time."
 readme = "README.md"
