@@ -14,7 +14,10 @@ def _get_access_data():
     # TODO: allow overriding this
     access_file = DEFAULT_CONFIG_FILE
     if not os.path.exists(access_file):
-        return {}
+        _access_data = {
+            "webclient": {}
+        }
+        return _access_data
     with open(DEFAULT_CONFIG_FILE, 'r') as f:
         _access_data = json.load(f)
     return _access_data
