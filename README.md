@@ -1,17 +1,104 @@
 # polymath
 
-`polymath` is a utility that can answer free-form questions based on a corpus of federated content.
+`polymath` is a utility that uses AI to intelligently answer free-form questions
+based on a particular library of content.
 
-Each `polymath` instance defines a set of endpoints of federated content it
-wants to be able to use, each with a short name e.g. 'Dimitri' or 'Alex'.
+Although you can ask just a single library questions, the real power of polymath
+comes from being able to ask *multiple* federated libraries questions,
+generating answers based on the combined intelligence of all of the authors.
 
-The federated endpoints contain pre-computed embeddings of chunks of content.
+Anyone can easily create a library of their own personal bits of content, based
+on a Medium account, a Substack, your Twitter profile, or a generic import, and
+it's easy to add new importer types.
 
-When `polymath` receives a question, it first computes an embedding for the
-query. Then it hits each federated endpoint to select chunks of content most
-relevant to the question. Then it injects as many chunks of content into a
-prompt as will fit, appends the question, and uses the OpenAI completions API to
-answer the question.
+### Before you begin
+
+Polymath uses OpenAI under the covers, so you'll need a personal OpenAI key in
+order to ask questions of any library.
+
+You can get one easily by visiting https://beta.openai.com/account/api-keys and
+logging in with your existing Google Account. Hit `Create new secret key`. Copy
+the key (OpenAI will never show it to you again!) and put it somewhere safe.
+Anyone who has this key can perform queries on your behalf and use your budget.
+
+Every question you ask of polymath will cost you a cent or two. OpenAI accounts
+come with a free $15 of credit to start.
+
+### Asking your first question
+
+Polymath libraries are hosted at public endpoints. You can visit the endpoint
+directly to ask questions via a simple webapp, or use a command-line interface
+to interact with a library.
+
+Try visiting any of these endpoints and giving them a spin:
+- https://polymath.komoroske.com
+- https://polymath.glazkov.com
+- https://polymath.fluxcollective.org
+
+On each of these webapps, you'll first need to paste in your OpenAI API key. The
+webapp stores the key locally in your browser for that site, and never transmits
+it directly to anywhere but OpenAI.com itself.
+
+### How it works
+
+OpenAI's completion API is trained on a massive corpus of public content, making
+it have good general intelligence. However, it typically knows nothing about
+your *specific* content. It's possible to fine-tune these models with your
+specific content, but that's expensive and unneccesary. The completion APIs tha
+generate free-form answers have only a small window (no more than a few pages of
+text) of "working memory". The trick is that when you ansk a question, you also
+select the most relevant bits of content from your library and include those
+directly in the prompt, so the completion API has high-quality context to base
+its answer on.
+
+When the content is imported, its *embedding* is calculated by applying a
+particular embedding model. An embedding is a list of decimal numbers that
+encodes the fuzzy semantics of that block of content. Think of it like a
+semantic "fingerprint" of your content. The embeddings don't mean much on their
+own--they're just a list of obscure numbers. The magic happens when you
+calculate the embedding of multiple bits of content with the same embedding
+model. Bits of content that are semantically similar will have embeddings that
+are close to each other.
+
+Each polymath library hosts a collection of 'bits' of content. Each bit of
+content is a couple of paragraphs of text. When it is imported its embedding is
+calculated and saved so it doesn't have to be recalculated (each embedding costs
+a few fractions of a cent to compute). Each library endpoint provides an API for
+selecting bits of content based on a query.
+
+When the query is created, first, its embedding is calculated. Then, the library
+is asked to return bits of content that are most similar to that query (whose
+embeddings have the smallest dot product compared to the query). The most
+similar bits of content are selected and injected into the prompt, and the
+completion API generates a high-quality answer based on the selected context.
+The asker of the query pays a cent or two to OpenAI for every question they ask;
+the library host pays only a small fee at import and then the cost of hosting a
+Google App Engine instance.
+
+### Querying multiple endpoints
+
+The real power of polymath is from mixing multiple people's perspectives into one answer.
+
+The webapp is a convenient GUI to query a library directly, but if you want to
+mix across multiple libraries you currently have to use a CLI tool.
+
+First, clone this repo.
+
+Next, install virtualenv if you don't already have it, by running `pip3 install virtualenv`.
+
+Next, create your virtualenv environment by running `virtualenv env` and then `source env/bin/activate`.
+
+Next, make sure your OPENAI_API_KEY is set as an environment variable by adding
+
+```
+OPENAI_API_KEY=<key goes here>
+```
+
+to your `.bash_profile`, `.env` or similar.
+
+Now you are ready to query multiple endpoints. Run:
+
+`python3 -m sample.client --server https://polymath.komoroske.com --server https://polymath.glazkov.com "What are some of the benefits and drawbacks of a platform?"`
 
 ## Sample
 
