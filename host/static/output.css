@@ -779,16 +779,28 @@ select {
   border-color: rgb(229 231 235 / var(--tw-divide-opacity));
 }
 
+.overflow-hidden {
+  overflow: hidden;
+}
+
 .rounded-md {
   border-radius: 0.375rem;
 }
 
-.rounded-tl {
-  border-top-left-radius: 0.25rem;
+.rounded-tl-\[25\%\] {
+  border-top-left-radius: 25%;
 }
 
-.rounded-tr {
-  border-top-right-radius: 0.25rem;
+.rounded-br-\[25\%\] {
+  border-bottom-right-radius: 25%;
+}
+
+.rounded-tr-\[10\%\] {
+  border-top-right-radius: 10%;
+}
+
+.rounded-bl-\[10\%\] {
+  border-bottom-left-radius: 10%;
 }
 
 .border {
@@ -965,6 +977,11 @@ select {
 
 .hover\:underline:hover {
   text-decoration-line: underline;
+}
+
+.hover\:brightness-110:hover {
+  --tw-brightness: brightness(1.1);
+  filter: var(--tw-blur) var(--tw-brightness) var(--tw-contrast) var(--tw-grayscale) var(--tw-hue-rotate) var(--tw-invert) var(--tw-saturate) var(--tw-sepia) var(--tw-drop-shadow);
 }
 
 .focus\:border-indigo-500:focus {
