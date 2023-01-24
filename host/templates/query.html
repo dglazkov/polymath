@@ -1,129 +1,73 @@
 <!DOCTYPE html>
 <html lang="en">
-<meta charset="utf-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>{{ config.webclient.headername }} Polymath</title>
-<link rel="stylesheet" href="static/mvp.css" />
-<style type="text/css">
-  header,
-  main {
-    padding: 1rem;
-  }
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>{{ config.webclient.headername }} Polymath</title>
+  <link rel="stylesheet" href="static/output.css" />
 
-  details {
-    text-align: right;
-    margin-top: -50px;
-  }
+  <link rel="apple-touch-icon" sizes="180x180" href="static/apple-touch-icon.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="static/favicon-32x32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="static/favicon-16x16.png">
+  <link rel="shortcut icon" href="static/favicon.ico">
+  <link rel="manifest" href="static/site.webmanifest">
+</head>
 
-  #query {
-    padding: 1rem;
-    margin-bottom: 0px;
-    --border-radius: 1em;
-  }
-
-  #sources li {
-    font-size: smaller;
-  }
-
-  #completion {
-    margin-bottom: 2em;
-  }
-
-  #results {
-    margin-block-start: 2em;
-  }
-
-  header {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    text-align: center;
-  }
-
-  #header-a {
-    border-radius: 25% 10%;
-    overflow: hidden;
-  }
-
-  #header-img {
-    float: left;
-  }
-
-  #header-text {
-    padding-left: 20px;
-    margin-top: -50px;
-    float: right;
-    border-bottom: none;
-  }
-
-  #header-line {
-    width: 100%;
-    height: 1px;
-    border-top: none;
-  }
-
-  #button-wand {
-    border: none;
-    background-color: transparent;
-    padding: 0;
-    margin: 0;
-  }
-
-  #button-wand img {
-    float: right;
-    overflow:hidden;
-    border-radius:25%;
-    margin: 0 0 0 10px;
-    padding: 0px;
-    border: none;
-    background-color: transparent;
-  }
-
-</style>
-<link rel="apple-touch-icon" sizes="180x180" href="static/apple-touch-icon.png">
-<link rel="icon" type="image/png" sizes="32x32" href="static/favicon-32x32.png">
-<link rel="icon" type="image/png" sizes="16x16" href="static/favicon-16x16.png">
-<link rel="shortcut icon" href="static/favicon.ico">
-<link rel="manifest" href="static/site.webmanifest">
-
-<header>
-  <a href="/" id="header-a" title="E.T. Go. Home."><img src="static/polymath-logo-120x120.png" width="120" height="120" id="header-img" alt=""></a>
-  <div id="header-text">
-    <h1>{{ config.webclient.headername }} Polymath</h1>
-    <div id="header-line">This is a <a href="https://github.com/dglazkov/polymath">polymath</a> endpoint.</div>
+<body>
+  
+<header class="flex justify-center items-center text-center p-4">
+  <a href="/" class="rounded-tl rounded-tr" title="E.T. Go. Home.">
+    <img src="static/polymath-logo-120x120.png" width="120" height="120" class="float-left" alt="">
+  </a>
+  <div class="px-5 float-right border-b-0">
+    <h1 class="text-2xl md:text-3xl text-center font-bold">{{ config.webclient.headername }} Polymath</h1>
+    <div class="w-full border-t-0">This is a <a href="https://github.com/dglazkov/polymath" class="text-indigo-600 hover:text-indigo-700 hover:underline">polymath</a> endpoint.</div>
   </div>
 </header>
 
-<main id="surface"></main>
-<footer>
+<main id="surface" class="p-4"></main>
+
+<footer class="p-4">
   {% if config.restricted_message %}
-  <p>This server has additional private content that requires an access token to access. {{ config.restricted_message }}</p>
+  <p class="py-1">This server has additional private content that requires an access token to access. {{ config.restricted_message }}</p>
   {% endif %}
-  <p>
-    Want your own Polymath? <a href="https://github.com/dglazkov/polymath#readme">Come get started!</a>
+
+  <p class="italic py-1 border-t border-indigo-500/30 hover:border-indigo-500/60">
+    Want your own Polymath? <a href="https://github.com/dglazkov/polymath#readme" class="text-indigo-600 hover:text-indigo-700 hover:underline">Come get started!</a>
   </p>
 </footer>
 
 <!-- View templates -->
 <template id="query-view">
-  <div id="query-wrapper" style="display:flex">
-    <input type="text" id="query" placeholder="{{ config.webclient.placeholder }}" style="float:left">
-    <button id="button-wand">
-      <img src="static/magic-wand-50x50.png" width="50" height="50">
-  </button>
+  <div>
+    <div class="relative mt-1 rounded-md shadow-sm">
+      <input type="text" name="query" placeholder="{{ config.webclient.placeholder }}" id="query" class="block w-full rounded-md border-gray-300 pr-10 focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm">
+      <div class="absolute inset-y-0 right-0 flex items-center pr-3">
+        <!-- Heroicon name: mini/cursor-arrow-rays -->
+        <svg id="random-query" class="h-5 w-5 text-gray-400 hover:cursor-pointer" xmlns="http://www.w3.org/2000/svg" fill="none"
+          viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
+          <path stroke-linecap="round" stroke-linejoin="round"
+            d="M15.042 21.672L13.684 16.6m0 0l-2.51 2.225.569-9.47 5.227 7.917-3.286-.672zM12 2.25V4.5m5.834.166l-1.591 1.591M20.25 10.5H18M7.757 14.743l-1.59 1.59M6 10.5H3.75m4.007-4.243l-1.59-1.59" />
+        </svg>
+      </div>
+    </div>
+    <div class="py-4">
+      <button id="ask" type="button"
+        class="inline-flex items-center rounded-md border border-transparent bg-indigo-600 px-4 py-2 text-base font-medium text-white shadow-sm hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2">Ask Me</button>
+    </div>
   </div>
-  <button id="ask">Ask Me</button>
 
-  <details>
-    <summary id="more-options">More options</summary>
-    <p>
+  <details class="text-right -mt-12">
+    <summary id="more-options" class="text-indigo-600 hover:text-indigo-700 hover:underline hover:cursor-pointer">More options</summary>
+    <div>
       <label for="access_token">access_token (optional):</label>
-      <input type="text" name="access_token" id="access_token">
-    </p>
-    <p>
-      <button id="clear">Clear Key and Access Token</button>
-    </p>
+      <input type="text" name="access_token" id="access_token" class="rounded-md border-gray-300 pr-10 focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm">
+    </div>
+    <div class="py-4">
+      <button id="clear" class="inline-flex items-center rounded-md border border-transparent bg-indigo-600 px-4 py-2 text-base font-medium text-white shadow-sm hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2">Clear Key and Access Token</button>
+    </div>
   </details>
+
   <script action="init" arguments="controller,query_value">
     const textInput = this.querySelector('#query');
     textInput.value = query_value;
@@ -153,7 +97,7 @@
     let funQueries = ["What is a Polymath?", "What has been written about Generative AI?"];
     {% endif %}
 
-    this.querySelector('#button-wand').addEventListener('click', () => {
+    this.querySelector('#random-query').addEventListener('click', () => {
       textInput.value = funQueries[Math.floor(Math.random() * funQueries.length)]
       askButton.disabled = false;
     });
@@ -162,12 +106,13 @@
 </template>
 
 <template id="request-key-view">
+  <!-- TODO -->
   <p>
     <label>
       To query this server, enter your Open AI API key:
-      <input name="key" type="text">
+      <input name="key" type="text" class="block w-full rounded-md border-gray-300 pr-10 focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm">
     </label>
-    <button>Save Key</button>
+    <button class="inline-flex items-center rounded-md border border-transparent bg-indigo-600 px-4 py-2 text-base font-medium text-white shadow-sm hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2">Save Key</button>
   </p>
   <p>
     <em>Your Open AI API key is stored locally and only ever transmitted directly to openai.com</em>
@@ -185,7 +130,6 @@
   <span id="current"></span><span id="ellipsis"></span>
   </p>
   <script action="show" arguments="onprogress">
-
     const ellipsis = this.querySelector('#ellipsis');
     const current = this.querySelector('#current');
     const past = this.querySelector('#past');
@@ -212,11 +156,21 @@
 </template>
 
 <template id="results-view">
-  <h3 id="results">Results</h3>
-  <div id="completion"></div>
-  <h3>Sources</h3>
-  <ul id="sources">
-  </ul>
+  <div id="results" class="py-4 mt-4">
+    <h2 class="text-xl font-bold border-b border-indigo-500/30 hover:border-indigo-500/60">
+      Results
+    </h2>
+    <div id="completion" class="text-xl p-2"></div>
+  </div>
+  
+  <div class="py-4">
+    <h2 class="text-xl font-bold border-b border-indigo-500/30 hover:border-indigo-500/60">
+      Sources
+    </h2>
+    <ul id="sources" role="list" class="divide-y divide-gray-200">
+    </ul>
+  </div>
+  
   <script action="show" arguments="completion,infos">
     function removeDuplicates(arr) {
       let seen = new Set();
@@ -231,9 +185,11 @@
 
     this.querySelector('#completion').textContent = completion;
     this.querySelector('#sources').innerHTML = removeDuplicates(infos).map(info => {
-      let shortDescription = (info.description.length > 100) ? info.description.substring(0, 100) + "..." : info.description;
       let escapedTitle = (info.description || info.title).replace(/"/g, "\\\"");
-      return `<li><a href="${info.url}" title="${escapedTitle}">${info.title || shortDescription || info.url}</a></li>`;
+
+      return `<li class="flex py-4"><div class="ml-3">
+          <p class="text-sm font-medium text-gray-900"><a href="${info.url}"
+            title="${escapedTitle}">${info.title || info.description || info.url}</a></p></div></li>`;
     }).join('\n');
   </script>
 </template>
@@ -563,3 +519,5 @@
   controller.start();
 
 </script>
+</body>
+</html>

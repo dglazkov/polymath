@@ -6,8 +6,10 @@ libraries/
 __pycache__
 *.code-workspace
 .DS_Store
+node_modules
+package-lock.json
 
-#Ensure that no one checks in the secret config
+# Ensure that no one checks in the secret config
 *.SECRET.*
 
 # local-only dir as a scratch space
