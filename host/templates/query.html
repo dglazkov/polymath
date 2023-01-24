@@ -126,10 +126,10 @@
 </template>
 
 <template id="loading-view">
-  <p>
-  <div id="past"></div>
-  <span id="current"></span><span id="ellipsis"></span>
-  </p>
+  <div class="py-4 mt-4">
+    <div id="past"></div>
+    <span id="current"></span><span id="ellipsis"></span>
+  </div>
   <script action="show" arguments="onprogress">
     const ellipsis = this.querySelector('#ellipsis');
     const current = this.querySelector('#current');
