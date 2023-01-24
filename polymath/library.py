@@ -25,7 +25,7 @@ MAX_CONTEXT_LEN_IN_TOKENS = 2048
 #
 # When updating it, add an item to upgrade.py:_UPGRADERS whose key is one lower
 # than the new CURRENT_VERSION.
-# 
+#
 # Old libraries will continue to work, just being upgraded every time they are
 # loaded. When a new version is released, ping the discord and remind everyone
 # to run `python3 -m convert.upgrade` to upgrade all of their libraries.
@@ -82,11 +82,12 @@ def vector_similarity(x, y):
     # covert to a float64 now.
     return float(np.dot(np.array(x), np.array(y)))
 
+
 class ChunkInfo:
-    def __init__(self, chunk:'Chunk'=None, data=None):
+    def __init__(self, chunk: 'Chunk' = None, data=None):
         self._data = data if data else {}
         self._chunk = chunk
-    
+
     @property
     def url(self):
         return self._data.get('url', '')
@@ -102,7 +103,7 @@ class ChunkInfo:
     @property
     def image_url(self):
         return self._data.get('image_url', '')
-    
+
     @image_url.setter
     def image_url(self, value):
         if value == self.image_url:
@@ -136,12 +137,15 @@ class ChunkInfo:
             self._chunk.info = self
 
     @property
-    def contents(self : 'ChunkInfo'):
+    def contents(self: 'ChunkInfo'):
         """
         Returns the contents of the whole info as a string, appropriate for
         checking equality via string comparison.
         """
         return '\n'.join([self.url or '', self.image_url or '', self.title or '', self.description or ''])
+
+    def toJSON(self):
+        return self._data
 
 
 class Chunk:
@@ -154,7 +158,6 @@ class Chunk:
         self._data = data if data else {}
         self._set_library(library)
 
-
     def validate(self):
         if not self.library:
             # We can't validate without knowing our library, which tells us which fields to omit.
@@ -162,7 +165,8 @@ class Chunk:
         fields_to_omit = self.library.fields_to_omit if self.library else set()
         chunk_id = self.id
         embedding_model = self.library.embedding_model if self.library else ''
-        expected_embedding_length = EXPECTED_EMBEDDING_LENGTH.get(embedding_model, 0) if embedding_model else None
+        expected_embedding_length = EXPECTED_EMBEDDING_LENGTH.get(
+            embedding_model, 0) if embedding_model else None
         for field in fields_to_omit:
             if field in self._data:
                 raise Exception(
@@ -208,7 +212,7 @@ class Chunk:
         # There is no exposed library setter. Call library.insert_chunk or library.remove_chunk to reparent.
         return self._library
 
-    def _set_library(self, library : 'Library'):
+    def _set_library(self, library: 'Library'):
         # _set_library should only be called by a library in insert_chunk or in our constructor.
         self._library = library
         self.validate()
@@ -272,7 +276,8 @@ class Chunk:
     @property
     def info(self) -> ChunkInfo:
         if self._cached_info is None:
-            self._cached_info = ChunkInfo(chunk=self, data=self._data.get('info', None))
+            self._cached_info = ChunkInfo(
+                chunk=self, data=self._data.get('info', None))
         return self._cached_info
 
     @info.setter
@@ -335,8 +340,7 @@ class Library:
 
         if access_tag:
             for chunk in self.chunks:
-                 chunk.access_tag = access_tag
-    
+                chunk.access_tag = access_tag
 
         self.validate()
 
@@ -440,7 +444,7 @@ class Library:
     @property
     def sort(self):
         return self._data.get('sort', 'any')
-    
+
     @sort.setter
     def sort(self, value):
         if value == self.sort:
@@ -468,15 +472,15 @@ class Library:
                 # are sorted ascending and ours are sorted descending.
                 return chunk.similarity * -1
             similarity = get_similarity(chunk)
-            #bisect and friends only work for lists sorted in ascending order. So... 
-            index = bisect.bisect_left(chunks_in_order, similarity, key=get_similarity)
+            # bisect and friends only work for lists sorted in ascending order. So...
+            index = bisect.bisect_left(
+                chunks_in_order, similarity, key=get_similarity)
             chunks_in_order.insert(index, chunk)
             bits.insert(index, chunk._data)
         else:
             chunks_in_order.append(chunk)
             bits.append(chunk._data)
         self._assert_chunks_synced('_insert_chunk_in_order')
-
 
     def _re_sort(self):
         """
@@ -496,7 +500,8 @@ class Library:
                 similarity = chunk.similarity
                 if similarity == -1:
                     chunk_id = chunk.id
-                    raise Exception(f'sort of similarity passed but {chunk_id} had no similarity')
+                    raise Exception(
+                        f'sort of similarity passed but {chunk_id} had no similarity')
                 return similarity
             chunks_in_order.sort(reverse=True, key=get_similarity)
         elif sort_type == 'manual':
@@ -514,7 +519,6 @@ class Library:
         for chunk in chunks_in_order:
             bits.append(chunk._data)
         self._assert_chunks_synced('_re_sort')
-        
 
     def _assert_chunks_synced(self, callsite=''):
         # Throws if the invariant that self._data[bits] and self._chunks and
@@ -525,11 +529,14 @@ class Library:
         bits_len = len(self._data['bits'])
         chunks_in_order_len = len(self._chunks_in_order)
         if chunks_len != bits_len:
-            raise Exception('chunks_len != bits_len ' + str(chunks_len) + ' ' + str(bits_len) + ' ' + callsite)
+            raise Exception('chunks_len != bits_len ' +
+                            str(chunks_len) + ' ' + str(bits_len) + ' ' + callsite)
         if chunks_len != chunks_in_order_len:
-            raise Exception('chunks_len != chunks_in_order_len ' + str(chunks_len) + ' ' + str(chunks_in_order_len) + ' ' + callsite)
+            raise Exception('chunks_len != chunks_in_order_len ' +
+                            str(chunks_len) + ' ' + str(chunks_in_order_len) + ' ' + callsite)
         if chunks_in_order_len != bits_len:
-            raise Exception('chunks_in_order_len != bits_len ' + str(chunks_in_order_len) + ' ' + str(bits_len) + ' ' + callsite)
+            raise Exception('chunks_in_order_len != bits_len ' +
+                            str(chunks_in_order_len) + ' ' + str(bits_len) + ' ' + callsite)
 
     @property
     def _details(self):
@@ -634,7 +641,7 @@ class Library:
         result._chunks = {}
         result._chunks_in_order = []
         for data in result._data.get('bits', []):
-            bit =  Chunk(library=result, data=data)
+            bit = Chunk(library=result, data=data)
             result._chunks[bit.id] = bit
             result._chunks_in_order.append(bit)
         return result
@@ -662,16 +669,16 @@ class Library:
         visible_access_tags = permitted_access(access_token)
 
         restricted_count = 0
-        
+
         for chunk in self.chunks:
             if chunk.access_tag == None:
                 continue
             if chunk.access_tag in visible_access_tags:
                 continue
-        
+
             self.remove_chunk(chunk)
             restricted_count += 1
-        
+
         return restricted_count
 
     def chunk(self, chunk_id) -> Chunk:
@@ -684,7 +691,7 @@ class Library:
         """
         return [chunk for chunk in self._chunks_in_order]
 
-    def remove_chunk(self, chunk : Chunk):
+    def remove_chunk(self, chunk: Chunk):
         if not chunk:
             return
         if chunk.library != self:
@@ -705,7 +712,7 @@ class Library:
         # resort, but in all other cases it's unnecessarily slower to sort
         # on every chunk you remove.
 
-    def insert_chunk(self, chunk : Chunk):
+    def insert_chunk(self, chunk: Chunk):
         if chunk.library == self:
             return
         if self.omit_whole_chunk:
@@ -746,7 +753,7 @@ class Library:
         result.delete_all_chunks()
         context_len = 0
         counter = 0
-       
+
         # TODO: Account for separator tokens, but do so without invoking a tokenizer in this method.
         for original_chunk in self.chunks:
             if count_type_is_chunk and count >= 0 and counter >= count:
@@ -785,7 +792,7 @@ class Library:
             chunk = self.chunk(chunk_id)
             chunk.similarity = similarity
 
-    def query(self, version=None, query_embedding=None, query_embedding_model=None, count=0, count_type='token', sort='similarity', sort_reversed=False, seed=None, omit='embedding', access_token=''):                
+    def query(self, version=None, query_embedding=None, query_embedding_model=None, count=0, count_type='token', sort='similarity', sort_reversed=False, seed=None, omit='embedding', access_token=''):
         # We do our own defaulting so that servers that call us can pass the result
         # of request.get() directly and if it's None, we'll use the default.
         if count_type == None:
@@ -813,7 +820,7 @@ class Library:
         if sort not in LEGAL_SORTS:
             raise Exception(
                 f'sort {sort} is not one of the legal options: {LEGAL_SORTS}')
-            
+
         if sort == 'manual':
             raise Exception('sort of manual is not allowed in query')
 
