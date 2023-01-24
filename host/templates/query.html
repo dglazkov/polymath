@@ -368,7 +368,7 @@
         return result;
       }
 
-      progress('Asking Polymath instance to generate context');
+      progress('Asking Polymath to generate context');
       const query_embedding = Polymath.encode_embedding(embedding.result);
       access_token = access_token || ''
       const polymath_results = await server.ask({ query_embedding, access_token });
@@ -377,7 +377,7 @@
         return result;
       }
 
-      progress('Creating completion from context')
+      progress('Creating completion from context');
       const context = Polymath.create_prompt({
         query: query,
         results: polymath_results,
