@@ -189,7 +189,7 @@
       let escapedTitle = (info.description || info.title).replace(/"/g, "\\\"");
 
       return `<li class="flex py-4"><div class="ml-3">
-          <p class="text-sm font-medium text-gray-900"><a href="${info.url}"
+          <p class="text-sm font-medium text-gray-900 hover:text-indigo-700"><a href="${info.url}"
             title="${escapedTitle}">${info.title || info.description || info.url}</a></p></div></li>`;
     }).join('\n');
   </script>
