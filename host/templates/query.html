@@ -262,12 +262,11 @@
         }
         const query = this.url.searchParams.get('query');
         if (!query) {
-          this.views.show('query', this, '');
           return;
         }
+        this.views.show('query', this, query);
         const pipe = new Pipe();
         this.views.show('loading', pipe.out);
-        this.views.hide('query');
         const answers = await Polymath.synthesizeAnswers({
           query: query,
           key: this.store.openai_api_key,
