@@ -322,6 +322,14 @@ After checking out the repo and activating your environment install dependencies
 
 Every time you add a new dependency, update the dependency list with `pip3 freeze > requirements.txt`
 
+### Optimizing Tailwind
+
+When using new Tailwind classes, you will want to create an updated `output.css` file by running:
+
+`npx tailwindcss -i templates/input.css -o static/output.css`
+
+from the `host` directory.
+
 ## Commmunity
 
 If you would ike to participate in development or host a polymath endpoint, consider joining the [Polymath Discord](https://discord.gg/8mbSq5vA). It's not much, but should give you a better sense of what's happening, like when formats are changing or new interesting capabilities are available. 
