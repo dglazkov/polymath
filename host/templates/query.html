@@ -261,10 +261,10 @@
           return;
         }
         const query = this.url.searchParams.get('query');
+        this.views.show('query', this, query);
         if (!query) {
           return;
         }
-        this.views.show('query', this, query);
         const pipe = new Pipe();
         this.views.show('loading', pipe.out);
         const answers = await Polymath.synthesizeAnswers({
