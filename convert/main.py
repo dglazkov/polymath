@@ -11,12 +11,14 @@ from .medium import MediumImporter
 from .nakedlibrary import NakedLibraryImporter
 from .substack import SubstackImporter
 from .twitter import TwitterArchiveImporter
+from .googledocs import GoogleDocsImporter
 
 IMPORTERS = {
     'library': NakedLibraryImporter(),
     'substack': SubstackImporter(),
     'medium': MediumImporter(),
     'twitter': TwitterArchiveImporter(),
+    'googledocs': GoogleDocsImporter()
 }
 
 load_dotenv()
@@ -97,11 +99,11 @@ for raw_chunk in importer.get_chunks(filename):
         print('Reached max lines')
         break
     chunk = result.chunk(id)
-    if not chunk:
+    new_chunk = chunk is None
+    if new_chunk:
         count += 1
         print(f'Processing new chunk {id} ({count})')
         chunk = temp_chunk
-        result.insert_chunk(chunk)
 
     if chunk.embedding is None:
         print(f'Fetching embedding for {id}')
@@ -109,6 +111,9 @@ for raw_chunk in importer.get_chunks(filename):
     if chunk.token_count < 0:
         print(f'Fetching token_count for {id}')
         chunk.token_count = get_token_count(chunk.text)
+
+    if new_chunk:
+        result.insert_chunk(chunk)
 
 print(f'Loaded {count} new lines')
 
