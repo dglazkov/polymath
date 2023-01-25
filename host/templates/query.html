@@ -42,7 +42,7 @@
 <template id="query-view">
   <div>
     <div class="relative mt-1 rounded-md shadow-sm">
-      <input type="text" name="query" placeholder="{{ config.webclient.placeholder }}" id="query" class="block w-full rounded-md border-gray-300 pr-10 focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm">
+      <input type="text" name="query" placeholder="{{ config.webclient.placeholder }}" id="query" class="w-full input-primary">
       <div class="absolute inset-y-0 right-0 flex items-center pr-3">
         <!-- Heroicon name: mini/cursor-arrow-rays -->
         <svg id="random-query" class="h-5 w-5 text-gray-400 hover:cursor-pointer" xmlns="http://www.w3.org/2000/svg" fill="none"
@@ -53,8 +53,7 @@
       </div>
     </div>
     <div class="py-4">
-      <button id="ask" type="button"
-        class="inline-flex items-center rounded-md border border-transparent bg-indigo-600 px-4 py-2 text-base font-medium text-white shadow-sm hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2">Ask Me</button>
+      <button id="ask" type="button" class="btn-primary">Ask Me</button>
     </div>
   </div>
 
@@ -62,10 +61,10 @@
     <summary id="more-options" class="text-indigo-600 hover:text-indigo-700 hover:underline hover:cursor-pointer">More options</summary>
     <div>
       <label for="access_token">access_token (optional):</label>
-      <input type="text" name="access_token" id="access_token" class="rounded-md border-gray-300 pr-10 focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm">
+      <input type="text" name="access_token" id="access_token" class="input-primary">
     </div>
     <div class="py-4">
-      <button id="clear" class="inline-flex items-center rounded-md border border-transparent bg-indigo-600 px-4 py-2 text-base font-medium text-white shadow-sm hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2">Clear Key and Access Token</button>
+      <button id="clear" class="btn-primary">Clear Key and Access Token</button>
     </div>
   </details>
 
@@ -109,10 +108,10 @@
 <template id="request-key-view">
   <label>
     To query this server, enter your Open AI API key:
-    <input name="key" type="text" class="block w-full rounded-md border-gray-300 pr-10 focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm">
+    <input name="key" type="text" class="w-full input-primary">
   </label>
   <div class="py-4">
-    <button class="inline-flex items-center rounded-md border border-transparent bg-indigo-600 px-4 py-2 text-base font-medium text-white shadow-sm hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2">Save Key</button>
+    <button class="btn-primary">Save Key</button>
   </div>
   <p>
     <em>Your Open AI API key is stored locally and only ever transmitted directly to openai.com</em>
