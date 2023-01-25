@@ -107,14 +107,13 @@
 </template>
 
 <template id="request-key-view">
-  <!-- TODO -->
-  <p>
-    <label>
-      To query this server, enter your Open AI API key:
-      <input name="key" type="text" class="block w-full rounded-md border-gray-300 pr-10 focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm">
-    </label>
+  <label>
+    To query this server, enter your Open AI API key:
+    <input name="key" type="text" class="block w-full rounded-md border-gray-300 pr-10 focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm">
+  </label>
+  <div class="py-4">
     <button class="inline-flex items-center rounded-md border border-transparent bg-indigo-600 px-4 py-2 text-base font-medium text-white shadow-sm hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2">Save Key</button>
-  </p>
+  </div>
   <p>
     <em>Your Open AI API key is stored locally and only ever transmitted directly to openai.com</em>
   </p>
