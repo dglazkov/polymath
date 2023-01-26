@@ -52,6 +52,8 @@ parser.add_argument('--overwrite', action='store_true',
                     help='If set, will ignore any existing output and overwrite it instead of incrementally extending it')
 parser.add_argument('--truncate', action='store_true',
                     help='If set, will only persist things to output from base that also had their ID in input')
+parser.add_argument('--debug', action='store_true',
+                    help='If set, print out the text chunks but do not get embeddings or save them.')
 for importer in IMPORTERS.values():
     if 'install_arguments' in dir(importer):
         importer.install_arguments(parser)
@@ -63,6 +65,7 @@ overwrite = args.overwrite
 output_filename = args.output
 base_filename = args.base
 truncate = args.truncate
+debug = args.debug
 
 importer = IMPORTERS[args.importer]
 
@@ -104,6 +107,10 @@ for raw_chunk in importer.get_chunks(filename):
         count += 1
         print(f'Processing new chunk {id} ({count})')
         chunk = temp_chunk
+
+    if debug:
+        print(f'DEBUG: {chunk.text}')
+        continue
 
     if chunk.embedding is None:
         print(f'Fetching embedding for {id}')
