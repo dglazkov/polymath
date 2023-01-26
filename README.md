@@ -228,6 +228,32 @@ To see how many of the different type of tweets you have, there is a helper tool
 
 `python3 twitter-scanner.py path/to/twitter-archive/data/tweets.json`
 
+### `googledocs` : An import of a Google Document
+
+This is a barebone import of one doc as a library. Great for large docs, such as books or journals.
+
+Follow Google Cloud [instructions](https://developers.google.com/docs/api/quickstart/python#set_up_your_environment) to enable the Google Docs API and authorize credentials.
+
+The instructions above omit the process of creating a consent screen, where you will need to enter the following information:
+
+Name: `Polymath Document Export` (or anything you would like)
+
+Email: `<your email>`
+
+Developer Contact Information: `<your email>`
+
+Save the downloaded file as `credentials.SECRET.json` in the root of the repository.
+
+Find the id of the document in its URL. It will be a long sequence of characters, separated by slashes:
+
+`https://docs.google.com/document/d/<document_id>/edit`
+
+Then run:
+
+```shell
+python3 -m convert.main --importer googledocs <document_id>
+```
+
 ## Running the server
 
 To start the host server, run `python3 -m host.server`. It will start a Flask app as a local server. Go to `http://127.0.0.1:8080/api/query` to see the API endpoint.
