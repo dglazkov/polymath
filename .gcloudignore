@@ -10,6 +10,7 @@ sample-*
 in/
 out/
 .DS_Store
+node_modules
 
 # local-only dir as a scratch space
 scratch/
