@@ -236,11 +236,11 @@ Follow Google Cloud [instructions](https://developers.google.com/docs/api/quicks
 
 The instructions above omit the process of creating a consent screen, where you will need to enter the following information:
 
-Name: `Polymath Document Export` (or anything you would like)
+> Name: `Polymath Document Export` (or anything you would like)
 
-Email: `<your email>`
+> Email: `<your email>`
 
-Developer Contact Information: `<your email>`
+> Developer Contact Information: `<your email>`
 
 Save the downloaded file as `credentials.SECRET.json` in the root of the repository.
 
