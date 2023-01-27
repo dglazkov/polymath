@@ -16,8 +16,8 @@
 <body>
   
 <header class="flex justify-center items-center text-center p-4">
-  <a href="/" title="E.T. Go. Home."
-     class="rounded-tl-[25%] rounded-br-[25%] rounded-tr-[10%] rounded-bl-[10%] overflow-hidden hover:brightness-110">
+  <a href="/" id="logo" title="Ok, query me again!"
+     class="rounded-tl-[25%] rounded-br-[25%] rounded-tr-[10%] rounded-bl-[10%] overflow-hidden hover:brightness-110 active:brightness-110">
     <img src="static/polymath-logo-120x120.png" width="120" height="120" class="float-left" alt="">
   </a>
   <div class="px-5 float-right border-b-0">
@@ -45,7 +45,7 @@
       <input type="text" name="query" placeholder="{{ config.webclient.placeholder }}" id="query" class="w-full input-primary">
       <div class="absolute inset-y-0 right-0 flex items-center pr-3">
         <!-- Heroicon name: mini/cursor-arrow-rays -->
-        <svg id="random-query" class="h-5 w-5 text-gray-400 hover:cursor-pointer" xmlns="http://www.w3.org/2000/svg" fill="none"
+        <svg id="random-query" class="h-5 w-5 text-gray-400 hover:brightness-110 active:brightness-110 hover:cursor-pointer" xmlns="http://www.w3.org/2000/svg" fill="none"
           viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
           <path stroke-linecap="round" stroke-linejoin="round"
             d="M15.042 21.672L13.684 16.6m0 0l-2.51 2.225.569-9.47 5.227 7.917-3.286-.672zM12 2.25V4.5m5.834.166l-1.591 1.591M20.25 10.5H18M7.757 14.743l-1.59 1.59M6 10.5H3.75m4.007-4.243l-1.59-1.59" />
@@ -101,6 +101,12 @@
       textInput.value = funQueries[Math.floor(Math.random() * funQueries.length)]
       askButton.disabled = false;
     });
+
+    document.querySelector('#logo').addEventListener('click', (event) => {
+      textInput.value = '';
+      textInput.focus();
+      event.preventDefault();
+    }, false);
 
   </script>
 </template>

@@ -102,7 +102,7 @@ def get_pages(path: str, config: dict):
     {
         "id": unique id of the page,
         "sections": list of sections, each section is a list of strings,
-        represnting a text chunk
+        representing a text chunk
         "info": dict of issue metadata, following the `info` format
         as specified in https://github.com/dglazkov/polymath/blob/main/format.md
     }
