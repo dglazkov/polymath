@@ -12,13 +12,15 @@ from .nakedlibrary import NakedLibraryImporter
 from .substack import SubstackImporter
 from .twitter import TwitterArchiveImporter
 from .googledocs import GoogleDocsImporter
+from .webdotdev import WebDotDevImporter
 
 IMPORTERS = {
     'library': NakedLibraryImporter(),
     'substack': SubstackImporter(),
     'medium': MediumImporter(),
     'twitter': TwitterArchiveImporter(),
-    'googledocs': GoogleDocsImporter()
+    'googledocs': GoogleDocsImporter(),
+    'webdotdev': WebDotDevImporter()
 }
 
 load_dotenv()
@@ -39,7 +41,7 @@ def strip_emoji(text: str) -> str:
 
 parser = argparse.ArgumentParser()
 parser.add_argument(
-    'filename', help='The name of the input file to be processed')
+    'filename', help='The name of the input file or directory to be processed')
 parser.add_argument('--importer', help='The importer to use',
                     choices=IMPORTERS.keys(), default='library')
 parser.add_argument(

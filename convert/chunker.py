@@ -73,7 +73,7 @@ def generate_chunks(sections):
 
     Arguments:
         sections -- list of sections, each section is a list of strings,
-            represnting a text chunk
+            representing a text chunk
 
     """
     buffer = []
