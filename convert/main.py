@@ -14,6 +14,8 @@ from .twitter import TwitterArchiveImporter
 from .googledocs import GoogleDocsImporter
 from .webdotdev import WebDotDevImporter
 from .mdn import MDNImporter
+from .remix import RemixImporter
+from .reactrouter import ReactRouterImporter
 
 IMPORTERS = {
     'library': NakedLibraryImporter(),
@@ -22,7 +24,9 @@ IMPORTERS = {
     'twitter': TwitterArchiveImporter(),
     'googledocs': GoogleDocsImporter(),
     'webdotdev': WebDotDevImporter(),
-    'mdn': MDNImporter()
+    'mdn': MDNImporter(),
+    'remix': RemixImporter(),
+    'reactrouter': ReactRouterImporter()
 }
 
 load_dotenv()
