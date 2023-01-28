@@ -42,13 +42,11 @@ def _load_data_file(file):
         return json.load(f)
 
 
-def canonical_id(chunk_text, url=''):
+def canonical_id(bit_text, url=''):
     """
-    Returns the canonical ID for a given chunk of text.
-
-    Today using the canonical ID as a chunk ID is a best practice, but in upcoming versions it will be required.
+    Returns the canonical ID for a given bit of text.
     """
-    message = url.strip() + '\n' + chunk_text.strip()
+    message = url.strip() + '\n' + bit_text.strip()
     message_bytes = message.encode()
     hash_object = hashlib.sha256()
     hash_object.update(message_bytes)
