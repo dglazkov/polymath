@@ -523,15 +523,15 @@ class Library:
         # self._bits_in_order is not met. A useful check internally for
         # anything that modifies chunks to verify everything is correct and find
         # mistakes in logic faster.
-        chunks_len = len(self._bits)
+        bits_cache_len = len(self._bits)
         bits_len = len(self._data['bits'])
         bits_in_order_len = len(self._bits_in_order)
-        if chunks_len != bits_len:
-            raise Exception('chunks_len != bits_len ' +
-                            str(chunks_len) + ' ' + str(bits_len) + ' ' + callsite)
-        if chunks_len != bits_in_order_len:
-            raise Exception('chunks_len != bits_in_order_len ' +
-                            str(chunks_len) + ' ' + str(bits_in_order_len) + ' ' + callsite)
+        if bits_cache_len != bits_len:
+            raise Exception('bits_cache_len != bits_len ' +
+                            str(bits_cache_len) + ' ' + str(bits_len) + ' ' + callsite)
+        if bits_cache_len != bits_in_order_len:
+            raise Exception('bits_cache_len != bits_in_order_len ' +
+                            str(bits_cache_len) + ' ' + str(bits_in_order_len) + ' ' + callsite)
         if bits_in_order_len != bits_len:
             raise Exception('bits_in_order_len != bits_len ' +
                             str(bits_in_order_len) + ' ' + str(bits_len) + ' ' + callsite)
