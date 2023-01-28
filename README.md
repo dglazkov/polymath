@@ -164,7 +164,7 @@ To create a new library file for a source, first, create a json object like this
 }
 ```
 
-This format is effectively the library format but missing a version, embedding_model, and each chunk missing embedding and token_count.
+This format is effectively the library format but missing a version, embedding_model, and each bit missing embedding and token_count.
 
 Then run `python3 -m convert.main --importer library <FILENAME>`. It will create a new file with the same name but a `.json` extension in the `libraries/` directory.
 
@@ -365,9 +365,9 @@ You might chose to have your own `directory.SECRET.json` that looks like this:
 
 #### How it works in more detail
 
-polymath supports this use case with `access_tag`s. Each chunk of content in a library may have an `access_tag` set on it. (Chunks default to having no `access_tag`.). `access_tag` can be any string, but is typically `unpublished`. `Library.query()` will only return chunks of content that have a non-missing `access_tag` if an `access_token` is provided that grants access to items with that tag.
+polymath supports this use case with `access_tag`s. Each bit of content in a library may have an `access_tag` set on it. (Bits default to having no `access_tag`.). `access_tag` can be any string, but is typically `unpublished`. `Library.query()` will only return bits of content that have a non-missing `access_tag` if an `access_token` is provided that grants access to items with that tag.
 
-`access_token` is typically not actually stored directly in the library.json file, but instead added at load time. The easiest way to do that is to put your library in a subdirectory like this: `libraries/access/unpublished/library.json`. In that case, it will automatically have the `access_tag` of `unpublished` added to all content in that library file, and that will flow with the chunks if they're merged in with libraries with public chunks. You can use this mechanism to add any access_tag; any part of the filename that includes `access/foo/` will add an `access_tag` of `foo`.
+`access_token` is typically not actually stored directly in the library.json file, but instead added at load time. The easiest way to do that is to put your library in a subdirectory like this: `libraries/access/unpublished/library.json`. In that case, it will automatically have the `access_tag` of `unpublished` added to all content in that library file, and that will flow with the bits if they're merged in with libraries with public bits. You can use this mechanism to add any access_tag; any part of the filename that includes `access/foo/` will add an `access_tag` of `foo`.
 
 The mapping of `asset_token` to `access_tag` they give access to is configured in the `host.SECRET.json` file that you should keep at the root of the repo. It has a format like:
 
@@ -379,7 +379,7 @@ The mapping of `asset_token` to `access_tag` they give access to is configured i
   "restricted": {
     //Optional. If provided and set to true, then Library.query() will return count_restricted in its result. This will reveal to any queriers that there are private results.
     "count": true,
-    //Optional. If provided, then Library.query() will output a message field of this message if at least one chunk was filtered out due to being access restricted. This reveals that there are private results. The message will be prepended with 'Restricted results were omitted. '
+    //Optional. If provided, then Library.query() will output a message field of this message if at least one bit was filtered out due to being access restricted. This reveals that there are private results. The message will be prepended with 'Restricted results were omitted. '
     "message": "Contact alex@komoroske.com for an access_token."
   },
   "twitter": {
