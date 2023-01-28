@@ -32,7 +32,7 @@ MAX_CONTEXT_LEN_IN_TOKENS = 2048
 CURRENT_VERSION = 1
 
 LEGAL_SORTS = set(['similarity', 'any', 'random', 'manual'])
-LEGAL_COUNT_TYPES = set(['token', 'chunk'])
+LEGAL_COUNT_TYPES = set(['token', 'bit'])
 LEGAL_OMIT_KEYS = set(
     ['*', '', 'similarity', 'embedding', 'token_count', 'info', 'access_tag'])
 
@@ -734,16 +734,16 @@ class Library:
                 del chunk['access_tag']
         return result
 
-    def slice(self, count, count_type_is_chunk=False):
+    def slice(self, count, count_type_is_bit=False):
         """
         Returns a new library that contains a subset of the first items of self
         up to size count.
 
         By default, count is of type token, meaning that the last item might be
-        a subset of that chunk's content.
+        a subset of that bit's content.
 
-        If count_type_is_chunk is true, then it will return a library with up to
-        that many chunks.
+        If count_type_is_bit is true, then it will return a library with up to
+        that many bits.
 
         A count of negative means 'all items'
         """
@@ -754,13 +754,13 @@ class Library:
 
         # TODO: Account for separator tokens, but do so without invoking a tokenizer in this method.
         for original_bit in self.bits:
-            if count_type_is_chunk and count >= 0 and counter >= count:
+            if count_type_is_bit and count >= 0 and counter >= count:
                 break
             bit = original_bit.copy()
             tokens = bit.token_count
             text = bit.text
             context_len += tokens
-            if not count_type_is_chunk and count >= 0 and context_len > count:
+            if not count_type_is_bit and count >= 0 and context_len > count:
                 if len(result.bits) == 0:
                     bit.text = text[:(count)]
                     result.insert_bit(bit)
@@ -837,9 +837,9 @@ class Library:
         result.sort_reversed = sort_reversed
         result.sort = sort
 
-        count_type_is_chunk = count_type == 'chunk'
+        count_type_is_bit = count_type == 'bit'
         restricted_count = result.delete_restricted_chunks(access_token)
-        result = result.slice(count, count_type_is_chunk=count_type_is_chunk)
+        result = result.slice(count, count_type_is_bit=count_type_is_bit)
         result.count_chunks = len(result.bits)
         # Now that we know how many chunks exist we can set omit, which might
         # remove all chunks.
