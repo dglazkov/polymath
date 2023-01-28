@@ -126,7 +126,7 @@ for raw_bit in importer.get_chunks(filename):
         chunk.token_count = get_token_count(chunk.text)
 
     if new_chunk:
-        result.insert_chunk(chunk)
+        result.insert_bit(chunk)
 
 print(f'Loaded {count} new lines')
 

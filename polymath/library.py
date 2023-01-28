@@ -631,7 +631,7 @@ class Library:
             # other. If it also doesn't have an omit type this will be a no-op.
             self.omit = other.omit
         for chunk in other.chunks:
-            self.insert_chunk(chunk.copy())
+            self.insert_bit(chunk.copy())
 
     def copy(self):
         result = Library()
@@ -710,18 +710,18 @@ class Library:
         # resort, but in all other cases it's unnecessarily slower to sort
         # on every chunk you remove.
 
-    def insert_chunk(self, chunk: Bit):
-        if chunk.library == self:
+    def insert_bit(self, bit: Bit):
+        if bit.library == self:
             return
         if self.omit_whole_chunk:
             return
-        if chunk.id in self._chunks:
+        if bit.id in self._chunks:
             # This is an effectively duplicate chunk, which can happen in rare
             # cases where there is the same text in a given url.
             return
-        chunk._set_library(self)
-        self._chunks[chunk.id] = chunk
-        self._insert_chunk_in_order(chunk)
+        bit._set_library(self)
+        self._chunks[bit.id] = bit
+        self._insert_chunk_in_order(bit)
 
     def serializable(self, include_access_tag=False):
         """
@@ -763,9 +763,9 @@ class Library:
             if not count_type_is_chunk and count >= 0 and context_len > count:
                 if len(result.chunks) == 0:
                     chunk.text = text[:(count)]
-                    result.insert_chunk(chunk)
+                    result.insert_bit(chunk)
                 break
-            result.insert_chunk(chunk)
+            result.insert_bit(chunk)
             counter += 1
         return result
 
