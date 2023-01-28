@@ -653,7 +653,7 @@ class Library:
         self._chunks = {}
         self._chunks_in_order = []
 
-    def delete_all_chunks(self):
+    def delete_all_bits(self):
         self._data['bits'] = []
         self._chunks = {}
         self._chunks_in_order = []
@@ -748,7 +748,7 @@ class Library:
         A count of negative means 'all items'
         """
         result = self.copy()
-        result.delete_all_chunks()
+        result.delete_all_bits()
         context_len = 0
         counter = 0
 
