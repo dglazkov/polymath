@@ -161,7 +161,7 @@ class Bit:
             # We can't validate without knowing our library, which tells us which fields to omit.
             return
         fields_to_omit = self.library.fields_to_omit if self.library else set()
-        chunk_id = self.id
+        bit_id = self.id
         embedding_model = self.library.embedding_model if self.library else ''
         expected_embedding_length = EXPECTED_EMBEDDING_LENGTH.get(
             embedding_model, 0) if embedding_model else None
@@ -170,24 +170,24 @@ class Bit:
                 raise Exception(
                     f"Expected {field} to be omitted but it was included")
         if 'text' not in fields_to_omit and 'text' not in self._data:
-            raise Exception(f'{chunk_id} is missing text')
+            raise Exception(f'{bit_id} is missing text')
         if 'embedding' not in fields_to_omit:
             if 'embedding' not in self._data:
-                raise Exception(f'{chunk_id} is missing embedding')
+                raise Exception(f'{bit_id} is missing embedding')
             if expected_embedding_length != None:
                 if len(self.embedding) != expected_embedding_length:
                     raise Exception(
-                        f'{chunk_id} had the wrong length of embedding, expected {expected_embedding_length}')
+                        f'{bit_id} had the wrong length of embedding, expected {expected_embedding_length}')
         if 'token_count' not in fields_to_omit:
             if 'token_count' not in self._data:
-                raise Exception(f'{chunk_id} is missing token_count')
+                raise Exception(f'{bit_id} is missing token_count')
         # TODO: verify token_count is a reasonable length.
         if 'info' not in fields_to_omit:
             if 'info' not in self._data:
-                raise Exception(f'{chunk_id} is missing info')
+                raise Exception(f'{bit_id} is missing info')
             info = self._data['info']
             if 'url' not in info:
-                raise Exception(f'{chunk_id} info is missing required url')
+                raise Exception(f'{bit_id} info is missing required url')
 
     def copy(self):
         """
