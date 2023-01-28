@@ -358,7 +358,7 @@ class Library:
         if omit_whole_bits and len(self._data['bits']):
             raise Exception(
                 'omit configured to omit all bits but they were present')
-        # no need to validate Chunks, they were already validated at creation time.
+        # no need to validate bits, they were already validated at creation time.
 
     @property
     def version(self):
@@ -521,7 +521,7 @@ class Library:
     def _assert_bits_synced(self, callsite=''):
         # Throws if the invariant that self._data[bits] and self._bits and
         # self._bits_in_order is not met. A useful check internally for
-        # anything that modifies chunks to verify everything is correct and find
+        # anything that modifies bits to verify everything is correct and find
         # mistakes in logic faster.
         bits_cache_len = len(self._bits)
         bits_len = len(self._data['bits'])
@@ -716,7 +716,7 @@ class Library:
         if self.omit_whole_bit:
             return
         if bit.id in self._bits:
-            # This is an effectively duplicate chunk, which can happen in rare
+            # This is an effectively duplicate bit, which can happen in rare
             # cases where there is the same text in a given url.
             return
         bit._set_library(self)
@@ -841,8 +841,8 @@ class Library:
         restricted_count = result.delete_restricted_bits(access_token)
         result = result.slice(count, count_type_is_bit=count_type_is_bit)
         result.count_bits = len(result.bits)
-        # Now that we know how many chunks exist we can set omit, which might
-        # remove all chunks.
+        # Now that we know how many bits exist we can set omit, which might
+        # remove all bits.
         result.omit = omit
 
         config = host_config()
