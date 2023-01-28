@@ -3,29 +3,9 @@ import os
 import re
 import frontmatter
 
-from io import StringIO
-from markdown import Markdown
-from argparse import ArgumentParser, Namespace
 from .chunker import generate_chunks
+from .markdown2text import unmark
 
-def unmark_element(element, stream=None):
-    if stream is None:
-        stream = StringIO()
-    if element.text:
-        stream.write(element.text)
-    for sub in element:
-        unmark_element(sub, stream)
-    if element.tail:
-        stream.write(element.tail)
-    return stream.getvalue()
-
-def unmark(text):
-    return __md.convert(text)
-
-# patching Markdown
-Markdown.output_formats["plain"] = unmark_element
-__md = Markdown(output_format="plain")
-__md.stripTopLevelTags = False
 
 BASE_URL = "https://web.dev/"
 def url_from_filename(filename):
@@ -46,9 +26,6 @@ Usage: python3 -m convert.main --importer webdotdev ~/Projects/web.dev/src/site/
 That is from a clone from https://github.com/GoogleChrome/web.dev
 """
 class WebDotDevImporter:
-
-    def __init__(self):
-        self.unmark = unmark
 
     def output_base_filename(self, filename):
         return 'webdotdev'
@@ -74,7 +51,7 @@ class WebDotDevImporter:
                 # print(page.content)
                 # print(page.get('title'))
                 # print(page.get('description'))
-                # print(self.unmark(page.content))
+                # print(unmark(page.content))
 
                 info = {
                     'url': url_from_filename(file),
@@ -83,7 +60,7 @@ class WebDotDevImporter:
                 }
 
                 count = 0
-                for chunk in self.extract_chunks_from_markdown(self.unmark(page.content)):
+                for chunk in self.extract_chunks_from_markdown(unmark(page.content)):
                     # print(chunk)
                     yield {
                         "text": chunk,
