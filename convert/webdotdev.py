@@ -27,7 +27,7 @@ Markdown.output_formats["plain"] = unmark_element
 __md = Markdown(output_format="plain")
 __md.stripTopLevelTags = False
 
-BASE_URL = "http://web.dev/"
+BASE_URL = "https://web.dev/"
 def url_from_filename(filename):
     # given /long/path/directory/file.md if index.md return /directory, else /director/file
     directory, file = os.path.split(filename)
@@ -41,10 +41,9 @@ def url_from_filename(filename):
 
 
 """
-pass in the filename that's the root directory of English content:
+Usage: python3 -m convert.main --importer webdotdev ~/Projects/web.dev/src/site/content/en
 
-~/Projects/web.dev/src/site/content/en
-
+That is from a clone from https://github.com/GoogleChrome/web.dev
 """
 class WebDotDevImporter:
 
