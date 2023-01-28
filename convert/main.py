@@ -105,28 +105,28 @@ for raw_bit in importer.get_chunks(filename):
     if max_lines >= 0 and count >= max_lines:
         print('Reached max lines')
         break
-    chunk = result.bit(id)
-    new_chunk = chunk is None
-    if new_chunk:
+    bit = result.bit(id)
+    new_bit = bit is None
+    if new_bit:
         count += 1
-        print(f'Processing new chunk {id} ({count})')
-        chunk = temp_bit
+        print(f'Processing new bit {id} ({count})')
+        bit = temp_bit
 
     if debug:
-        print(f'DEBUG: {chunk.text}')
+        print(f'DEBUG: {bit.text}')
         continue
 
-    if chunk.embedding is None:
+    if bit.embedding is None:
         print(f'Fetching embedding for {id}')
-        chunk.embedding = get_embedding(chunk.text)
-        if chunk.embedding is None:
+        bit.embedding = get_embedding(bit.text)
+        if bit.embedding is None:
             continue
-    if chunk.token_count < 0:
+    if bit.token_count < 0:
         print(f'Fetching token_count for {id}')
-        chunk.token_count = get_token_count(chunk.text)
+        bit.token_count = get_token_count(bit.text)
 
-    if new_chunk:
-        result.insert_bit(chunk)
+    if new_bit:
+        result.insert_bit(bit)
 
 print(f'Loaded {count} new lines')
 
