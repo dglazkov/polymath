@@ -134,7 +134,7 @@ if truncate:
     for chunk in result.chunks:
         if chunk.id in seen_ids:
             continue
-        result.remove_chunk(chunk)
+        result.remove_bit(chunk)
 
 if not os.path.exists(LIBRARY_DIR):
     os.mkdir(LIBRARY_DIR)

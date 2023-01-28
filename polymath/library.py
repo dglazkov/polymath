@@ -200,14 +200,14 @@ class Bit:
     def remove(self):
         if not self.library:
             return
-        self.library.remove_chunk(self)
+        self.library.remove_bit(self)
 
     def __str__(self):
         return self.text
 
     @property
     def library(self) -> 'Library':
-        # There is no exposed library setter. Call library.insert_chunk or library.remove_chunk to reparent.
+        # There is no exposed library setter. Call library.insert_chunk or library.remove_bit to reparent.
         return self._library
 
     def _set_library(self, library: 'Library'):
@@ -674,7 +674,7 @@ class Library:
             if chunk.access_tag in visible_access_tags:
                 continue
 
-            self.remove_chunk(chunk)
+            self.remove_bit(chunk)
             restricted_count += 1
 
         return restricted_count
@@ -689,7 +689,7 @@ class Library:
         """
         return [chunk for chunk in self._chunks_in_order]
 
-    def remove_chunk(self, chunk: Bit):
+    def remove_bit(self, chunk: Bit):
         if not chunk:
             return
         if chunk.library != self:
