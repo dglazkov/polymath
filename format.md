@@ -18,8 +18,8 @@ The format of the library files is as follows:
     message: "A message that will be displayed when Library() is called with this data"
     //Counts is optional. It can be retrieved or set by Library.counts.
     counts: {
-      //chunks is the number of chunks that this file contains... even if they were all omitted with omit='*'. It can be retrieved or set with Library.count_chunks
-      chunks: <int>,
+      //bits is the number of bits that this file contains... even if they were all omitted with omit='*'. It can be retrieved or set with Library.count_bits
+      bits: <int>,
       //restricted is how many chunks would have been returned, but were filtered out because an access_token with permission to view them was not provided. By default hosts do not divulge this information, but if access.SECRET.json:restricted.count is true, it will be returned.
       restricted: <int>
     }

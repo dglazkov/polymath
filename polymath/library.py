@@ -559,17 +559,17 @@ class Library:
         self._details['counts'] = value
 
     @property
-    def count_chunks(self):
+    def count_bits(self):
         counts = self.counts
-        if 'chunks' not in counts:
+        if 'bits' not in counts:
             return 0
-        return counts['chunks']
+        return counts['bits']
 
-    @count_chunks.setter
-    def count_chunks(self, value):
+    @count_bits.setter
+    def count_bits(self, value):
         self._details = self._details
         self.counts = self.counts
-        self.counts['chunks'] = value
+        self.counts['bits'] = value
 
     @property
     def count_restricted(self):
@@ -840,7 +840,7 @@ class Library:
         count_type_is_bit = count_type == 'bit'
         restricted_count = result.delete_restricted_chunks(access_token)
         result = result.slice(count, count_type_is_bit=count_type_is_bit)
-        result.count_chunks = len(result.bits)
+        result.count_bits = len(result.bits)
         # Now that we know how many chunks exist we can set omit, which might
         # remove all chunks.
         result.omit = omit
