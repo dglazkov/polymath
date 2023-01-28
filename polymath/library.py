@@ -327,14 +327,14 @@ class Library:
             access_tag = DEFAULT_PRIVATE_ACCESS_TAG
 
         content = self._data.get('bits', [])
-        self._chunks = {}
-        # _chunks_in_order is an inflated chunk in the same order as the underlying data.
-        self._chunks_in_order = []
+        self._bits = {}
+        # _bits_in_order is an inflated bit in the same order as the underlying data.
+        self._bits_in_order = []
         for bit_data in content:
             bit = Bit(library=self, data=bit_data)
             bit_id = bit.id
-            self._chunks[bit_id] = bit
-            self._chunks_in_order.append(bit)
+            self._bits[bit_id] = bit
+            self._bits_in_order.append(bit)
 
         if access_tag:
             for bit in self.bits:
@@ -408,8 +408,8 @@ class Library:
         self._data['omit'] = canonical_value
         if self.omit_whole_bit:
             self._data['bits'] = []
-            self._chunks_in_order = []
-            self._chunks = {}
+            self._bits_in_order = []
+            self._bits = {}
         for bit in self.bits:
             bit.strip()
 
@@ -459,7 +459,7 @@ class Library:
         # instead of resorting after every insert, considerably faster.
         sort_type = self._data.get('sort', 'any')
         bits = self._data['bits']
-        chunks_in_order = self._chunks_in_order
+        bits_in_order = self._bits_in_order
         if sort_type == 'similarity':
             # TODO: handle sort_reversed correctly. This assumes a descending
             # sort by similarity.
@@ -472,11 +472,11 @@ class Library:
             similarity = get_similarity(bit)
             # bisect and friends only work for lists sorted in ascending order. So...
             index = bisect.bisect_left(
-                chunks_in_order, similarity, key=get_similarity)
-            chunks_in_order.insert(index, bit)
+                bits_in_order, similarity, key=get_similarity)
+            bits_in_order.insert(index, bit)
             bits.insert(index, bit._data)
         else:
-            chunks_in_order.append(bit)
+            bits_in_order.append(bit)
             bits.append(bit._data)
         self._assert_chunks_synced('_insert_bit_in_order')
 
@@ -486,13 +486,13 @@ class Library:
         """
         sort_type = self._data.get('sort', 'any')
         sort_reversed = self._data.get('reversed', False)
-        # We'll operate on chunks_in_order and then replicate that order in
+        # We'll operate on bits_in_order and then replicate that order in
         # self._data['bits]
-        chunks_in_order = self._chunks_in_order
+        bits_in_order = self._bits_in_order
         if sort_type == 'random':
             rng = random.Random()
             rng.seed(self.seed)
-            rng.shuffle(chunks_in_order)
+            rng.shuffle(bits_in_order)
         elif sort_type == 'similarity':
             def get_similarity(chunk):
                 similarity = chunk.similarity
@@ -501,7 +501,7 @@ class Library:
                     raise Exception(
                         f'sort of similarity passed but {chunk_id} had no similarity')
                 return similarity
-            chunks_in_order.sort(reverse=True, key=get_similarity)
+            bits_in_order.sort(reverse=True, key=get_similarity)
         elif sort_type == 'manual':
             # sort type of manual we expliclity want left in the previous order.
             pass
@@ -509,32 +509,32 @@ class Library:
             # effectively any, which means any order is fine.
             pass
         if sort_reversed:
-            chunks_in_order.reverse()
-        # replicate the final order of chunks_in_order in bits.
+            bits_in_order.reverse()
+        # replicate the final order of bits_in_order in bits.
         bits = self._data['bits']
         # Operate on the existing list in place to maintain object equality
         bits.clear()
-        for chunk in chunks_in_order:
-            bits.append(chunk._data)
+        for bit in bits_in_order:
+            bits.append(bit._data)
         self._assert_chunks_synced('_re_sort')
 
     def _assert_chunks_synced(self, callsite=''):
-        # Throws if the invariant that self._data[bits] and self._chunks and
-        # self._chunks_in_order is not met. A useful check internally for
+        # Throws if the invariant that self._data[bits] and self._bits and
+        # self._bits_in_order is not met. A useful check internally for
         # anything that modifies chunks to verify everything is correct and find
         # mistakes in logic faster.
-        chunks_len = len(self._chunks)
+        chunks_len = len(self._bits)
         bits_len = len(self._data['bits'])
-        chunks_in_order_len = len(self._chunks_in_order)
+        bits_in_order_len = len(self._bits_in_order)
         if chunks_len != bits_len:
             raise Exception('chunks_len != bits_len ' +
                             str(chunks_len) + ' ' + str(bits_len) + ' ' + callsite)
-        if chunks_len != chunks_in_order_len:
-            raise Exception('chunks_len != chunks_in_order_len ' +
-                            str(chunks_len) + ' ' + str(chunks_in_order_len) + ' ' + callsite)
-        if chunks_in_order_len != bits_len:
-            raise Exception('chunks_in_order_len != bits_len ' +
-                            str(chunks_in_order_len) + ' ' + str(bits_len) + ' ' + callsite)
+        if chunks_len != bits_in_order_len:
+            raise Exception('chunks_len != bits_in_order_len ' +
+                            str(chunks_len) + ' ' + str(bits_in_order_len) + ' ' + callsite)
+        if bits_in_order_len != bits_len:
+            raise Exception('bits_in_order_len != bits_len ' +
+                            str(bits_in_order_len) + ' ' + str(bits_len) + ' ' + callsite)
 
     @property
     def _details(self):
@@ -636,12 +636,12 @@ class Library:
     def copy(self):
         result = Library()
         result._data = copy.deepcopy(self._data)
-        result._chunks = {}
-        result._chunks_in_order = []
+        result._bits = {}
+        result._bits_in_order = []
         for data in result._data.get('bits', []):
             bit = Bit(library=result, data=data)
-            result._chunks[bit.id] = bit
-            result._chunks_in_order.append(bit)
+            result._bits[bit.id] = bit
+            result._bits_in_order.append(bit)
         return result
 
     def reset(self):
@@ -650,13 +650,13 @@ class Library:
             'embedding_model': EMBEDDINGS_MODEL_ID,
             'bits': []
         }
-        self._chunks = {}
-        self._chunks_in_order = []
+        self._bits = {}
+        self._bits_in_order = []
 
     def delete_all_bits(self):
         self._data['bits'] = []
-        self._chunks = {}
-        self._chunks_in_order = []
+        self._bits = {}
+        self._bits_in_order = []
 
     def delete_restricted_bits(self, access_token=None):
         """
@@ -680,14 +680,14 @@ class Library:
         return restricted_count
 
     def bit(self, chunk_id) -> Bit:
-        return self._chunks.get(chunk_id, None)
+        return self._bits.get(chunk_id, None)
 
     @property
     def bits(self) -> List[Bit]:
         """
         Returns an iterator of each bit in order
         """
-        return [bit for bit in self._chunks_in_order]
+        return [bit for bit in self._bits_in_order]
 
     def remove_bit(self, chunk: Bit):
         if not chunk:
@@ -697,15 +697,15 @@ class Library:
         chunk._set_library(None)
         chunk_id = chunk.id
         index = 0
-        for other_chunk in self._chunks_in_order:
-            if chunk is other_chunk:
+        for other_bit in self._bits_in_order:
+            if chunk is other_bit:
                 break
             index = index + 1
-        if index >= len(self._chunks_in_order):
+        if index >= len(self._bits_in_order):
             raise Exception('Bit was not found')
-        self._chunks_in_order.pop(index)
+        self._bits_in_order.pop(index)
         self._data['bits'].pop(index)
-        del self._chunks[chunk_id]
+        del self._bits[chunk_id]
         # TODO: technically if this is a random sort with seed we do need a
         # resort, but in all other cases it's unnecessarily slower to sort
         # on every chunk you remove.
@@ -715,12 +715,12 @@ class Library:
             return
         if self.omit_whole_bit:
             return
-        if bit.id in self._chunks:
+        if bit.id in self._bits:
             # This is an effectively duplicate chunk, which can happen in rare
             # cases where there is the same text in a given url.
             return
         bit._set_library(self)
-        self._chunks[bit.id] = bit
+        self._bits[bit.id] = bit
         self._insert_bit_in_order(bit)
 
     def serializable(self, include_access_tag=False):
