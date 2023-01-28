@@ -679,8 +679,8 @@ class Library:
 
         return restricted_count
 
-    def bit(self, chunk_id) -> Bit:
-        return self._bits.get(chunk_id, None)
+    def bit(self, bit_id) -> Bit:
+        return self._bits.get(bit_id, None)
 
     @property
     def bits(self) -> List[Bit]:
@@ -689,26 +689,26 @@ class Library:
         """
         return [bit for bit in self._bits_in_order]
 
-    def remove_bit(self, chunk: Bit):
-        if not chunk:
+    def remove_bit(self, bit: Bit):
+        if not bit:
             return
-        if chunk.library != self:
+        if bit.library != self:
             return
-        chunk._set_library(None)
-        chunk_id = chunk.id
+        bit._set_library(None)
+        bit_id = bit.id
         index = 0
         for other_bit in self._bits_in_order:
-            if chunk is other_bit:
+            if bit is other_bit:
                 break
             index = index + 1
         if index >= len(self._bits_in_order):
             raise Exception('Bit was not found')
         self._bits_in_order.pop(index)
         self._data['bits'].pop(index)
-        del self._bits[chunk_id]
+        del self._bits[bit_id]
         # TODO: technically if this is a random sort with seed we do need a
         # resort, but in all other cases it's unnecessarily slower to sort
-        # on every chunk you remove.
+        # on every bit you remove.
 
     def insert_bit(self, bit: Bit):
         if bit.library == self:
