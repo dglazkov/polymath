@@ -32,7 +32,7 @@ MAX_CONTEXT_LEN_IN_TOKENS = 2048
 CURRENT_VERSION = 1
 
 LEGAL_SORTS = set(['similarity', 'any', 'random', 'manual'])
-LEGAL_COUNT_TYPES = set(['token', 'chunk'])
+LEGAL_COUNT_TYPES = set(['token', 'bit'])
 LEGAL_OMIT_KEYS = set(
     ['*', '', 'similarity', 'embedding', 'token_count', 'info', 'access_tag'])
 
@@ -42,13 +42,11 @@ def _load_data_file(file):
         return json.load(f)
 
 
-def canonical_id(chunk_text, url=''):
+def canonical_id(bit_text, url=''):
     """
-    Returns the canonical ID for a given chunk of text.
-
-    Today using the canonical ID as a chunk ID is a best practice, but in upcoming versions it will be required.
+    Returns the canonical ID for a given bit of text.
     """
-    message = url.strip() + '\n' + chunk_text.strip()
+    message = url.strip() + '\n' + bit_text.strip()
     message_bytes = message.encode()
     hash_object = hashlib.sha256()
     hash_object.update(message_bytes)
@@ -83,10 +81,10 @@ def vector_similarity(x, y):
     return float(np.dot(np.array(x), np.array(y)))
 
 
-class ChunkInfo:
-    def __init__(self, chunk: 'Chunk' = None, data=None):
+class BitInfo:
+    def __init__(self, bit: 'Bit' = None, data=None):
         self._data = data if data else {}
-        self._chunk = chunk
+        self._bit = bit
 
     @property
     def url(self):
@@ -97,8 +95,8 @@ class ChunkInfo:
         if value == self.url:
             return
         self._data['url'] = value
-        if self._chunk:
-            self._chunk.info = self
+        if self._bit:
+            self._bit.info = self
 
     @property
     def image_url(self):
@@ -109,8 +107,8 @@ class ChunkInfo:
         if value == self.image_url:
             return
         self._data['image_url'] = value
-        if self._chunk:
-            self._chunk.info = self
+        if self._bit:
+            self._bit.info = self
 
     @property
     def title(self):
@@ -121,8 +119,8 @@ class ChunkInfo:
         if value == self.title:
             return
         self._data['title'] = value
-        if self._chunk:
-            self._chunk.info = self
+        if self._bit:
+            self._bit.info = self
 
     @property
     def description(self):
@@ -133,11 +131,11 @@ class ChunkInfo:
         if value == self.description:
             return
         self._data['description'] = value
-        if self._chunk:
-            self._chunk.info = self
+        if self._bit:
+            self._bit.info = self
 
     @property
-    def contents(self: 'ChunkInfo'):
+    def contents(self: 'BitInfo'):
         """
         Returns the contents of the whole info as a string, appropriate for
         checking equality via string comparison.
@@ -148,7 +146,7 @@ class ChunkInfo:
         return self._data
 
 
-class Chunk:
+class Bit:
     def __init__(self, library=None, data=None):
         self._cached_info = None
         self._cached_embedding = None
@@ -163,7 +161,7 @@ class Chunk:
             # We can't validate without knowing our library, which tells us which fields to omit.
             return
         fields_to_omit = self.library.fields_to_omit if self.library else set()
-        chunk_id = self.id
+        bit_id = self.id
         embedding_model = self.library.embedding_model if self.library else ''
         expected_embedding_length = EXPECTED_EMBEDDING_LENGTH.get(
             embedding_model, 0) if embedding_model else None
@@ -172,48 +170,48 @@ class Chunk:
                 raise Exception(
                     f"Expected {field} to be omitted but it was included")
         if 'text' not in fields_to_omit and 'text' not in self._data:
-            raise Exception(f'{chunk_id} is missing text')
+            raise Exception(f'{bit_id} is missing text')
         if 'embedding' not in fields_to_omit:
             if 'embedding' not in self._data:
-                raise Exception(f'{chunk_id} is missing embedding')
+                raise Exception(f'{bit_id} is missing embedding')
             if expected_embedding_length != None:
                 if len(self.embedding) != expected_embedding_length:
                     raise Exception(
-                        f'{chunk_id} had the wrong length of embedding, expected {expected_embedding_length}')
+                        f'{bit_id} had the wrong length of embedding, expected {expected_embedding_length}')
         if 'token_count' not in fields_to_omit:
             if 'token_count' not in self._data:
-                raise Exception(f'{chunk_id} is missing token_count')
+                raise Exception(f'{bit_id} is missing token_count')
         # TODO: verify token_count is a reasonable length.
         if 'info' not in fields_to_omit:
             if 'info' not in self._data:
-                raise Exception(f'{chunk_id} is missing info')
+                raise Exception(f'{bit_id} is missing info')
             info = self._data['info']
             if 'url' not in info:
-                raise Exception(f'{chunk_id} info is missing required url')
+                raise Exception(f'{bit_id} info is missing required url')
 
     def copy(self):
         """
         Returns a copy of self, but not attached to any library
         """
         data = copy.deepcopy(self._data)
-        result = Chunk(data=data)
+        result = Bit(data=data)
         return result
 
     def remove(self):
         if not self.library:
             return
-        self.library.remove_chunk(self)
+        self.library.remove_bit(self)
 
     def __str__(self):
         return self.text
 
     @property
     def library(self) -> 'Library':
-        # There is no exposed library setter. Call library.insert_chunk or library.remove_chunk to reparent.
+        # There is no exposed library setter. Call library.insert_bit or library.remove_bit to reparent.
         return self._library
 
     def _set_library(self, library: 'Library'):
-        # _set_library should only be called by a library in insert_chunk or in our constructor.
+        # _set_library should only be called by a library in insert_bit or in our constructor.
         self._library = library
         self.validate()
 
@@ -274,14 +272,14 @@ class Chunk:
         self._data['access_tag'] = value
 
     @property
-    def info(self) -> ChunkInfo:
+    def info(self) -> BitInfo:
         if self._cached_info is None:
-            self._cached_info = ChunkInfo(
-                chunk=self, data=self._data.get('info', None))
+            self._cached_info = BitInfo(
+                bit=self, data=self._data.get('info', None))
         return self._cached_info
 
     @info.setter
-    def info(self, value: ChunkInfo):
+    def info(self, value: BitInfo):
         self._cached_info = value
         self._data['info'] = value._data
 
@@ -290,7 +288,7 @@ class Chunk:
         # to omit
         if not self.library:
             return
-        if self.library.omit_whole_chunk:
+        if self.library.omit_whole_bit:
             self.clear()
         for field_to_omit in self.library.fields_to_omit:
             if field_to_omit in self._data:
@@ -329,18 +327,18 @@ class Library:
             access_tag = DEFAULT_PRIVATE_ACCESS_TAG
 
         content = self._data.get('bits', [])
-        self._chunks = {}
-        # _chunks_in_order is an inflated chunk in the same order as the underlying data.
-        self._chunks_in_order = []
+        self._bits = {}
+        # _bits_in_order is an inflated bit in the same order as the underlying data.
+        self._bits_in_order = []
         for bit_data in content:
-            bit = Chunk(library=self, data=bit_data)
+            bit = Bit(library=self, data=bit_data)
             bit_id = bit.id
-            self._chunks[bit_id] = bit
-            self._chunks_in_order.append(bit)
+            self._bits[bit_id] = bit
+            self._bits_in_order.append(bit)
 
         if access_tag:
-            for chunk in self.chunks:
-                chunk.access_tag = access_tag
+            for bit in self.bits:
+                bit.access_tag = access_tag
 
         self.validate()
 
@@ -353,14 +351,14 @@ class Library:
             raise Exception('Version invalid')
         if self._data.get('embedding_model', '') != EMBEDDINGS_MODEL_ID:
             raise Exception('Invalid model name')
-        omit_whole_chunks, _, _ = _keys_to_omit(
+        omit_whole_bits, _, _ = _keys_to_omit(
             self._data.get('omit', ''))
         if 'bits' not in self._data:
             raise Exception('bits is a required field')
-        if omit_whole_chunks and len(self._data['bits']):
+        if omit_whole_bits and len(self._data['bits']):
             raise Exception(
-                'omit configured to omit all chunks but they were present')
-        # no need to validate Chunks, they were already validated at creation time.
+                'omit configured to omit all bits but they were present')
+        # no need to validate bits, they were already validated at creation time.
 
     @property
     def version(self):
@@ -393,9 +391,9 @@ class Library:
         return self._data['omit']
 
     @property
-    def omit_whole_chunk(self):
-        omit_whole_chunk, _, _ = _keys_to_omit(self.omit)
-        return omit_whole_chunk
+    def omit_whole_bit(self):
+        omit_whole_bit, _, _ = _keys_to_omit(self.omit)
+        return omit_whole_bit
 
     @property
     def fields_to_omit(self):
@@ -408,12 +406,12 @@ class Library:
         if 'omit' in self._data and canonical_value == self._data['omit']:
             return
         self._data['omit'] = canonical_value
-        if self.omit_whole_chunk:
+        if self.omit_whole_bit:
             self._data['bits'] = []
-            self._chunks_in_order = []
-            self._chunks = {}
-        for chunk in self.chunks:
-            chunk.strip()
+            self._bits_in_order = []
+            self._bits = {}
+        for bit in self.bits:
+            bit.strip()
 
     @property
     def seed(self):
@@ -456,31 +454,31 @@ class Library:
             del self._data['sort']
         self._re_sort()
 
-    def _insert_chunk_in_order(self, chunk):
+    def _insert_bit_in_order(self, bit):
         # bits is already in sorted order so we can do a bisect into it
         # instead of resorting after every insert, considerably faster.
         sort_type = self._data.get('sort', 'any')
         bits = self._data['bits']
-        chunks_in_order = self._chunks_in_order
+        bits_in_order = self._bits_in_order
         if sort_type == 'similarity':
             # TODO: handle sort_reversed correctly. This assumes a descending
             # sort by similarity.
-            def get_similarity(chunk):
-                if not chunk:
+            def get_similarity(bit):
+                if not bit:
                     return -1
                 # We want to revese the similarity, because bisect assumes keys
                 # are sorted ascending and ours are sorted descending.
-                return chunk.similarity * -1
-            similarity = get_similarity(chunk)
+                return bit.similarity * -1
+            similarity = get_similarity(bit)
             # bisect and friends only work for lists sorted in ascending order. So...
             index = bisect.bisect_left(
-                chunks_in_order, similarity, key=get_similarity)
-            chunks_in_order.insert(index, chunk)
-            bits.insert(index, chunk._data)
+                bits_in_order, similarity, key=get_similarity)
+            bits_in_order.insert(index, bit)
+            bits.insert(index, bit._data)
         else:
-            chunks_in_order.append(chunk)
-            bits.append(chunk._data)
-        self._assert_chunks_synced('_insert_chunk_in_order')
+            bits_in_order.append(bit)
+            bits.append(bit._data)
+        self._assert_bits_synced('_insert_bit_in_order')
 
     def _re_sort(self):
         """
@@ -488,22 +486,22 @@ class Library:
         """
         sort_type = self._data.get('sort', 'any')
         sort_reversed = self._data.get('reversed', False)
-        # We'll operate on chunks_in_order and then replicate that order in
+        # We'll operate on bits_in_order and then replicate that order in
         # self._data['bits]
-        chunks_in_order = self._chunks_in_order
+        bits_in_order = self._bits_in_order
         if sort_type == 'random':
             rng = random.Random()
             rng.seed(self.seed)
-            rng.shuffle(chunks_in_order)
+            rng.shuffle(bits_in_order)
         elif sort_type == 'similarity':
-            def get_similarity(chunk):
-                similarity = chunk.similarity
+            def get_similarity(bit):
+                similarity = bit.similarity
                 if similarity == -1:
-                    chunk_id = chunk.id
+                    bit_id = bit.id
                     raise Exception(
-                        f'sort of similarity passed but {chunk_id} had no similarity')
+                        f'sort of similarity passed but {bit_id} had no similarity')
                 return similarity
-            chunks_in_order.sort(reverse=True, key=get_similarity)
+            bits_in_order.sort(reverse=True, key=get_similarity)
         elif sort_type == 'manual':
             # sort type of manual we expliclity want left in the previous order.
             pass
@@ -511,32 +509,32 @@ class Library:
             # effectively any, which means any order is fine.
             pass
         if sort_reversed:
-            chunks_in_order.reverse()
-        # replicate the final order of chunks_in_order in bits.
+            bits_in_order.reverse()
+        # replicate the final order of bits_in_order in bits.
         bits = self._data['bits']
         # Operate on the existing list in place to maintain object equality
         bits.clear()
-        for chunk in chunks_in_order:
-            bits.append(chunk._data)
-        self._assert_chunks_synced('_re_sort')
+        for bit in bits_in_order:
+            bits.append(bit._data)
+        self._assert_bits_synced('_re_sort')
 
-    def _assert_chunks_synced(self, callsite=''):
-        # Throws if the invariant that self._data[bits] and self._chunks and
-        # self._chunks_in_order is not met. A useful check internally for
-        # anything that modifies chunks to verify everything is correct and find
+    def _assert_bits_synced(self, callsite=''):
+        # Throws if the invariant that self._data[bits] and self._bits and
+        # self._bits_in_order is not met. A useful check internally for
+        # anything that modifies bits to verify everything is correct and find
         # mistakes in logic faster.
-        chunks_len = len(self._chunks)
+        bits_cache_len = len(self._bits)
         bits_len = len(self._data['bits'])
-        chunks_in_order_len = len(self._chunks_in_order)
-        if chunks_len != bits_len:
-            raise Exception('chunks_len != bits_len ' +
-                            str(chunks_len) + ' ' + str(bits_len) + ' ' + callsite)
-        if chunks_len != chunks_in_order_len:
-            raise Exception('chunks_len != chunks_in_order_len ' +
-                            str(chunks_len) + ' ' + str(chunks_in_order_len) + ' ' + callsite)
-        if chunks_in_order_len != bits_len:
-            raise Exception('chunks_in_order_len != bits_len ' +
-                            str(chunks_in_order_len) + ' ' + str(bits_len) + ' ' + callsite)
+        bits_in_order_len = len(self._bits_in_order)
+        if bits_cache_len != bits_len:
+            raise Exception('bits_cache_len != bits_len ' +
+                            str(bits_cache_len) + ' ' + str(bits_len) + ' ' + callsite)
+        if bits_cache_len != bits_in_order_len:
+            raise Exception('bits_cache_len != bits_in_order_len ' +
+                            str(bits_cache_len) + ' ' + str(bits_in_order_len) + ' ' + callsite)
+        if bits_in_order_len != bits_len:
+            raise Exception('bits_in_order_len != bits_len ' +
+                            str(bits_in_order_len) + ' ' + str(bits_len) + ' ' + callsite)
 
     @property
     def _details(self):
@@ -561,17 +559,17 @@ class Library:
         self._details['counts'] = value
 
     @property
-    def count_chunks(self):
+    def count_bits(self):
         counts = self.counts
-        if 'chunks' not in counts:
+        if 'bits' not in counts:
             return 0
-        return counts['chunks']
+        return counts['bits']
 
-    @count_chunks.setter
-    def count_chunks(self, value):
+    @count_bits.setter
+    def count_bits(self, value):
         self._details = self._details
         self.counts = self.counts
-        self.counts['chunks'] = value
+        self.counts['bits'] = value
 
     @property
     def count_restricted(self):
@@ -600,14 +598,14 @@ class Library:
 
     @property
     def text(self) -> List[str]:
-        return [chunk.text for chunk in self.chunks]
+        return [bit.text for bit in self.bits]
 
     @property
-    def unique_infos(self: 'Library') -> List[ChunkInfo]:
+    def unique_infos(self: 'Library') -> List[BitInfo]:
         seen_infos = set()
         result = []
-        for chunk in self.chunks:
-            info = chunk.info
+        for bit in self.bits:
+            info = bit.info
             key = info.contents
             if key in seen_infos:
                 continue
@@ -632,18 +630,18 @@ class Library:
             # We don't have an omit type, so just absorb the omit type from the
             # other. If it also doesn't have an omit type this will be a no-op.
             self.omit = other.omit
-        for chunk in other.chunks:
-            self.insert_chunk(chunk.copy())
+        for bit in other.bits:
+            self.insert_bit(bit.copy())
 
     def copy(self):
         result = Library()
         result._data = copy.deepcopy(self._data)
-        result._chunks = {}
-        result._chunks_in_order = []
+        result._bits = {}
+        result._bits_in_order = []
         for data in result._data.get('bits', []):
-            bit = Chunk(library=result, data=data)
-            result._chunks[bit.id] = bit
-            result._chunks_in_order.append(bit)
+            bit = Bit(library=result, data=data)
+            result._bits[bit.id] = bit
+            result._bits_in_order.append(bit)
         return result
 
     def reset(self):
@@ -652,17 +650,17 @@ class Library:
             'embedding_model': EMBEDDINGS_MODEL_ID,
             'bits': []
         }
-        self._chunks = {}
-        self._chunks_in_order = []
+        self._bits = {}
+        self._bits_in_order = []
 
-    def delete_all_chunks(self):
+    def delete_all_bits(self):
         self._data['bits'] = []
-        self._chunks = {}
-        self._chunks_in_order = []
+        self._bits = {}
+        self._bits_in_order = []
 
-    def delete_restricted_chunks(self, access_token=None):
+    def delete_restricted_bits(self, access_token=None):
         """
-        Deletes all chunks that are restricted, unless access_token grants access.
+        Deletes all bits that are restricted, unless access_token grants access.
 
         Returns the number of items that were removed.
         """
@@ -670,60 +668,60 @@ class Library:
 
         restricted_count = 0
 
-        for chunk in self.chunks:
-            if chunk.access_tag == None:
+        for bit in self.bits:
+            if bit.access_tag == None:
                 continue
-            if chunk.access_tag in visible_access_tags:
+            if bit.access_tag in visible_access_tags:
                 continue
 
-            self.remove_chunk(chunk)
+            self.remove_bit(bit)
             restricted_count += 1
 
         return restricted_count
 
-    def chunk(self, chunk_id) -> Chunk:
-        return self._chunks.get(chunk_id, None)
+    def bit(self, bit_id) -> Bit:
+        return self._bits.get(bit_id, None)
 
     @property
-    def chunks(self) -> List[Chunk]:
+    def bits(self) -> List[Bit]:
         """
-        Returns an iterator of each chunk in order
+        Returns an iterator of each bit in order
         """
-        return [chunk for chunk in self._chunks_in_order]
+        return [bit for bit in self._bits_in_order]
 
-    def remove_chunk(self, chunk: Chunk):
-        if not chunk:
+    def remove_bit(self, bit: Bit):
+        if not bit:
             return
-        if chunk.library != self:
+        if bit.library != self:
             return
-        chunk._set_library(None)
-        chunk_id = chunk.id
+        bit._set_library(None)
+        bit_id = bit.id
         index = 0
-        for other_chunk in self._chunks_in_order:
-            if chunk is other_chunk:
+        for other_bit in self._bits_in_order:
+            if bit is other_bit:
                 break
             index = index + 1
-        if index >= len(self._chunks_in_order):
-            raise Exception('Chunk was not found')
-        self._chunks_in_order.pop(index)
+        if index >= len(self._bits_in_order):
+            raise Exception('Bit was not found')
+        self._bits_in_order.pop(index)
         self._data['bits'].pop(index)
-        del self._chunks[chunk_id]
+        del self._bits[bit_id]
         # TODO: technically if this is a random sort with seed we do need a
         # resort, but in all other cases it's unnecessarily slower to sort
-        # on every chunk you remove.
+        # on every bit you remove.
 
-    def insert_chunk(self, chunk: Chunk):
-        if chunk.library == self:
+    def insert_bit(self, bit: Bit):
+        if bit.library == self:
             return
-        if self.omit_whole_chunk:
+        if self.omit_whole_bit:
             return
-        if chunk.id in self._chunks:
-            # This is an effectively duplicate chunk, which can happen in rare
+        if bit.id in self._bits:
+            # This is an effectively duplicate bit, which can happen in rare
             # cases where there is the same text in a given url.
             return
-        chunk._set_library(self)
-        self._chunks[chunk.id] = chunk
-        self._insert_chunk_in_order(chunk)
+        bit._set_library(self)
+        self._bits[bit.id] = bit
+        self._insert_bit_in_order(bit)
 
     def serializable(self, include_access_tag=False):
         """
@@ -731,43 +729,43 @@ class Library:
         being serialized e.g. into JSON.
         """
         result = copy.deepcopy(self._data)
-        for chunk in result['bits']:
-            if not include_access_tag and 'access_tag' in chunk:
-                del chunk['access_tag']
+        for bit in result['bits']:
+            if not include_access_tag and 'access_tag' in bit:
+                del bit['access_tag']
         return result
 
-    def slice(self, count, count_type_is_chunk=False):
+    def slice(self, count, count_type_is_bit=False):
         """
         Returns a new library that contains a subset of the first items of self
         up to size count.
 
         By default, count is of type token, meaning that the last item might be
-        a subset of that chunk's content.
+        a subset of that bit's content.
 
-        If count_type_is_chunk is true, then it will return a library with up to
-        that many chunks.
+        If count_type_is_bit is true, then it will return a library with up to
+        that many bits.
 
         A count of negative means 'all items'
         """
         result = self.copy()
-        result.delete_all_chunks()
+        result.delete_all_bits()
         context_len = 0
         counter = 0
 
         # TODO: Account for separator tokens, but do so without invoking a tokenizer in this method.
-        for original_chunk in self.chunks:
-            if count_type_is_chunk and count >= 0 and counter >= count:
+        for original_bit in self.bits:
+            if count_type_is_bit and count >= 0 and counter >= count:
                 break
-            chunk = original_chunk.copy()
-            tokens = chunk.token_count
-            text = chunk.text
+            bit = original_bit.copy()
+            tokens = bit.token_count
+            text = bit.text
             context_len += tokens
-            if not count_type_is_chunk and count >= 0 and context_len > count:
-                if len(result.chunks) == 0:
-                    chunk.text = text[:(count)]
-                    result.insert_chunk(chunk)
+            if not count_type_is_bit and count >= 0 and context_len > count:
+                if len(result.bits) == 0:
+                    bit.text = text[:(count)]
+                    result.insert_bit(bit)
                 break
-            result.insert_chunk(chunk)
+            result.insert_bit(bit)
             counter += 1
         return result
 
@@ -777,20 +775,20 @@ class Library:
             json.dump(result, f, indent='\t')
 
     def _similarities(self, query_embedding):
-        chunks = sorted([
-            (vector_similarity(query_embedding, chunk.embedding), chunk.id)
-            for chunk
-            in self.chunks], reverse=True)
-        return {key: value for value, key in chunks}
+        bits = sorted([
+            (vector_similarity(query_embedding, bit.embedding), bit.id)
+            for bit
+            in self.bits], reverse=True)
+        return {key: value for value, key in bits}
 
     def compute_similarities(self, query_embedding):
         # if we won't store the similarities anyway then don't bother.
-        if self.omit_whole_chunk or 'similarities' in self.fields_to_omit:
+        if self.omit_whole_bit or 'similarities' in self.fields_to_omit:
             return
         similarities = self._similarities(query_embedding)
-        for chunk_id, similarity in similarities.items():
-            chunk = self.chunk(chunk_id)
-            chunk.similarity = similarity
+        for bit_id, similarity in similarities.items():
+            bit = self.bit(bit_id)
+            bit.similarity = similarity
 
     def query(self, version=None, query_embedding=None, query_embedding_model=None, count=0, count_type='token', sort='similarity', sort_reversed=False, seed=None, omit='embedding', access_token=''):
         # We do our own defaulting so that servers that call us can pass the result
@@ -839,12 +837,12 @@ class Library:
         result.sort_reversed = sort_reversed
         result.sort = sort
 
-        count_type_is_chunk = count_type == 'chunk'
-        restricted_count = result.delete_restricted_chunks(access_token)
-        result = result.slice(count, count_type_is_chunk=count_type_is_chunk)
-        result.count_chunks = len(result.chunks)
-        # Now that we know how many chunks exist we can set omit, which might
-        # remove all chunks.
+        count_type_is_bit = count_type == 'bit'
+        restricted_count = result.delete_restricted_bits(access_token)
+        result = result.slice(count, count_type_is_bit=count_type_is_bit)
+        result.count_bits = len(result.bits)
+        # Now that we know how many bits exist we can set omit, which might
+        # remove all bits.
         result.omit = omit
 
         config = host_config()
@@ -863,7 +861,7 @@ class Library:
 def _keys_to_omit(configuration=''):
     """
     Takes a configuration, either None, a single string, or a list of strings
-    and returns a tuple of (omit_whole_chunk, [keys_to_omit], canonical_configuration).
+    and returns a tuple of (omit_whole_bit, [keys_to_omit], canonical_configuration).
 
     If a string is provided, it will be split on ',' to create the list.
     """
@@ -874,7 +872,7 @@ def _keys_to_omit(configuration=''):
     if len(configuration) == 0:
         configuration = ['']
     result = []
-    omit_whole_chunk = False
+    omit_whole_bit = False
     for item in configuration:
         if item not in LEGAL_OMIT_KEYS:
             raise Exception(f'Illegal omit key type: {item}')
@@ -887,13 +885,13 @@ def _keys_to_omit(configuration=''):
             if len(configuration) != 1:
                 raise Exception(
                     "If '*' is provided, it must be the only item.")
-            omit_whole_chunk = True
+            omit_whole_bit = True
             continue
         else:
             result.append(item)
     if len(configuration) == 1:
         configuration = configuration[0]
-    return (omit_whole_chunk, set(result), configuration)
+    return (omit_whole_bit, set(result), configuration)
 
 
 Library.EMBEDDINGS_MODEL_ID = EMBEDDINGS_MODEL_ID

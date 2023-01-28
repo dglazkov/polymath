@@ -50,7 +50,7 @@ parser.add_argument("--only", help=f"If provided, will ignore any hosts without 
 parser.add_argument("--exclude", help=f"If provided, will ignore any hosts that have this name or endpoint in {DEFAULT_CONFIG_FILE}", action="append")
 parser.add_argument("--completion", help="Request completion based on the query and context",
                     action=argparse.BooleanOptionalAction, default=True)
-parser.add_argument("--random", help="Ask for a random set of chunks",
+parser.add_argument("--random", help="Ask for a random set of bits",
                     action=argparse.BooleanOptionalAction, default=False)
 parser.add_argument("--verbose", help="Print out context and sources and other useful intermediate data",
                     action=argparse.BooleanOptionalAction, default=False)
@@ -113,7 +113,7 @@ if len(server_list) == 0:
 
 if args.verbose:
     if args.random:
-        print("Getting random chunks ...")
+        print("Getting random bits ...")
     else:
         print(f"Getting embedding for \"{query}\" ...")
 
@@ -123,7 +123,7 @@ query_vector = None if args.random else Library.base64_from_vector(
 # TODO: allow setting the answer_length (see issue #49)
 answer_length = 256
 # TODO: we need to allow room for the actual prompt, as well as separators
-# between chunks. This is a hand-tuned margin, but it should be calculated
+# between bits. This is a hand-tuned margin, but it should be calculated
 # automatically.
 context_count = get_max_tokens_for_completion_model() - 500
 

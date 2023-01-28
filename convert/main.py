@@ -5,7 +5,7 @@ import re
 import openai
 from dotenv import load_dotenv
 
-from polymath import LIBRARY_DIR, Library, Chunk, get_embedding, get_token_count
+from polymath import LIBRARY_DIR, Library, Bit, get_embedding, get_token_count
 
 from .medium import MediumImporter
 from .nakedlibrary import NakedLibraryImporter
@@ -98,44 +98,43 @@ count = 0
 
 seen_ids = {}
 
-for raw_chunk in importer.get_chunks(filename):
-    temp_chunk = Chunk(data=raw_chunk)
-    id = temp_chunk.id
+for raw_bit in importer.get_chunks(filename):
+    temp_bit = Bit(data=raw_bit)
+    id = temp_bit.id
     seen_ids[id] = True
     if max_lines >= 0 and count >= max_lines:
         print('Reached max lines')
         break
-    chunk = result.chunk(id)
-    new_chunk = chunk is None
-    if new_chunk:
+    bit = result.bit(id)
+    new_bit = bit is None
+    if new_bit:
         count += 1
-        print(f'Processing new chunk {id} ({count})')
-        chunk = temp_chunk
+        print(f'Processing new bit {id} ({count})')
+        bit = temp_bit
 
     if debug:
-        print(f'DEBUG: {chunk.text}')
+        print(f'DEBUG: {bit.text}')
         continue
 
-    if chunk.embedding is None:
+    if bit.embedding is None:
         print(f'Fetching embedding for {id}')
-        chunk.embedding = get_embedding(chunk.text)
-        if chunk.embedding is None:
-            count -= 1
+        bit.embedding = get_embedding(bit.text)
+        if bit.embedding is None:
             continue
-    if chunk.token_count < 0:
+    if bit.token_count < 0:
         print(f'Fetching token_count for {id}')
-        chunk.token_count = get_token_count(chunk.text)
+        bit.token_count = get_token_count(bit.text)
 
-    if new_chunk:
-        result.insert_chunk(chunk)
+    if new_bit:
+        result.insert_bit(bit)
 
 print(f'Loaded {count} new lines')
 
 if truncate:
-    for chunk in result.chunks:
-        if chunk.id in seen_ids:
+    for bit in result.bits:
+        if bit.id in seen_ids:
             continue
-        result.remove_chunk(chunk)
+        result.remove_bit(bit)
 
 if not os.path.exists(LIBRARY_DIR):
     os.mkdir(LIBRARY_DIR)
