@@ -478,7 +478,7 @@ class Library:
         else:
             bits_in_order.append(bit)
             bits.append(bit._data)
-        self._assert_chunks_synced('_insert_bit_in_order')
+        self._assert_bits_synced('_insert_bit_in_order')
 
     def _re_sort(self):
         """
@@ -516,9 +516,9 @@ class Library:
         bits.clear()
         for bit in bits_in_order:
             bits.append(bit._data)
-        self._assert_chunks_synced('_re_sort')
+        self._assert_bits_synced('_re_sort')
 
-    def _assert_chunks_synced(self, callsite=''):
+    def _assert_bits_synced(self, callsite=''):
         # Throws if the invariant that self._data[bits] and self._bits and
         # self._bits_in_order is not met. A useful check internally for
         # anything that modifies chunks to verify everything is correct and find
