@@ -207,11 +207,11 @@ class Bit:
 
     @property
     def library(self) -> 'Library':
-        # There is no exposed library setter. Call library.insert_chunk or library.remove_bit to reparent.
+        # There is no exposed library setter. Call library.insert_bit or library.remove_bit to reparent.
         return self._library
 
     def _set_library(self, library: 'Library'):
-        # _set_library should only be called by a library in insert_chunk or in our constructor.
+        # _set_library should only be called by a library in insert_bit or in our constructor.
         self._library = library
         self.validate()
 
@@ -454,7 +454,7 @@ class Library:
             del self._data['sort']
         self._re_sort()
 
-    def _insert_chunk_in_order(self, chunk):
+    def _insert_bit_in_order(self, bit):
         # bits is already in sorted order so we can do a bisect into it
         # instead of resorting after every insert, considerably faster.
         sort_type = self._data.get('sort', 'any')
@@ -463,22 +463,22 @@ class Library:
         if sort_type == 'similarity':
             # TODO: handle sort_reversed correctly. This assumes a descending
             # sort by similarity.
-            def get_similarity(chunk):
-                if not chunk:
+            def get_similarity(bit):
+                if not bit:
                     return -1
                 # We want to revese the similarity, because bisect assumes keys
                 # are sorted ascending and ours are sorted descending.
-                return chunk.similarity * -1
-            similarity = get_similarity(chunk)
+                return bit.similarity * -1
+            similarity = get_similarity(bit)
             # bisect and friends only work for lists sorted in ascending order. So...
             index = bisect.bisect_left(
                 chunks_in_order, similarity, key=get_similarity)
-            chunks_in_order.insert(index, chunk)
-            bits.insert(index, chunk._data)
+            chunks_in_order.insert(index, bit)
+            bits.insert(index, bit._data)
         else:
-            chunks_in_order.append(chunk)
-            bits.append(chunk._data)
-        self._assert_chunks_synced('_insert_chunk_in_order')
+            chunks_in_order.append(bit)
+            bits.append(bit._data)
+        self._assert_chunks_synced('_insert_bit_in_order')
 
     def _re_sort(self):
         """
@@ -721,7 +721,7 @@ class Library:
             return
         bit._set_library(self)
         self._chunks[bit.id] = bit
-        self._insert_chunk_in_order(bit)
+        self._insert_bit_in_order(bit)
 
     def serializable(self, include_access_tag=False):
         """
