@@ -129,6 +129,8 @@ A few public content servers you can try:
   - https://polymath.glazkov.com
   - https://polymath.fluxcollective.org
   - https://polymath.almaer.com
+  - https://remix.polymath.chat
+  - https://webdev.polymath.chat
 
 If someone who runs a polymath server sent you a private token, see the section below on `Private Content` and its own getting started guide.
 
@@ -213,8 +215,9 @@ So, for the hackiest of hacks, after you unzip you data, do the following:
 
 #### Usage
 
-% python3 -m convert.main --importer twitter --twitter-include regular path/to/twitter-archive/data/tweets.json
-
+```shell
+python3 -m convert.main --importer twitter --twitter-include regular path/to/twitter-archive/data/tweets.json
+```
 
 First, generate a snapshot of your Twitter account by following `https://help.twitter.com/en/managing-your-account/how-to-download-your-twitter-archive`. This will result in an email and notification in your Twitter client with a link to the archive.
 
