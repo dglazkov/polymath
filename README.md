@@ -46,7 +46,7 @@ it have good general intelligence. However, it typically knows nothing about
 your *specific* content. It's possible to fine-tune these models with your
 specific content, but that's expensive and unneccesary. The completion APIs tha
 generate free-form answers have only a small window (no more than a few pages of
-text) of "working memory". The trick is that when you ansk a question, you also
+text) of "working memory". The trick is that when you ask a question, you also
 select the most relevant bits of content from your library and include those
 directly in the prompt, so the completion API has high-quality context to base
 its answer on.
