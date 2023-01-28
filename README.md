@@ -254,6 +254,16 @@ Then run:
 python3 -m convert.main --importer googledocs <document_id>
 ```
 
+### RSS: import an RSS feed
+
+This is a simple implementation of an RSS feed importer. Simply point it at your RSS feed and it will parse the content, title and link.
+
+```shell
+python3 -m convert.main --importer rss https://paul.kinlan.me/index.xml
+```
+
+Will result in a library created in the format of `rss-[origin]-[path (escaped)].json`.
+
 ## Running the server
 
 To start the host server, run `python3 -m host.server`. It will start a Flask app as a local server. Go to `http://127.0.0.1:8080/api/query` to see the API endpoint.

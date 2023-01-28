@@ -16,6 +16,7 @@ from .webdotdev import WebDotDevImporter
 from .mdn import MDNImporter
 from .remix import RemixImporter
 from .reactrouter import ReactRouterImporter
+from .rss import RSSImporter
 
 IMPORTERS = {
     'library': NakedLibraryImporter(),
@@ -26,7 +27,8 @@ IMPORTERS = {
     'webdotdev': WebDotDevImporter(),
     'mdn': MDNImporter(),
     'remix': RemixImporter(),
-    'reactrouter': ReactRouterImporter()
+    'reactrouter': ReactRouterImporter(),
+    'rss': RSSImporter()
 }
 
 load_dotenv()
