@@ -288,7 +288,7 @@ class Bit:
         # to omit
         if not self.library:
             return
-        if self.library.omit_whole_chunk:
+        if self.library.omit_whole_bit:
             self.clear()
         for field_to_omit in self.library.fields_to_omit:
             if field_to_omit in self._data:
@@ -351,13 +351,13 @@ class Library:
             raise Exception('Version invalid')
         if self._data.get('embedding_model', '') != EMBEDDINGS_MODEL_ID:
             raise Exception('Invalid model name')
-        omit_whole_chunks, _, _ = _keys_to_omit(
+        omit_whole_bits, _, _ = _keys_to_omit(
             self._data.get('omit', ''))
         if 'bits' not in self._data:
             raise Exception('bits is a required field')
-        if omit_whole_chunks and len(self._data['bits']):
+        if omit_whole_bits and len(self._data['bits']):
             raise Exception(
-                'omit configured to omit all chunks but they were present')
+                'omit configured to omit all bits but they were present')
         # no need to validate Chunks, they were already validated at creation time.
 
     @property
@@ -391,9 +391,9 @@ class Library:
         return self._data['omit']
 
     @property
-    def omit_whole_chunk(self):
-        omit_whole_chunk, _, _ = _keys_to_omit(self.omit)
-        return omit_whole_chunk
+    def omit_whole_bit(self):
+        omit_whole_bit, _, _ = _keys_to_omit(self.omit)
+        return omit_whole_bit
 
     @property
     def fields_to_omit(self):
@@ -406,7 +406,7 @@ class Library:
         if 'omit' in self._data and canonical_value == self._data['omit']:
             return
         self._data['omit'] = canonical_value
-        if self.omit_whole_chunk:
+        if self.omit_whole_bit:
             self._data['bits'] = []
             self._chunks_in_order = []
             self._chunks = {}
@@ -713,7 +713,7 @@ class Library:
     def insert_bit(self, bit: Bit):
         if bit.library == self:
             return
-        if self.omit_whole_chunk:
+        if self.omit_whole_bit:
             return
         if bit.id in self._chunks:
             # This is an effectively duplicate chunk, which can happen in rare
@@ -783,7 +783,7 @@ class Library:
 
     def compute_similarities(self, query_embedding):
         # if we won't store the similarities anyway then don't bother.
-        if self.omit_whole_chunk or 'similarities' in self.fields_to_omit:
+        if self.omit_whole_bit or 'similarities' in self.fields_to_omit:
             return
         similarities = self._similarities(query_embedding)
         for chunk_id, similarity in similarities.items():
@@ -861,7 +861,7 @@ class Library:
 def _keys_to_omit(configuration=''):
     """
     Takes a configuration, either None, a single string, or a list of strings
-    and returns a tuple of (omit_whole_chunk, [keys_to_omit], canonical_configuration).
+    and returns a tuple of (omit_whole_bit, [keys_to_omit], canonical_configuration).
 
     If a string is provided, it will be split on ',' to create the list.
     """
@@ -872,7 +872,7 @@ def _keys_to_omit(configuration=''):
     if len(configuration) == 0:
         configuration = ['']
     result = []
-    omit_whole_chunk = False
+    omit_whole_bit = False
     for item in configuration:
         if item not in LEGAL_OMIT_KEYS:
             raise Exception(f'Illegal omit key type: {item}')
@@ -885,13 +885,13 @@ def _keys_to_omit(configuration=''):
             if len(configuration) != 1:
                 raise Exception(
                     "If '*' is provided, it must be the only item.")
-            omit_whole_chunk = True
+            omit_whole_bit = True
             continue
         else:
             result.append(item)
     if len(configuration) == 1:
         configuration = configuration[0]
-    return (omit_whole_chunk, set(result), configuration)
+    return (omit_whole_bit, set(result), configuration)
 
 
 Library.EMBEDDINGS_MODEL_ID = EMBEDDINGS_MODEL_ID
