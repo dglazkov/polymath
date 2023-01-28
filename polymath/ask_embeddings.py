@@ -39,7 +39,10 @@ def get_embedding(text, model_id=Library.EMBEDDINGS_MODEL_ID):
             print("Retrying in 20 seconds ...")
             sleep(20)
             retry_count -= 1
-    return result["data"][0]["embedding"]
+    if result:
+        return result["data"][0]["embedding"]
+    else:
+        return None
 
 
 def load_default_libraries(fail_on_empty=False) -> Library:

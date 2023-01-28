@@ -1,6 +1,8 @@
 {
 
     "default_private_access_tag": "unpublished",
+
+    "default_api_key": "<Be careful. If you use this, it will be used... and in the source>",
     
     "restricted": {
       "count": true,

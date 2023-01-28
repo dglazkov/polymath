@@ -256,6 +256,10 @@
 
     async start() {
       this.views.clear();
+      {% if config.default_api_key %}
+      this.store.openai_api_key = "{{ config.default_api_key}}";
+      {% endif %}
+
       if (!this.store.openai_api_key) {
         this.views.show('request-key', this);
       } else {
