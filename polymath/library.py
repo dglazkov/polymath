@@ -82,7 +82,7 @@ def vector_similarity(x, y):
 
 
 class BitInfo:
-    def __init__(self, bit: 'Chunk' = None, data=None):
+    def __init__(self, bit: 'Bit' = None, data=None):
         self._data = data if data else {}
         self._bit = bit
 
@@ -146,7 +146,7 @@ class BitInfo:
         return self._data
 
 
-class Chunk:
+class Bit:
     def __init__(self, library=None, data=None):
         self._cached_info = None
         self._cached_embedding = None
@@ -194,7 +194,7 @@ class Chunk:
         Returns a copy of self, but not attached to any library
         """
         data = copy.deepcopy(self._data)
-        result = Chunk(data=data)
+        result = Bit(data=data)
         return result
 
     def remove(self):
@@ -331,7 +331,7 @@ class Library:
         # _chunks_in_order is an inflated chunk in the same order as the underlying data.
         self._chunks_in_order = []
         for bit_data in content:
-            bit = Chunk(library=self, data=bit_data)
+            bit = Bit(library=self, data=bit_data)
             bit_id = bit.id
             self._chunks[bit_id] = bit
             self._chunks_in_order.append(bit)
@@ -639,7 +639,7 @@ class Library:
         result._chunks = {}
         result._chunks_in_order = []
         for data in result._data.get('bits', []):
-            bit = Chunk(library=result, data=data)
+            bit = Bit(library=result, data=data)
             result._chunks[bit.id] = bit
             result._chunks_in_order.append(bit)
         return result
@@ -679,17 +679,17 @@ class Library:
 
         return restricted_count
 
-    def chunk(self, chunk_id) -> Chunk:
+    def chunk(self, chunk_id) -> Bit:
         return self._chunks.get(chunk_id, None)
 
     @property
-    def chunks(self) -> List[Chunk]:
+    def chunks(self) -> List[Bit]:
         """
         Returns an iterator of each chunk in order
         """
         return [chunk for chunk in self._chunks_in_order]
 
-    def remove_chunk(self, chunk: Chunk):
+    def remove_chunk(self, chunk: Bit):
         if not chunk:
             return
         if chunk.library != self:
@@ -702,7 +702,7 @@ class Library:
                 break
             index = index + 1
         if index >= len(self._chunks_in_order):
-            raise Exception('Chunk was not found')
+            raise Exception('Bit was not found')
         self._chunks_in_order.pop(index)
         self._data['bits'].pop(index)
         del self._chunks[chunk_id]
@@ -710,7 +710,7 @@ class Library:
         # resort, but in all other cases it's unnecessarily slower to sort
         # on every chunk you remove.
 
-    def insert_chunk(self, chunk: Chunk):
+    def insert_chunk(self, chunk: Bit):
         if chunk.library == self:
             return
         if self.omit_whole_chunk:

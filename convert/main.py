@@ -5,7 +5,7 @@ import re
 import openai
 from dotenv import load_dotenv
 
-from polymath import LIBRARY_DIR, Library, Chunk, get_embedding, get_token_count
+from polymath import LIBRARY_DIR, Library, Bit, get_embedding, get_token_count
 
 from .medium import MediumImporter
 from .nakedlibrary import NakedLibraryImporter
@@ -98,9 +98,9 @@ count = 0
 
 seen_ids = {}
 
-for raw_chunk in importer.get_chunks(filename):
-    temp_chunk = Chunk(data=raw_chunk)
-    id = temp_chunk.id
+for raw_bit in importer.get_chunks(filename):
+    temp_bit = Bit(data=raw_bit)
+    id = temp_bit.id
     seen_ids[id] = True
     if max_lines >= 0 and count >= max_lines:
         print('Reached max lines')
@@ -110,7 +110,7 @@ for raw_chunk in importer.get_chunks(filename):
     if new_chunk:
         count += 1
         print(f'Processing new chunk {id} ({count})')
-        chunk = temp_chunk
+        chunk = temp_bit
 
     if debug:
         print(f'DEBUG: {chunk.text}')
