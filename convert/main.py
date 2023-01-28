@@ -105,7 +105,7 @@ for raw_bit in importer.get_chunks(filename):
     if max_lines >= 0 and count >= max_lines:
         print('Reached max lines')
         break
-    chunk = result.chunk(id)
+    chunk = result.bit(id)
     new_chunk = chunk is None
     if new_chunk:
         count += 1

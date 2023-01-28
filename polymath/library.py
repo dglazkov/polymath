@@ -679,7 +679,7 @@ class Library:
 
         return restricted_count
 
-    def chunk(self, chunk_id) -> Bit:
+    def bit(self, chunk_id) -> Bit:
         return self._chunks.get(chunk_id, None)
 
     @property
@@ -787,7 +787,7 @@ class Library:
             return
         similarities = self._similarities(query_embedding)
         for chunk_id, similarity in similarities.items():
-            chunk = self.chunk(chunk_id)
+            chunk = self.bit(chunk_id)
             chunk.similarity = similarity
 
     def query(self, version=None, query_embedding=None, query_embedding_model=None, count=0, count_type='token', sort='similarity', sort_reversed=False, seed=None, omit='embedding', access_token=''):
