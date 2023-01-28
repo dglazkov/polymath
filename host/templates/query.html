@@ -82,6 +82,9 @@
     if (!query_value) {
       askButton.disabled = true;
     }
+    textInput.addEventListener('input', (event) => {
+      askButton.disabled = event.target.value.length < 3;
+    });
     textInput.addEventListener('keyup', (event) => {
       askButton.disabled = textInput.value.length < 3;
       if (event.keyCode != 13 || askButton.disabled) {
