@@ -1,9 +1,4 @@
-import glob
-import os
-
 import feedparser
-
-from argparse import ArgumentParser, Namespace
 
 from bs4 import BeautifulSoup
 from urllib.parse import urlparse
