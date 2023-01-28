@@ -13,6 +13,7 @@ from .substack import SubstackImporter
 from .twitter import TwitterArchiveImporter
 from .googledocs import GoogleDocsImporter
 from .webdotdev import WebDotDevImporter
+from .mdn import MDNImporter
 
 IMPORTERS = {
     'library': NakedLibraryImporter(),
@@ -20,7 +21,8 @@ IMPORTERS = {
     'medium': MediumImporter(),
     'twitter': TwitterArchiveImporter(),
     'googledocs': GoogleDocsImporter(),
-    'webdotdev': WebDotDevImporter()
+    'webdotdev': WebDotDevImporter(),
+    'mdn': MDNImporter()
 }
 
 load_dotenv()

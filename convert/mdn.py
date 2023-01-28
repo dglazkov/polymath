@@ -5,7 +5,6 @@ import frontmatter
 
 from io import StringIO
 from markdown import Markdown
-from argparse import ArgumentParser, Namespace
 from .chunker import generate_chunks
 
 def unmark_element(element, stream=None):
@@ -27,59 +26,61 @@ Markdown.output_formats["plain"] = unmark_element
 __md = Markdown(output_format="plain")
 __md.stripTopLevelTags = False
 
-BASE_URL = "https://web.dev/"
-def url_from_filename(filename):
-    # given /long/path/directory/file.md if index.md return /directory, else /director/file
-    directory, file = os.path.split(filename)
-    last = os.path.basename(os.path.normpath(directory))
-
-    without_ext = os.path.splitext(file)[0]
-    if without_ext == "index":
-        without_ext = ""
-
-    return (BASE_URL + last + "/" + without_ext)
+BASE_URL = "https://developer.mozilla.org/en-US/docs/"
+def url_from_slug(slug):
+    return BASE_URL + slug
 
 
 """
-Usage: python3 -m convert.main --importer webdotdev ~/Projects/web.dev/src/site/content/en
+Usage: python3 -m convert.main --importer mdn ~/Projects/mdn-content/files/en-us/
 
-That is from a clone from https://github.com/GoogleChrome/web.dev
+That is from a clone from https://github.com/mdn/content
 """
-class WebDotDevImporter:
+class MDNImporter:
 
     def __init__(self):
         self.unmark = unmark
 
     def output_base_filename(self, filename):
-        return 'webdotdev'
+        return 'mdn'
 
     def extract_chunks_from_markdown(self, markdownText):
         # print(markdownText)
 
+        # markdownText = re.sub(r'{{\s+domxref\("[^\"]*",\s+"([^\"]*)"\)\s*}}', r'\1', markdownText)
+        # markdownText = re.sub(r'{{\s+HTMLElement\("([^\"]*)"\)\s*}}', r'\1', markdownText)
+
+        markdownText = re.sub(r'{{\s*\w+\(\"(.*?)\"\s*,\s*\"(.*?)\"\)\s*}}', r'\1', markdownText)
+        markdownText = re.sub(r'{{\s*\w+\(\"(.*?)\"\)\s*}}', r'\1', markdownText)
+
         markdownText = re.sub(r"{%[^%]*%}", "", markdownText)
+        markdownText = re.sub(r'{{(.*)(\"[^\"]*\")}}', r'\2', markdownText)
+
+        markdownText = re.sub(r'{{.*?}}', '', markdownText)
+        markdownText = re.sub(r'<section.*?>.*</section>', '', markdownText)
+        
         text = markdownText.split("\n\n")
 
         return generate_chunks([text])
 
     def get_chunks(self, filename):
-        filenames = glob.glob(f"{filename}/**/*.md", recursive=True)
-        # print(len(filenames))
+        filenames = glob.glob(f"{filename}/web/**/*.md", recursive=True) + glob.glob(f"{filename}/glossary/**/*.md", recursive=True)
+        # print("Number of files:", len(filenames))
         for file in filenames:
             # print(file)
 
             page = frontmatter.load(file)
+            slug = page.get('slug')
+            title = page.get('title')
 
-            if page.content:
-                # print(url_from_filename(file))
-                # print(page.content)
-                # print(page.get('title'))
-                # print(page.get('description'))
+            if page.content and title and slug:
+                # print(slug)
+                # print(title)
                 # print(self.unmark(page.content))
 
                 info = {
-                    'url': url_from_filename(file),
-                    'title': page.get('title'),
-                    'description': page.get('description')
+                    'url': url_from_slug(slug),
+                    'title': title
                 }
 
                 count = 0
