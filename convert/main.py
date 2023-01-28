@@ -131,10 +131,10 @@ for raw_bit in importer.get_chunks(filename):
 print(f'Loaded {count} new lines')
 
 if truncate:
-    for chunk in result.chunks:
-        if chunk.id in seen_ids:
+    for bit in result.bits:
+        if bit.id in seen_ids:
             continue
-        result.remove_bit(chunk)
+        result.remove_bit(bit)
 
 if not os.path.exists(LIBRARY_DIR):
     os.mkdir(LIBRARY_DIR)

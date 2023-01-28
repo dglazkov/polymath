@@ -337,8 +337,8 @@ class Library:
             self._chunks_in_order.append(bit)
 
         if access_tag:
-            for chunk in self.chunks:
-                chunk.access_tag = access_tag
+            for bit in self.bits:
+                bit.access_tag = access_tag
 
         self.validate()
 
@@ -410,8 +410,8 @@ class Library:
             self._data['bits'] = []
             self._chunks_in_order = []
             self._chunks = {}
-        for chunk in self.chunks:
-            chunk.strip()
+        for bit in self.bits:
+            bit.strip()
 
     @property
     def seed(self):
@@ -598,14 +598,14 @@ class Library:
 
     @property
     def text(self) -> List[str]:
-        return [chunk.text for chunk in self.chunks]
+        return [bit.text for bit in self.bits]
 
     @property
     def unique_infos(self: 'Library') -> List[BitInfo]:
         seen_infos = set()
         result = []
-        for chunk in self.chunks:
-            info = chunk.info
+        for bit in self.bits:
+            info = bit.info
             key = info.contents
             if key in seen_infos:
                 continue
@@ -630,8 +630,8 @@ class Library:
             # We don't have an omit type, so just absorb the omit type from the
             # other. If it also doesn't have an omit type this will be a no-op.
             self.omit = other.omit
-        for chunk in other.chunks:
-            self.insert_bit(chunk.copy())
+        for bit in other.bits:
+            self.insert_bit(bit.copy())
 
     def copy(self):
         result = Library()
@@ -668,13 +668,13 @@ class Library:
 
         restricted_count = 0
 
-        for chunk in self.chunks:
-            if chunk.access_tag == None:
+        for bit in self.bits:
+            if bit.access_tag == None:
                 continue
-            if chunk.access_tag in visible_access_tags:
+            if bit.access_tag in visible_access_tags:
                 continue
 
-            self.remove_bit(chunk)
+            self.remove_bit(bit)
             restricted_count += 1
 
         return restricted_count
@@ -683,11 +683,11 @@ class Library:
         return self._chunks.get(chunk_id, None)
 
     @property
-    def chunks(self) -> List[Bit]:
+    def bits(self) -> List[Bit]:
         """
-        Returns an iterator of each chunk in order
+        Returns an iterator of each bit in order
         """
-        return [chunk for chunk in self._chunks_in_order]
+        return [bit for bit in self._chunks_in_order]
 
     def remove_bit(self, chunk: Bit):
         if not chunk:
@@ -753,19 +753,19 @@ class Library:
         counter = 0
 
         # TODO: Account for separator tokens, but do so without invoking a tokenizer in this method.
-        for original_chunk in self.chunks:
+        for original_bit in self.bits:
             if count_type_is_chunk and count >= 0 and counter >= count:
                 break
-            chunk = original_chunk.copy()
-            tokens = chunk.token_count
-            text = chunk.text
+            bit = original_bit.copy()
+            tokens = bit.token_count
+            text = bit.text
             context_len += tokens
             if not count_type_is_chunk and count >= 0 and context_len > count:
-                if len(result.chunks) == 0:
-                    chunk.text = text[:(count)]
-                    result.insert_bit(chunk)
+                if len(result.bits) == 0:
+                    bit.text = text[:(count)]
+                    result.insert_bit(bit)
                 break
-            result.insert_bit(chunk)
+            result.insert_bit(bit)
             counter += 1
         return result
 
@@ -775,11 +775,11 @@ class Library:
             json.dump(result, f, indent='\t')
 
     def _similarities(self, query_embedding):
-        chunks = sorted([
-            (vector_similarity(query_embedding, chunk.embedding), chunk.id)
-            for chunk
-            in self.chunks], reverse=True)
-        return {key: value for value, key in chunks}
+        bits = sorted([
+            (vector_similarity(query_embedding, bit.embedding), bit.id)
+            for bit
+            in self.bits], reverse=True)
+        return {key: value for value, key in bits}
 
     def compute_similarities(self, query_embedding):
         # if we won't store the similarities anyway then don't bother.
@@ -840,7 +840,7 @@ class Library:
         count_type_is_chunk = count_type == 'chunk'
         restricted_count = result.delete_restricted_chunks(access_token)
         result = result.slice(count, count_type_is_chunk=count_type_is_chunk)
-        result.count_chunks = len(result.chunks)
+        result.count_chunks = len(result.bits)
         # Now that we know how many chunks exist we can set omit, which might
         # remove all chunks.
         result.omit = omit
