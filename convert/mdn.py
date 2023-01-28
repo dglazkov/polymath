@@ -73,7 +73,8 @@ class MDNImporter:
             slug = page.get('slug')
             title = page.get('title')
 
-            if page.content and title and slug:
+            if page.content and title and slug and len(page.content) < 40000:
+                # print(len(page.content))
                 # print(slug)
                 # print(title)
                 # print(self.unmark(page.content))

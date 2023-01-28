@@ -27,6 +27,7 @@ def get_embedding(text, model_id=Library.EMBEDDINGS_MODEL_ID):
     # Occasionally, API returns an error.
     # Retry a few times before giving up.
     retry_count = 10
+    result = None
     while retry_count > 0:
         try:
             result = openai.Embedding.create(
@@ -39,10 +40,10 @@ def get_embedding(text, model_id=Library.EMBEDDINGS_MODEL_ID):
             print("Retrying in 20 seconds ...")
             sleep(20)
             retry_count -= 1
-    if result:
-        return result["data"][0]["embedding"]
-    else:
+    if result is None:
         return None
+    else:
+        return result["data"][0]["embedding"]
 
 
 def load_default_libraries(fail_on_empty=False) -> Library:

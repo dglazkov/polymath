@@ -120,6 +120,7 @@ for raw_chunk in importer.get_chunks(filename):
         print(f'Fetching embedding for {id}')
         chunk.embedding = get_embedding(chunk.text)
         if chunk.embedding is None:
+            count -= 1
             continue
     if chunk.token_count < 0:
         print(f'Fetching token_count for {id}')
