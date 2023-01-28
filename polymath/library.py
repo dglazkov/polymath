@@ -81,10 +81,10 @@ def vector_similarity(x, y):
     return float(np.dot(np.array(x), np.array(y)))
 
 
-class ChunkInfo:
-    def __init__(self, chunk: 'Chunk' = None, data=None):
+class BitInfo:
+    def __init__(self, bit: 'Chunk' = None, data=None):
         self._data = data if data else {}
-        self._chunk = chunk
+        self._bit = bit
 
     @property
     def url(self):
@@ -95,8 +95,8 @@ class ChunkInfo:
         if value == self.url:
             return
         self._data['url'] = value
-        if self._chunk:
-            self._chunk.info = self
+        if self._bit:
+            self._bit.info = self
 
     @property
     def image_url(self):
@@ -107,8 +107,8 @@ class ChunkInfo:
         if value == self.image_url:
             return
         self._data['image_url'] = value
-        if self._chunk:
-            self._chunk.info = self
+        if self._bit:
+            self._bit.info = self
 
     @property
     def title(self):
@@ -119,8 +119,8 @@ class ChunkInfo:
         if value == self.title:
             return
         self._data['title'] = value
-        if self._chunk:
-            self._chunk.info = self
+        if self._bit:
+            self._bit.info = self
 
     @property
     def description(self):
@@ -131,11 +131,11 @@ class ChunkInfo:
         if value == self.description:
             return
         self._data['description'] = value
-        if self._chunk:
-            self._chunk.info = self
+        if self._bit:
+            self._bit.info = self
 
     @property
-    def contents(self: 'ChunkInfo'):
+    def contents(self: 'BitInfo'):
         """
         Returns the contents of the whole info as a string, appropriate for
         checking equality via string comparison.
@@ -272,14 +272,14 @@ class Chunk:
         self._data['access_tag'] = value
 
     @property
-    def info(self) -> ChunkInfo:
+    def info(self) -> BitInfo:
         if self._cached_info is None:
-            self._cached_info = ChunkInfo(
-                chunk=self, data=self._data.get('info', None))
+            self._cached_info = BitInfo(
+                bit=self, data=self._data.get('info', None))
         return self._cached_info
 
     @info.setter
-    def info(self, value: ChunkInfo):
+    def info(self, value: BitInfo):
         self._cached_info = value
         self._data['info'] = value._data
 
@@ -601,7 +601,7 @@ class Library:
         return [chunk.text for chunk in self.chunks]
 
     @property
-    def unique_infos(self: 'Library') -> List[ChunkInfo]:
+    def unique_infos(self: 'Library') -> List[BitInfo]:
         seen_infos = set()
         result = []
         for chunk in self.chunks:
