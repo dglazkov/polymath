@@ -25,8 +25,8 @@
 
     "tokens": {
       "dimitri@glazyglaz.com": {
-        "token": "<A cryptographically secure string that is treated as a secret. It should be given to the user so they can put it in their \"token\" field in their `directory.SECRET.json` associated with this endpoint.>",
-        "description": "<An optional stirng where you can store notes about this user or record.>",
+        "token": "<A cryptographically secure string that is treated as a secret. It should be given to the user so they can put it in their \"token\" field in their `directory.SECRET.json` associated with this endpoint>",
+        "description": "<An optional string where you can store notes about this user or record>",
         "access_tags": ["unpublished"]
       }
     }

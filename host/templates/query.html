@@ -57,6 +57,7 @@
     </div>
   </div>
 
+  {% if config.restricted %}
   <details class="text-right -mt-12">
     <summary id="more-options" class="text-indigo-600 hover:text-indigo-700 hover:underline hover:cursor-pointer">More options</summary>
     <div>
@@ -67,6 +68,7 @@
       <button id="clear" class="btn-primary">Clear Key and Access Token</button>
     </div>
   </details>
+  {% endif %}
 
   <script action="init" arguments="controller,query_value">
     const textInput = this.querySelector('#query');
@@ -75,7 +77,7 @@
     const askButton = this.querySelector('#ask');
     const askServer = () => controller.askServer({
       query: textInput.value,
-      access_token: access_token.value,
+      access_token: access_token?.value,
     });
     if (!query_value) {
       askButton.disabled = true;
@@ -88,7 +90,7 @@
       askServer();
     });
     askButton.addEventListener('click', askServer);
-    this.querySelector('#clear').addEventListener('click',
+    this.querySelector('#clear')?.addEventListener('click',
       () => controller.clearKeys());
 
     {% if config.webclient.fun_queries %}
