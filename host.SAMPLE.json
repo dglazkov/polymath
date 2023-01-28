@@ -22,7 +22,11 @@
         "What is an Ajaxian?",
         "What happened to webOS?",
         "What is progressive about the Web?"
-      ]
+      ],
+      "source_prefixes": {
+        "https://remix.run/": "Remix: ",
+        "https://reactrouter.com/": "React Router: "
+      }
     },
 
     "tokens": {

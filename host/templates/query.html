@@ -197,11 +197,17 @@
     this.querySelector('#sources').innerHTML = removeDuplicates(infos).map(info => {
       let escapedTitle = (info.description || info.title).replace(/"/g, "\\\"");
       let prefix = "";
-      if (info.url.startsWith("https://remix.run/")) {
-        prefix = "Remix: ";
-      } else if (info.url.startsWith("https://reactrouter.com/")) {
-        prefix = "React Router: ";
+
+      {% if config.webclient.source_prefixes %}
+      let sourcePrefixes = {{ config.webclient.source_prefixes | safe }};
+
+      for (let url in sourcePrefixes) {
+        if (info.url.startsWith(url)) {
+          prefix = sourcePrefixes[url];
+          break;
+        }
       }
+      {% endif %}      
 
       return `<li class="flex py-4"><div class="ml-3">
           <p class="text-sm font-medium text-gray-900 hover:text-indigo-700"><a href="${info.url}"
