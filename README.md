@@ -44,7 +44,7 @@ it directly to anywhere but OpenAI.com itself.
 OpenAI's completion API is trained on a massive corpus of public content, making
 it have good general intelligence. However, it typically knows nothing about
 your *specific* content. It's possible to fine-tune these models with your
-specific content, but that's expensive and unneccesary. The completion APIs tha
+specific content, but that's expensive and unnecessary. The completion APIs tha
 generate free-form answers have only a small window (no more than a few pages of
 text) of "working memory". The trick is that when you ask a question, you also
 select the most relevant bits of content from your library and include those
