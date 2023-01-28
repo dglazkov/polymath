@@ -658,9 +658,9 @@ class Library:
         self._chunks = {}
         self._chunks_in_order = []
 
-    def delete_restricted_chunks(self, access_token=None):
+    def delete_restricted_bits(self, access_token=None):
         """
-        Deletes all chunks that are restricted, unless access_token grants access.
+        Deletes all bits that are restricted, unless access_token grants access.
 
         Returns the number of items that were removed.
         """
@@ -838,7 +838,7 @@ class Library:
         result.sort = sort
 
         count_type_is_bit = count_type == 'bit'
-        restricted_count = result.delete_restricted_chunks(access_token)
+        restricted_count = result.delete_restricted_bits(access_token)
         result = result.slice(count, count_type_is_bit=count_type_is_bit)
         result.count_bits = len(result.bits)
         # Now that we know how many chunks exist we can set omit, which might
