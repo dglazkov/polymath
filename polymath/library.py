@@ -494,12 +494,12 @@ class Library:
             rng.seed(self.seed)
             rng.shuffle(bits_in_order)
         elif sort_type == 'similarity':
-            def get_similarity(chunk):
-                similarity = chunk.similarity
+            def get_similarity(bit):
+                similarity = bit.similarity
                 if similarity == -1:
-                    chunk_id = chunk.id
+                    bit_id = bit.id
                     raise Exception(
-                        f'sort of similarity passed but {chunk_id} had no similarity')
+                        f'sort of similarity passed but {bit_id} had no similarity')
                 return similarity
             bits_in_order.sort(reverse=True, key=get_similarity)
         elif sort_type == 'manual':
@@ -729,9 +729,9 @@ class Library:
         being serialized e.g. into JSON.
         """
         result = copy.deepcopy(self._data)
-        for chunk in result['bits']:
-            if not include_access_tag and 'access_tag' in chunk:
-                del chunk['access_tag']
+        for bit in result['bits']:
+            if not include_access_tag and 'access_tag' in bit:
+                del bit['access_tag']
         return result
 
     def slice(self, count, count_type_is_bit=False):
@@ -786,9 +786,9 @@ class Library:
         if self.omit_whole_bit or 'similarities' in self.fields_to_omit:
             return
         similarities = self._similarities(query_embedding)
-        for chunk_id, similarity in similarities.items():
-            chunk = self.bit(chunk_id)
-            chunk.similarity = similarity
+        for bit_id, similarity in similarities.items():
+            bit = self.bit(bit_id)
+            bit.similarity = similarity
 
     def query(self, version=None, query_embedding=None, query_embedding_model=None, count=0, count_type='token', sort='similarity', sort_reversed=False, seed=None, omit='embedding', access_token=''):
         # We do our own defaulting so that servers that call us can pass the result
