@@ -6,17 +6,20 @@ import frontmatter
 from .chunker import generate_chunks
 from .markdown2text import unmark
 
-BASE_URL = "https://preactjs.com/"
-def url_from_filename(filename):
-    # given /long/path/directory/file.md if index.md return /directory, else /director/file
+BASE_URL = "https://preactjs.com"
+def url_from_filename(basedir, filename):
+    # given /base/path/directory/file.md if index.md return /directory, else /director/file
     directory, file = os.path.split(filename)
-    last = os.path.basename(os.path.normpath(directory))
+    directory = re.sub(basedir, '', directory)
+
+    # print("Basedir:", basedir)
+    # print("Directory:", directory)
 
     without_ext = os.path.splitext(file)[0]
     if without_ext == "index":
         without_ext = ""
 
-    return (BASE_URL + last + "/" + without_ext)
+    return (BASE_URL + directory + "/" + without_ext)
 
 
 """
@@ -32,8 +35,9 @@ class PreactImporter:
     def extract_chunks_from_markdown(self, markdownText):
         # print(markdownText)
 
-        markdownText = re.sub(r'<docs-.*?>(.*?)</docs-.*?>', r'\1', markdownText)
-        markdownText = re.sub(r'<docs-.*?>', '', markdownText)
+        markdownText = re.sub(r'<jumbotron>(.*?)</jumbotron>', r'\1', markdownText)
+        markdownText = re.sub(r'<jumbotron>', '', markdownText)
+        markdownText = re.sub(r'</jumbotron>', '', markdownText)
         markdownText = re.sub(r'<div><toc></toc></div>', '', markdownText)
 
         text = markdownText.split("\n\n")
@@ -52,16 +56,19 @@ class PreactImporter:
             page = frontmatter.load(file)
 
             if page.content:
-                # print(url_from_filename(file))
+                # print("URL:", url_from_filename(filename, file))
                 # print(page.content)
                 # print(page.get('title'))
                 # print(page.get('description'))
                 # print(self.unmark(page.content))
 
                 info = {
-                    'url': url_from_filename(file),
-                    'title': page.get('name'),
+                    'url': url_from_filename(filename, file)
                 }
+
+                title = page.get('title') or page.get('name')
+                if title:
+                    info["title"] = title
 
                 description = page.get('description')
                 if description:
