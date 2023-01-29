@@ -11,6 +11,7 @@ dnspython==2.3.0
 docutils==0.19
 emoji==1.7.0
 et-xmlfile==1.1.0
+feedparser==6.0.10
 filelock==3.8.2
 Flask==2.2.2
 Flask-Compress==1.13
@@ -30,6 +31,7 @@ idna==3.4
 itsdangerous==2.1.2
 Jinja2==3.1.2
 loguru==0.6.0
+Markdown==3.4.1
 MarkupSafe==2.1.1
 numpy==1.24.1
 oauthlib==3.2.2
@@ -46,6 +48,7 @@ pycodestyle==2.10.0
 pyparsing==3.0.9
 python-dateutil==2.8.2
 python-dotenv==0.21.0
+python-frontmatter==1.0.
 pytz==2022.7
 PyYAML==6.0
 regex==2022.10.31
