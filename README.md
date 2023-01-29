@@ -267,6 +267,30 @@ python3 -m convert.main --importer rss https://paul.kinlan.me/index.xml
 
 Will result in a library created in the format of `rss-[origin]-[path (escaped)].json`.
 
+## Exporting content
+
+WARNING: This section is basically unbaked cookies.
+
+To export a library to [pinecone](https://www.pinecone.io/), follow these steps:
+
+Put `PINECONE_API_KEY=<key>` entry into your `.env` file.
+
+Collect the following information:
+
+* `index_name` -- name of the Pinecone index to use
+* `path/to/library` -- path to the library to export to Pinecone
+* `namespace_name` -- namespace in the Pinecone index.
+
+Run
+```shell
+python3 -m convert.out \
+  --exporter pinecone \
+  --library path/to/library \
+  --index index_name \
+  --namespace namespace_name
+```
+
+
 ## Running the server
 
 To start the host server, run `python3 -m host.server`. It will start a Flask app as a local server. Go to `http://127.0.0.1:8080/api/query` to see the API endpoint.
