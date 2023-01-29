@@ -18,6 +18,7 @@ from .mdn import MDNImporter
 from .remix import RemixImporter
 from .reactrouter import ReactRouterImporter
 from .preact import PreactImporter
+from .polaris import PolarisImporter
 
 IMPORTERS = {
     'library': NakedLibraryImporter(),
@@ -30,7 +31,8 @@ IMPORTERS = {
     'mdn': MDNImporter(),
     'remix': RemixImporter(),
     'reactrouter': ReactRouterImporter(),
-    'preact': PreactImporter()
+    'preact': PreactImporter(),
+    'polaris': PolarisImporter()
 }
 
 load_dotenv()
