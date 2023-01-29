@@ -12,11 +12,12 @@ from .nakedlibrary import NakedLibraryImporter
 from .substack import SubstackImporter
 from .twitter import TwitterArchiveImporter
 from .googledocs import GoogleDocsImporter
+from .rss import RSSImporter
 from .webdotdev import WebDotDevImporter
 from .mdn import MDNImporter
 from .remix import RemixImporter
 from .reactrouter import ReactRouterImporter
-from .rss import RSSImporter
+from .preact import PreactImporter
 
 IMPORTERS = {
     'library': NakedLibraryImporter(),
@@ -24,11 +25,12 @@ IMPORTERS = {
     'medium': MediumImporter(),
     'twitter': TwitterArchiveImporter(),
     'googledocs': GoogleDocsImporter(),
+    'rss': RSSImporter(),
     'webdotdev': WebDotDevImporter(),
     'mdn': MDNImporter(),
     'remix': RemixImporter(),
     'reactrouter': ReactRouterImporter(),
-    'rss': RSSImporter()
+    'preact': PreactImporter()
 }
 
 load_dotenv()
