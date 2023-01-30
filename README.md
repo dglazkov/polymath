@@ -498,4 +498,4 @@ from the `host` directory.
 
 ## Commmunity
 
-If you would ike to participate in development or host a polymath endpoint, consider joining the [Polymath Discord](https://discord.gg/8mbSq5vA). It's not much, but should give you a better sense of what's happening, like when formats are changing or new interesting capabilities are available. 
+If you would ike to participate in development or host a polymath endpoint, consider joining the [Polymath Discord](https://discord.gg/wkFKZXcf). It's not much, but should give you a better sense of what's happening, like when formats are changing or new interesting capabilities are available. 
