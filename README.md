@@ -257,7 +257,7 @@ Then run:
 python3 -m convert.main --importer googledocs <document_id>
 ```
 
-### RSS: import an RSS feed
+### `RSS` : An import an RSS feed
 
 This is a simple implementation of an RSS feed importer. Simply point it at your RSS feed and it will parse the content, title and link.
 
@@ -266,6 +266,18 @@ python3 -m convert.main --importer rss https://paul.kinlan.me/index.xml
 ```
 
 Will result in a library created in the format of `rss-[origin]-[path (escaped)].json`.
+
+### `wordpress` : An import of a WordPress exported archive
+
+An importer that goes through your downloaded WordPress archive.
+
+[How to get your archive](https://wordpress.com/support/export/)
+
+#### Usage
+
+```shell
+python3 -m convert.main --importer wordpress ~/Downloads/exports/dionalmaer.WordPress.2023-01-14.xml
+```
 
 ## Exporting content
 
