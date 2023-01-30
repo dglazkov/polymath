@@ -13,6 +13,7 @@ from .substack import SubstackImporter
 from .twitter import TwitterArchiveImporter
 from .googledocs import GoogleDocsImporter
 from .rss import RSSImporter
+from .wordpress import WordPressArchiveImporter
 from .webdotdev import WebDotDevImporter
 from .mdn import MDNImporter
 from .remix import RemixImporter
@@ -27,6 +28,7 @@ IMPORTERS = {
     'twitter': TwitterArchiveImporter(),
     'googledocs': GoogleDocsImporter(),
     'rss': RSSImporter(),
+    'wordpress': WordPressArchiveImporter(),
     'webdotdev': WebDotDevImporter(),
     'mdn': MDNImporter(),
     'remix': RemixImporter(),
