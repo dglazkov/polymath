@@ -74,11 +74,9 @@ class PolarisImporter:
                     # print("Keywords: " + ", ".join(keywords))
                     page.content += "\nKeywords: " + ', '.join([str(item) for item in keywords])
 
-                count = 0
                 for chunk in self.extract_chunks_from_markdown(unmark(page.content)):
                     # print(chunk)
                     yield {
                         "text": chunk,
                         "info": info
                     }
-                    count += 1

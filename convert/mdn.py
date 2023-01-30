@@ -60,11 +60,9 @@ class MDNImporter:
                     'title': title
                 }
 
-                count = 0
                 for chunk in self.extract_chunks_from_markdown(unmark(page.content)):
                     # print(chunk)
                     yield {
                         "text": chunk,
                         "info": info
                     }
-                    count += 1

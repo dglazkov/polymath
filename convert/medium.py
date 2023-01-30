@@ -96,10 +96,8 @@ class MediumImporter:
                     'title': title,
                     'description': description
                 }
-                count = 0
                 for chunk in self.extract_chunks_from_soup(soup):
                     yield {
                         "text": chunk,
                         "info": info
                     }
-                    count += 1
