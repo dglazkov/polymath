@@ -14,6 +14,7 @@ from .twitter import TwitterArchiveImporter
 from .googledocs import GoogleDocsImporter
 from .rss import RSSImporter
 from .htmlscraper import HTMLScraperImporter
+from .sitemap import SitemapImporter
 from .wordpress import WordPressArchiveImporter
 from .knowledge import KnowledgeImporter
 from .developerdotchrome import DeveloperDotChromeImporter
@@ -35,6 +36,7 @@ IMPORTERS = {
     'googledocs': GoogleDocsImporter(),
     'rss': RSSImporter(),
     'htmlscraper': HTMLScraperImporter(),
+    'sitemap': SitemapImporter(),
     'wordpress': WordPressArchiveImporter(),
     'knowledge': KnowledgeImporter(),
     'developerdotchrome': DeveloperDotChromeImporter(),
