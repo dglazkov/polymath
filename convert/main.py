@@ -22,6 +22,7 @@ from .remix import RemixImporter
 from .reactrouter import ReactRouterImporter
 from .preact import PreactImporter
 from .polaris import PolarisImporter
+from .graphlschema import GraphQLSchemaImporter
 
 IMPORTERS = {
     'library': NakedLibraryImporter(),
@@ -38,7 +39,8 @@ IMPORTERS = {
     'remix': RemixImporter(),
     'reactrouter': ReactRouterImporter(),
     'preact': PreactImporter(),
-    'polaris': PolarisImporter()
+    'polaris': PolarisImporter(),
+    'graphqlschema': GraphQLSchemaImporter()
 }
 
 load_dotenv()
