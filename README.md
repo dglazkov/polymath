@@ -267,6 +267,16 @@ python3 -m convert.main --importer rss https://paul.kinlan.me/index.xml
 
 Will result in a library created in the format of `rss-[origin]-[path (escaped)].json`.
 
+### `markdown` : An import of a Markdown file
+
+An importer that goes through a folder and looks for markdown files.
+
+```shell
+python -m convert.main --importer markdown --markdown-base-url https://paul.kinlan.me/ ../paul.kinlan.me/content/
+```
+
+Note: The `--markdown-base-url` combined with `slug` frontmatter is used to generate the URL for the markdown file.
+
 ### `OCR` : Import an image and run OCR on it
 
 This is an experimental implementation of an OCR importer. Simply point it at an image and it will run OCR on it and create a library.
