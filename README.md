@@ -267,6 +267,14 @@ python3 -m convert.main --importer rss https://paul.kinlan.me/index.xml
 
 Will result in a library created in the format of `rss-[origin]-[path (escaped)].json`.
 
+### `OCR` : Import an image and run OCR on it
+
+This is an experimental implementation of an OCR importer. Simply point it at an image and it will run OCR on it and create a library.
+
+```shell
+python3 -m convert.main --importer ocr fancyimage.png
+```
+
 ### `wordpress` : An import of a WordPress exported archive
 
 An importer that goes through your downloaded WordPress archive.
