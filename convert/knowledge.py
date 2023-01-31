@@ -1,3 +1,4 @@
+import os
 import re
 import urllib.parse
 
@@ -35,7 +36,8 @@ For now, cheating by using a Google Search URL :)
 class KnowledgeImporter:
 
     def output_base_filename(self, filename):
-        return 'knowledge'
+        file_without_ext = os.path.splitext(os.path.basename(filename))[0]
+        return 'knowledge-' + file_without_ext
 
     def get_chunks(self, filename):
         # print("File: ", filename)
