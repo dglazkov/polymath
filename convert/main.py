@@ -17,6 +17,7 @@ from .wordpress import WordPressArchiveImporter
 from .knowledge import KnowledgeImporter
 from .webdotdev import WebDotDevImporter
 from .mdn import MDNImporter
+from .ocr import OCRImporter
 from .remix import RemixImporter
 from .reactrouter import ReactRouterImporter
 from .preact import PreactImporter
@@ -33,6 +34,7 @@ IMPORTERS = {
     'knowledge': KnowledgeImporter(),
     'webdotdev': WebDotDevImporter(),
     'mdn': MDNImporter(),
+    'ocr': OCRImporter(),
     'remix': RemixImporter(),
     'reactrouter': ReactRouterImporter(),
     'preact': PreactImporter(),
