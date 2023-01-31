@@ -17,19 +17,20 @@ class OCRImporter:
 
     def get_chunks(self, filename):
         try:
+            friendly_filename = Path(filename).stem
+
             # Currently assumes eng. TODO: add language support.
             text = pytesseract.image_to_string(filename, config='--oem 1 --psm 6')
   
             if self._debug == True:
                 print(f'DEBUG: {text}')
-                return
-            
+  
             for chunk in generate_chunks([[text]]):
                 yield {
                     "text": chunk,
                     "info": {
-                        "url": filename,
-                        "title": filename
+                        "url": friendly_filename,
+                        "title": friendly_filename
                     }
                 }
         except pytesseract.TesseractNotFoundError:
