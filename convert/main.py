@@ -16,6 +16,7 @@ from .rss import RSSImporter
 from .htmlscraper import HTMLScraperImporter
 from .wordpress import WordPressArchiveImporter
 from .knowledge import KnowledgeImporter
+from .developerdotchrome import DeveloperDotChromeImporter
 from .webdotdev import WebDotDevImporter
 from .mdn import MDNImporter
 from .remix import RemixImporter
@@ -34,6 +35,7 @@ IMPORTERS = {
     'htmlscraper': HTMLScraperImporter(),
     'wordpress': WordPressArchiveImporter(),
     'knowledge': KnowledgeImporter(),
+    'developerdotchrome': DeveloperDotChromeImporter(),
     'webdotdev': WebDotDevImporter(),
     'mdn': MDNImporter(),
     'remix': RemixImporter(),
