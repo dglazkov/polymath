@@ -15,6 +15,7 @@ from .googledocs import GoogleDocsImporter
 from .rss import RSSImporter
 from .wordpress import WordPressArchiveImporter
 from .knowledge import KnowledgeImporter
+from .developerdotchrome import DeveloperDotChromeImporter
 from .webdotdev import WebDotDevImporter
 from .mdn import MDNImporter
 from .remix import RemixImporter
@@ -31,6 +32,7 @@ IMPORTERS = {
     'rss': RSSImporter(),
     'wordpress': WordPressArchiveImporter(),
     'knowledge': KnowledgeImporter(),
+    'developerdotchrome': DeveloperDotChromeImporter(),
     'webdotdev': WebDotDevImporter(),
     'mdn': MDNImporter(),
     'remix': RemixImporter(),
