@@ -29,7 +29,7 @@ That is from a clone from https://github.com/shopify/polaris
 """
 class PolarisImporter:
 
-    def output_base_filename(self, filename):
+    def output_base_filename(self, directory):
         return 'polaris'
 
     def extract_chunks_from_markdown(self, markdownText):
@@ -42,8 +42,8 @@ class PolarisImporter:
 
         return generate_chunks([text])
 
-    def get_chunks(self, filename):
-        filenames = glob.glob(f"{filename}/**/*.md", recursive=True)
+    def get_chunks(self, directory):
+        filenames = glob.glob(f"{directory}/**/*.md", recursive=True)
         # print("Number of files:", len(filenames))
         for file in filenames:
             # print("File: ", file)

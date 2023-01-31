@@ -27,7 +27,7 @@ That is from a clone from https://github.com/GoogleChrome/web.dev
 """
 class WebDotDevImporter:
 
-    def output_base_filename(self, filename):
+    def output_base_filename(self, directory):
         return 'webdotdev'
 
     def extract_chunks_from_markdown(self, markdownText):
@@ -38,8 +38,8 @@ class WebDotDevImporter:
 
         return generate_chunks([text])
 
-    def get_chunks(self, filename):
-        filenames = glob.glob(f"{filename}/**/*.md", recursive=True)
+    def get_chunks(self, directory):
+        filenames = glob.glob(f"{directory}/**/*.md", recursive=True)
         # print(len(filenames))
         for file in filenames:
             # print(file)

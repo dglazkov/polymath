@@ -7,9 +7,9 @@ from .chunker import generate_chunks
 from .markdown2text import unmark
 
 BASE_URL = "https://remix.run/docs/en/v1/"
-def url_from_filename(filename):
+def url_from_filename(basedir):
     # given /long/path/directory/file.md if index.md return /directory, else /director/file
-    directory, file = os.path.split(filename)
+    directory, file = os.path.split(basedir)
     last = os.path.basename(os.path.normpath(directory))
 
     without_ext = os.path.splitext(file)[0]
@@ -26,7 +26,7 @@ That is from a clone from https://github.com/remix-run/remix/tree/main/docs
 """
 class RemixImporter:
 
-    def output_base_filename(self, filename):
+    def output_base_filename(self, directory):
         return 'remix'
 
     def extract_chunks_from_markdown(self, markdownText):
@@ -40,8 +40,8 @@ class RemixImporter:
 
         return generate_chunks([text])
 
-    def get_chunks(self, filename):
-        filenames = glob.glob(f"{filename}/**/*.md", recursive=True)
+    def get_chunks(self, directory):
+        filenames = glob.glob(f"{directory}/**/*.md", recursive=True)
         # print("Number of files:", len(filenames))
         for file in filenames:
             # print("File: ", file)

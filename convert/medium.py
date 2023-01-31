@@ -29,8 +29,8 @@ class MediumImporter:
         """
         self._include = args.medium_include
 
-    def output_base_filename(self, filename):
-        profile_path = f"{filename}/profile/profile.html"
+    def output_base_filename(self, directory):
+        profile_path = f"{directory}/profile/profile.html"
         with open(profile_path, "r") as f:
             soup = BeautifulSoup(f, "html.parser")
             ele = soup.find('a', class_='u-url')
@@ -72,8 +72,8 @@ class MediumImporter:
         text = [p.get_text(" ", strip=True) for p in ps]
         return generate_chunks([text])
 
-    def get_chunks(self, filename):
-        filenames = glob.glob(f"{filename}/posts/*.html")
+    def get_chunks(self, directory):
+        filenames = glob.glob(f"{directory}/posts/*.html")
         for file in filenames:
             with open(file, 'r') as f:
                 base_filename = os.path.basename(file)

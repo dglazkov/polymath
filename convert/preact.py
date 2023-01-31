@@ -29,7 +29,7 @@ That is from a clone from https://github.com/preactjs/preact-www
 """
 class PreactImporter:
 
-    def output_base_filename(self, filename):
+    def output_base_filename(self, directory):
         return 'preact'
 
     def extract_chunks_from_markdown(self, markdownText):
@@ -44,8 +44,8 @@ class PreactImporter:
 
         return generate_chunks([text])
 
-    def get_chunks(self, filename):
-        filenames = glob.glob(f"{filename}/**/*.md", recursive=True)
+    def get_chunks(self, directory):
+        filenames = glob.glob(f"{directory}/**/*.md", recursive=True)
         # print("Number of files:", len(filenames))
         for file in filenames:
             # print("File: ", file)
@@ -56,14 +56,14 @@ class PreactImporter:
             page = frontmatter.load(file)
 
             if page.content:
-                # print("URL:", url_from_filename(filename, file))
+                # print("URL:", url_from_filename(directory, file))
                 # print(page.content)
                 # print(page.get('title'))
                 # print(page.get('description'))
                 # print(self.unmark(page.content))
 
                 info = {
-                    'url': url_from_filename(filename, file)
+                    'url': url_from_filename(directory, file)
                 }
 
                 title = page.get('title') or page.get('name')

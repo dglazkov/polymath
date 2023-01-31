@@ -17,7 +17,7 @@ That is from a clone from https://github.com/mdn/content
 """
 class MDNImporter:
 
-    def output_base_filename(self, filename):
+    def output_base_filename(self, directory):
         return 'mdn'
 
     def extract_chunks_from_markdown(self, markdownText):
@@ -39,9 +39,9 @@ class MDNImporter:
 
         return generate_chunks([text])
 
-    def get_chunks(self, filename):
-        filenames = glob.glob(f"{filename}/web/**/*.md", recursive=True) + glob.glob(f"{filename}/glossary/**/*.md", recursive=True)
-        # print("Number of files:", len(filenames))
+    def get_chunks(self, directory):
+        filenames = glob.glob(f"{directory}/web/**/*.md", recursive=True) + glob.glob(f"{directory}/glossary/**/*.md", recursive=True)
+        # print("Number of files:", len(directory))
         for file in filenames:
             # print(file)
 
