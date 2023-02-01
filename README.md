@@ -34,6 +34,7 @@ Try visiting any of these endpoints and giving them a spin:
 - https://polymath.komoroske.com
 - https://polymath.glazkov.com
 - https://polymath.fluxcollective.org
+- https://webdev.polymath.chat
 
 On each of these webapps, you'll first need to paste in your OpenAI API key. The
 webapp stores the key locally in your browser for that site, and never transmits
@@ -129,8 +130,10 @@ A few public content servers you can try:
   - https://polymath.glazkov.com
   - https://polymath.fluxcollective.org
   - https://polymath.almaer.com
-  - https://remix.polymath.chat
   - https://webdev.polymath.chat
+  - https://remix.polymath.chat
+  - https://preact.polymath.chat
+  - https://polaris.polymath.chat
 
 If someone who runs a polymath server sent you a private token, see the section below on `Private Content` and its own getting started guide.
 
@@ -295,6 +298,14 @@ An importer that goes through your downloaded WordPress archive.
 
 ```shell
 python3 -m convert.main --importer wordpress ~/Downloads/exports/dionalmaer.WordPress.2023-01-14.xml
+```
+
+### `htmlscraper` : Import a web page based on the given URL
+
+This importer will download the web page and import it
+
+```shell
+% python3 -m convert.main --importer htmlscraper https://almaer.com/dion/cv/
 ```
 
 ### `sitemap` : Import a sitemap and all the pages it links to
