@@ -18,6 +18,7 @@ from .wordpress import WordPressArchiveImporter
 from .knowledge import KnowledgeImporter
 from .developerdotchrome import DeveloperDotChromeImporter
 from .webdotdev import WebDotDevImporter
+from .markdown import MarkdownImporter
 from .mdn import MDNImporter
 from .ocr import OCRImporter
 from .remix import RemixImporter
@@ -38,6 +39,7 @@ IMPORTERS = {
     'knowledge': KnowledgeImporter(),
     'developerdotchrome': DeveloperDotChromeImporter(),
     'webdotdev': WebDotDevImporter(),
+    'markdown': MarkdownImporter(),
     'mdn': MDNImporter(),
     'ocr': OCRImporter(),
     'remix': RemixImporter(),
