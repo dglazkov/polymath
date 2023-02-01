@@ -120,35 +120,39 @@ count = 0
 
 seen_ids = {}
 
-for raw_bit in importer.get_chunks(filename):
-    temp_bit = Bit(data=raw_bit)
-    id = temp_bit.id
-    seen_ids[id] = True
-    if max_lines >= 0 and count >= max_lines:
-        print('Reached max lines')
-        break
-    bit = result.bit(id)
-    new_bit = bit is None
-    if new_bit:
-        count += 1
-        print(f'Processing new bit {id} ({count})')
-        bit = temp_bit
+try:
+    for raw_bit in importer.get_chunks(filename):
+        temp_bit = Bit(data=raw_bit)
+        id = temp_bit.id
+        seen_ids[id] = True
+        if max_lines >= 0 and count >= max_lines:
+            print('Reached max lines')
+            break
+        bit = result.bit(id)
+        new_bit = bit is None
+        if new_bit:
+            count += 1
+            print(f'Processing new bit {id} ({count})')
+            bit = temp_bit
 
-    if debug:
-        print(f'DEBUG: {bit.text}')
-        continue
-
-    if bit.embedding is None:
-        print(f'Fetching embedding for {id}')
-        bit.embedding = get_embedding(bit.text)
-        if bit.embedding is None:
+        if debug:
+            print(f'DEBUG: {bit.text}')
             continue
-    if bit.token_count < 0:
-        print(f'Fetching token_count for {id}')
-        bit.token_count = get_token_count(bit.text)
 
-    if new_bit:
-        result.insert_bit(bit)
+        if bit.embedding is None:
+            print(f'Fetching embedding for {id}')
+            bit.embedding = get_embedding(bit.text)
+            if bit.embedding is None:
+                continue
+        if bit.token_count < 0:
+            print(f'Fetching token_count for {id}')
+            bit.token_count = get_token_count(bit.text)
+
+        if new_bit:
+            result.insert_bit(bit)
+except Exception as e:
+    print("Saving prematurely due to crash: ", e)
+    result.save(full_output_filename)
 
 print(f'Loaded {count} new lines')
 
