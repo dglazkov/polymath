@@ -297,6 +297,16 @@ An importer that goes through your downloaded WordPress archive.
 python3 -m convert.main --importer wordpress ~/Downloads/exports/dionalmaer.WordPress.2023-01-14.xml
 ```
 
+### `sitemap` : Import a sitemap and all the pages it links to
+
+This importer will go through a sitemap and import all the pages it links to.
+
+```shell
+python3 -m convert.main --importer sitemap https://paul.kinlan.me/sitemap.xml
+```
+
+Note: This importer subclasses the `HTMLScraperImporter`.
+
 ## Exporting content
 
 WARNING: This section is basically unbaked cookies.
