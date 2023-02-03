@@ -23,7 +23,7 @@ config = polymath.host_config()
 
 
 @app.route("/", methods=["POST"])
-def start():
+def index():
     try:
         query_embedding = request.form.get("query_embedding")
         query_embedding_model = request.form.get("query_embedding_model")
@@ -49,7 +49,7 @@ def start():
 
 
 @app.route("/", methods=["GET"])
-def start_sample():
+def render_index():
     return render_template("query.html", config=config)
 
 
