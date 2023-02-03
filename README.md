@@ -470,9 +470,6 @@ The mapping of `asset_token` to `access_tag` they give access to is configured i
     //Optional. If provided, then Library.query() will output a message field of this message if at least one bit was filtered out due to being access restricted. This reveals that there are private results. The message will be prepended with 'Restricted results were omitted. '
     "message": "Contact alex@komoroske.com for an access_token."
   },
-  "twitter": {
-    "handle": "dalmaer"
-  },
 
   "webclient": {
     "headername": "Dion's",
