@@ -827,10 +827,11 @@ class Library:
                 f'count_type {count_type} is not one of the legal options: {LEGAL_COUNT_TYPES}')
 
         result = self.copy()
-        if query_embedding:
-            # TODO: support query_embedding being base64 encoded or a raw vector of
-            # floats
-            embedding = vector_from_base64(query_embedding)
+        if query_embedding:            
+            if type(query_embedding) == str:
+                embedding = vector_from_base64(query_embedding)
+            else: # assuming it's a list of vectors now
+                embedding = query_embedding
             result.compute_similarities(embedding)
 
         result.seed = seed
