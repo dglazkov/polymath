@@ -44,7 +44,7 @@ def start():
 
     except Exception as e:
         return jsonify({
-            "error": f"{e}\n{traceback.print_exc()}"
+            "error": f"{e}\n{traceback.format_exc()}"
         })
 
 
