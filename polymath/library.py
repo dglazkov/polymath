@@ -792,7 +792,18 @@ class Library:
             bit.similarity = similarity
 
     @classmethod
-    def _validate_query_arguments(cls, version=None, query_embedding=None, query_embedding_model=None, count=0, count_type='token', sort='similarity', sort_reversed=False, seed=None, omit='embedding', access_token=''):
+    def _validate_query_arguments(cls, args):
+        version = int(args.get('version', -1))
+        query_embedding = args.get('query_embedding')
+        query_embedding_model = args.get('query_embedding_model')
+        count = int(args.get('count', 0))
+        count_type = args.get('count_type', 'token')
+        sort = args.get('sort', 'similarity')
+        sort_reversed = args.get('sort_reversed') is not None
+        seed = args.get('seed')
+        omit = args.get('omit', 'embedding')
+        access_token = args.get('access_token', '')
+
         # We do our own defaulting so that servers that call us can pass the result
         # of request.get() directly and if it's None, we'll use the default.
         if count_type == None:
@@ -872,8 +883,8 @@ class Library:
             result.message = 'Restricted results were omitted. ' + restricted_message
         return result
 
-    def query(self, **kwargs):
-        query_args, access_args = self._validate_query_arguments(**kwargs)
+    def query(self, args):
+        query_args, access_args = self._validate_query_arguments(args)
         result = self.copy()
         result._produce_query_result(**query_args)
         return result._remove_restricted_bits(**access_args)
@@ -884,7 +895,7 @@ class PineconeLibrary(Library):
         super().__init__()
 
     @override
-    def query(self, **kwargs):
+    def query(self, args):
         raise Exception('Not implemented')
 
 

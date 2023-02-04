@@ -26,22 +26,8 @@ class Endpoint:
     def __init__(self, library):
         self.library = library
 
-    def query(self, args):
-        query_embedding = args.get('query_embedding')
-        query_embedding_model = args.get('query_embedding_model')
-        count = args.get(
-            'count', DEFAULT_TOKEN_COUNT, type=int)
-        count_type = args.get('count_type')
-        version = args.get('version', -1, type=int)
-        sort = args.get('sort')
-        sort_reversed = args.get('sort_reversed') is not None
-        seed = args.get('seed')
-        omit = args.get('omit')
-        access_token = args.get('access_token', '')
-        result = self.library.query(version=version, query_embedding=query_embedding,
-                                    query_embedding_model=query_embedding_model, count=count,
-                                    count_type=count_type, sort=sort, sort_reversed=sort_reversed,
-                                    seed=seed, omit=omit, access_token=access_token)
+    def query(self, args: dict[str, str]):
+        result = self.library.query(args)
         return jsonify(result.serializable())
 
 
@@ -49,7 +35,10 @@ class Endpoint:
 def index():
     try:
         endpoint = Endpoint(library)
-        return endpoint.query(request.form)
+        return endpoint.query({
+            'count': DEFAULT_TOKEN_COUNT,
+            **request.form.to_dict()
+        })
 
     except Exception as e:
         return jsonify({
