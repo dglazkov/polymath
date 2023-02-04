@@ -1,15 +1,16 @@
 import base64
+import bisect
 import copy
 import hashlib
 import json
 import os
 import random
-import bisect
 from typing import List
 
 import numpy as np
+from overrides import override
 
-from .access import DEFAULT_PRIVATE_ACCESS_TAG, permitted_access, host_config
+from .access import DEFAULT_PRIVATE_ACCESS_TAG, host_config, permitted_access
 from .upgrade import upgrade_library_data
 
 EMBEDDINGS_MODEL_ID = "openai.com:text-embedding-ada-002"
@@ -790,7 +791,8 @@ class Library:
             bit = self.bit(bit_id)
             bit.similarity = similarity
 
-    def query(self, version=None, query_embedding=None, query_embedding_model=None, count=0, count_type='token', sort='similarity', sort_reversed=False, seed=None, omit='embedding', access_token=''):
+    @classmethod
+    def _validate_query_arguments(cls, version=None, query_embedding=None, query_embedding_model=None, count=0, count_type='token', sort='similarity', sort_reversed=False, seed=None, omit='embedding', access_token=''):
         # We do our own defaulting so that servers that call us can pass the result
         # of request.get() directly and if it's None, we'll use the default.
         if count_type == None:
@@ -826,22 +828,35 @@ class Library:
             raise Exception(
                 f'count_type {count_type} is not one of the legal options: {LEGAL_COUNT_TYPES}')
 
-        result = self.copy()
-        if query_embedding:            
+        return ({
+            'query_embedding': query_embedding,
+            'sort': sort,
+            'sort_reversed': sort_reversed,
+            'seed': seed,
+        }, {
+            'count': count,
+            'count_type': count_type,
+            'omit': omit,
+            'access_token': access_token
+        })
+
+    def _produce_query_result(self, query_embedding, sort, sort_reversed, seed):
+        if query_embedding:
             if type(query_embedding) == str:
                 embedding = vector_from_base64(query_embedding)
-            else: # assuming it's a list of vectors now
+            else:  # assuming it's a list of vectors now
                 embedding = query_embedding
-            result.compute_similarities(embedding)
+            self.compute_similarities(embedding)
 
-        result.seed = seed
-        result.sort_reversed = sort_reversed
-        result.sort = sort
+        self.seed = seed
+        self.sort_reversed = sort_reversed
+        self.sort = sort
 
+    def _remove_restricted_bits(self, count, omit, count_type, access_token):
         count_type_is_bit = count_type == 'bit'
-        restricted_count = result.delete_restricted_bits(access_token)
-        result = result.slice(count, count_type_is_bit=count_type_is_bit)
-        result.count_bits = len(result.bits)
+        restricted_count = self.delete_restricted_bits(access_token)
+        result = self.slice(count, count_type_is_bit=count_type_is_bit)
+        result.count_bits = len(self.bits)
         # Now that we know how many bits exist we can set omit, which might
         # remove all bits.
         result.omit = omit
@@ -855,8 +870,22 @@ class Library:
 
         if restricted_message and restricted_count > 0:
             result.message = 'Restricted results were omitted. ' + restricted_message
-
         return result
+
+    def query(self, **kwargs):
+        query_args, access_args = self._validate_query_arguments(**kwargs)
+        result = self.copy()
+        result._produce_query_result(**query_args)
+        return result._remove_restricted_bits(**access_args)
+
+
+class PineconeLibrary(Library):
+    def __init__(self):
+        super().__init__()
+
+    @override
+    def query(self, **kwargs):
+        raise Exception('Not implemented')
 
 
 def _keys_to_omit(configuration=''):
