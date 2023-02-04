@@ -22,25 +22,34 @@ library = polymath.load_libraries(library_filename, True)
 config = polymath.host_config()
 
 
+class Endpoint:
+    def __init__(self, library):
+        self.library = library
+
+    def query(self, args):
+        query_embedding = args.get('query_embedding')
+        query_embedding_model = args.get('query_embedding_model')
+        count = args.get(
+            'count', DEFAULT_TOKEN_COUNT, type=int)
+        count_type = args.get('count_type')
+        version = args.get('version', -1, type=int)
+        sort = args.get('sort')
+        sort_reversed = args.get('sort_reversed') is not None
+        seed = args.get('seed')
+        omit = args.get('omit')
+        access_token = args.get('access_token', '')
+        result = self.library.query(version=version, query_embedding=query_embedding,
+                                    query_embedding_model=query_embedding_model, count=count,
+                                    count_type=count_type, sort=sort, sort_reversed=sort_reversed,
+                                    seed=seed, omit=omit, access_token=access_token)
+        return jsonify(result.serializable())
+
+
 @app.route("/", methods=["POST"])
 def index():
     try:
-        query_embedding = request.form.get("query_embedding")
-        query_embedding_model = request.form.get("query_embedding_model")
-        count = request.form.get(
-            "count", DEFAULT_TOKEN_COUNT, type=int)
-        count_type = request.form.get("count_type")
-        version = request.form.get('version', -1, type=int)
-        sort = request.form.get('sort')
-        sort_reversed = request.form.get('sort_reversed') is not None
-        seed = request.form.get('seed')
-        omit = request.form.get('omit')
-        access_token = request.form.get('access_token', '')
-        result = library.query(version=version, query_embedding=query_embedding,
-                               query_embedding_model=query_embedding_model, count=count,
-                               count_type=count_type, sort=sort, sort_reversed=sort_reversed,
-                               seed=seed, omit=omit, access_token=access_token)
-        return jsonify(result.serializable())
+        endpoint = Endpoint(library)
+        return endpoint.query(request.form)
 
     except Exception as e:
         return jsonify({
