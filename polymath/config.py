@@ -11,6 +11,7 @@ TokensConfigType = dict[str, dict[str, str]]
 HostConfigType = dict[str, Union[str, InfoConfigType, TokensConfigType]]
 ConfigTypes = HostConfigType
 
+
 class InfoConfig:
     def __init__(self, args: InfoConfigType):
         self.headername = args.get('headername', '')
