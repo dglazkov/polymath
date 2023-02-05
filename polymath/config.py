@@ -9,7 +9,7 @@ FunQueriesType = Sequence[str]
 InfoConfigType = dict[str, Union[str, SourcePrefixesType, FunQueriesType]]
 TokensConfigType = dict[str, dict[str, str]]
 HostConfigType = dict[str, Union[str, InfoConfigType, TokensConfigType]]
-
+ConfigTypes = HostConfigType
 
 class InfoConfig:
     def __init__(self, args: InfoConfigType):
@@ -32,7 +32,7 @@ class JSONConfigStore:
     def __init__(self):
         self._cache = {}
 
-    def load(self, filename: str):
+    def load(self, filename: str) -> ConfigTypes:
         if filename in self._cache:
             return self._cache[filename]
         if not os.path.exists(filename):
