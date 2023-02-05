@@ -821,7 +821,7 @@ class Library:
 
         config = host_config()
         include_restricted_count = config["include_restricted_count"]
-        restricted_message = config["restricted_message"]
+        restricted_message = str(config["restricted_message"])
 
         if include_restricted_count:
             result.count_restricted = restricted_count
