@@ -8,7 +8,6 @@ import random
 from typing import List
 
 import numpy as np
-from overrides import override
 
 from .access import DEFAULT_PRIVATE_ACCESS_TAG, host_config, permitted_access
 from .upgrade import upgrade_library_data
@@ -888,15 +887,6 @@ class Library:
         result = self.copy()
         result._produce_query_result(**query_args)
         return result._remove_restricted_bits(**access_args)
-
-
-class PineconeLibrary(Library):
-    def __init__(self):
-        super().__init__()
-
-    @override
-    def query(self, args):
-        raise Exception('Not implemented')
 
 
 def _keys_to_omit(configuration=''):
