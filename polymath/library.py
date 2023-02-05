@@ -427,19 +427,6 @@ class Library:
         self._re_sort()
 
     @property
-    def sort_reversed(self):
-        return self._data.get('reversed', False)
-
-    @sort_reversed.setter
-    def sort_reversed(self, value):
-        if value == self.sort_reversed:
-            return
-        self._data['reversed'] = value
-        if not value:
-            del self._data['reversed']
-        self._re_sort()
-
-    @property
     def sort(self):
         return self._data.get('sort', 'any')
 
@@ -461,8 +448,8 @@ class Library:
         bits = self._data['bits']
         bits_in_order = self._bits_in_order
         if sort_type == 'similarity':
-            # TODO: handle sort_reversed correctly. This assumes a descending
-            # sort by similarity.
+            # NOTE: if sort_reversed is ever supported, then bisect_left will
+            # not be sufficient.
             def get_similarity(bit):
                 if not bit:
                     return -1
@@ -485,7 +472,6 @@ class Library:
         Called when the sort type might have changed and _data.sort.ids needs to be resorted
         """
         sort_type = self._data.get('sort', 'any')
-        sort_reversed = self._data.get('reversed', False)
         # We'll operate on bits_in_order and then replicate that order in
         # self._data['bits]
         bits_in_order = self._bits_in_order
@@ -508,8 +494,6 @@ class Library:
         else:
             # effectively any, which means any order is fine.
             pass
-        if sort_reversed:
-            bits_in_order.reverse()
         # replicate the final order of bits_in_order in bits.
         bits = self._data['bits']
         # Operate on the existing list in place to maintain object equality
