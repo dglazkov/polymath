@@ -814,7 +814,7 @@ class Library:
         count_type_is_bit = count_type == 'bit'
         restricted_count = self.delete_restricted_bits(access_token)
         result = self.slice(count, count_type_is_bit=count_type_is_bit)
-        result.count_bits = len(self.bits)
+        result.count_bits = len(result.bits)
         # Now that we know how many bits exist we can set omit, which might
         # remove all bits.
         result.omit = omit
