@@ -508,6 +508,14 @@ This will generate a new key, store it in `host.SECRET.json` and print it.
 
 You can also revoke a key with `python3 -m config.host access revoke <user_vanity_id>`
 
+## Content
+
+Hosts should only host content for public access that they have the rights to.
+
+The intention of a polymath host is not to make the content available for
+scraping for arbitrary use, but specifically to be used by a polymath client to
+mix into a prompt to return a polymath answer.
+
 ## Developing
 
 It's recommended to use `virtualenv` to manage your python environment for this project.
