@@ -289,7 +289,7 @@ class Bit:
         if not self.library:
             return
         if self.library.omit_whole_bit:
-            self.clear()
+            self._data = {}
         for field_to_omit in self.library.fields_to_omit:
             if field_to_omit in self._data:
                 del self._data[field_to_omit]
