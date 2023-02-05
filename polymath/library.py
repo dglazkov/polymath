@@ -82,7 +82,7 @@ def vector_similarity(x, y):
 
 
 class BitInfo:
-    def __init__(self, bit: 'Bit' = None, data=None):
+    def __init__(self, bit: Union['Bit', None] = None, data=None):
         self._data = data if data else {}
         self._bit = bit
 
