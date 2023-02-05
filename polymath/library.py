@@ -9,6 +9,8 @@ from typing import List, Union, Final
 
 import numpy as np
 
+from numpy.typing import NDArray
+
 from .access import DEFAULT_PRIVATE_ACCESS_TAG, host_config, permitted_access
 from .upgrade import upgrade_library_data
 
@@ -159,7 +161,7 @@ class Bit:
             if 'embedding' not in self._data:
                 raise Exception(f'{bit_id} is missing embedding')
             if expected_embedding_length != None:
-                if len(self.embedding) != expected_embedding_length:
+                if self.embedding is not None and len(self.embedding) != expected_embedding_length:
                     raise Exception(
                         f'{bit_id} had the wrong length of embedding, expected {expected_embedding_length}')
         if 'token_count' not in fields_to_omit:
@@ -226,7 +228,7 @@ class Bit:
         self._data['token_count'] = value
 
     @property
-    def embedding(self):
+    def embedding(self) -> Union[NDArray[np.float32], None]:
         if self._cached_embedding is None:
             raw_embedding = self._data.get('embedding', None)
             if not raw_embedding:
