@@ -1,6 +1,7 @@
 import argparse
 import json
 import os
+import sys
 
 import openai
 import urllib3
@@ -107,7 +108,7 @@ if 'hosts' in config:
 
 if len(server_list) == 0:
     print('No hosts provided.')
-    os.exit(1)
+    sys.exit(1)
 
 if args.verbose:
     if args.random:
