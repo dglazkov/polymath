@@ -10,8 +10,6 @@ The format of the library files is as follows:
   sort: 'random',
   //If provided, will be used as the seed to sort.random to yield a deterministic order. May be omitted.
   seed: 'abc',
-  //Sorts are descending by default. If true, will reverse the sort. May be omitted if 'false'
-  reversed: true
   //details is optional. It's typically only set for libraries generated from Library.query()
   details: {
     //Message is optional and will be displayed when 
