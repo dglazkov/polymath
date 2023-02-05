@@ -206,11 +206,11 @@ class Bit:
         return self.text
 
     @property
-    def library(self) -> 'Library':
+    def library(self) -> 'Library' | None:
         # There is no exposed library setter. Call library.insert_bit or library.remove_bit to reparent.
         return self._library
 
-    def _set_library(self, library: 'Library'):
+    def _set_library(self, library: 'Library' | None):
         # _set_library should only be called by a library in insert_bit or in our constructor.
         self._library = library
         self.validate()
