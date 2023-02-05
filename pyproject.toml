@@ -6,7 +6,7 @@ build-backend = "flit_core.buildapi"
 name = "polymath"
 version = "0.0.3"
 authors = [
-  { name="Alex Komoroske", email="jkomoros@gmail.com" },
+  { name="Alex Komoroske", email="alex@komoroske.com" },
   { name="Dimitri Glazkov", email="dimitri@glazkov.com" },
   { name="Dion Almaer", email="dion@almaer.com" }
 ]
