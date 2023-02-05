@@ -1,6 +1,6 @@
 from google.cloud import firestore
 
-from polymath.config import ConfigTypes, HostConfig
+from polymath.config.types import ConfigTypes, HostConfig
 
 
 class FirestoreConfigStore:

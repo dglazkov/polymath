@@ -8,7 +8,7 @@ from flask import Flask, jsonify, render_template, request
 from flask_compress import Compress
 
 import polymath
-from polymath.config import JSON
+from polymath.config.json import JSON
 
 DEFAULT_TOKEN_COUNT = 1000
 
