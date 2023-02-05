@@ -58,17 +58,6 @@ def canonical_id(bit_text, url=''):
 def vector_from_base64(str):
     return np.frombuffer(base64.b64decode(str), dtype=np.float32)
 
-# In JS, the argument can be produced with with:
-# ```
-# new Float32Array(new Uint8Array([...atob(encoded_data)].map(c => c.charCodeAt(0))).buffer);
-# ```
-# where `encoded_data` is a base64 string
-
-
-def _base64_from_vector(vector):
-    data = np.array(vector, dtype=np.float32)
-    return base64.b64encode(data)
-
 
 def vector_similarity(x, y):
     # np.dot returns a float32 but those aren't serializable in json. Just
@@ -248,7 +237,7 @@ class Bit:
     @embedding.setter
     def embedding(self, value):
         self._cached_embedding = value
-        self._data['embedding'] = _base64_from_vector(value).decode('ascii')
+        self._data['embedding'] = Library.base64_from_vector(value).decode('ascii')
 
     @property
     def similarity(self):
@@ -345,6 +334,17 @@ class Library:
     def load_data_file(cls, file):
         with open(file, "r") as f:
             return json.load(f)
+        
+    # In JS, the argument can be produced with with:
+    # ```
+    # new Float32Array(new Uint8Array([...atob(encoded_data)].map(c => c.charCodeAt(0))).buffer);
+    # ```
+    # where `encoded_data` is a base64 string
+
+    @classmethod
+    def base64_from_vector(cls, vector):
+        data = np.array(vector, dtype=np.float32)
+        return base64.b64encode(data)
 
     @property
     def upgraded(self):
@@ -875,6 +875,3 @@ def _keys_to_omit(configuration=''):
     if len(configuration) == 1:
         configuration = configuration[0]
     return (omit_whole_bit, set(result), configuration)
-
-
-Library.base64_from_vector = _base64_from_vector
