@@ -44,7 +44,7 @@ parser.add_argument("--dev", action="store_true",
 parser.add_argument(
     "--config", help=f"A path to a config file to use. If not provided it will try to use {DEFAULT_CONFIG_FILE} if it exists. Pass \"\" explicitly to proactively ignore that file even if it exists", default=None)
 parser.add_argument("--server", help="A server to use for querying",
-                    action="append"),
+                    action="append")
 parser.add_argument("--only", help=f"If provided, will ignore any hosts without this name or endpoint in {DEFAULT_CONFIG_FILE}", action="append")
 parser.add_argument("--exclude", help=f"If provided, will ignore any hosts that have this name or endpoint in {DEFAULT_CONFIG_FILE}", action="append")
 parser.add_argument("--completion", help="Request completion based on the query and context",
