@@ -5,7 +5,7 @@ import hashlib
 import json
 import os
 import random
-from typing import List, Union
+from typing import List, Union, Final
 
 import numpy as np
 
@@ -296,6 +296,10 @@ class Bit:
 
 
 class Library:
+
+    EMBEDDINGS_MODEL_ID : Final[str] = EMBEDDINGS_MODEL_ID
+    CURRENT_VERSION : Final[int] = CURRENT_VERSION
+
     def __init__(self, data=None, blob=None, filename=None, access_tag=None):
 
         # The only actual data member of the class is _data. If that ever
@@ -873,7 +877,5 @@ def _keys_to_omit(configuration=''):
     return (omit_whole_bit, set(result), configuration)
 
 
-Library.EMBEDDINGS_MODEL_ID = EMBEDDINGS_MODEL_ID
-Library.CURRENT_VERSION = CURRENT_VERSION
 Library.load_data_file = _load_data_file
 Library.base64_from_vector = _base64_from_vector
