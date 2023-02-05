@@ -2,6 +2,8 @@
 import json
 import os
 
+from typing import Union
+
 from polymath.config.types import ConfigTypes, HostConfig
 
 class JSONConfigStore:
@@ -23,7 +25,7 @@ class JSONConfigLoader:
     def __init__(self):
         self._config_store = JSONConfigStore()
 
-    def load_host_config(self, filename: str = None) -> HostConfig:
+    def load_host_config(self, filename: Union[str, None] = None) -> HostConfig:
         if filename is None:
             filename = 'host.SECRET.json'
         config = self._config_store.load(filename)
