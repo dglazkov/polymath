@@ -13,7 +13,7 @@
       "handle": "dalmaer"
     },
 
-    "webclient": {
+    "info": {
       "headername": "Dion's",
       "placeholder": "What do you want to learn from the Polymath?",
       "fun_queries": [

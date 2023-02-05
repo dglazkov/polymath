@@ -12,8 +12,8 @@ DEFAULT_CONFIG_FILE = 'host.SECRET.json'
 SETTABLE_PROPERTIES = {
     'endpoint': 'https://example.com',
     'twitter.handle': 'dalmaer',
-    'webclient.headername': "Dion's",
-    'webclient.placeholder': 'What is the best side effect of using an AI assistant?',
+    'info.headername': "Dion's",
+    'info.placeholder': 'What is the best side effect of using an AI assistant?',
     'restricted.message': 'Contact alex@komoroske.com for a token',
     'restricted.count': True
 }

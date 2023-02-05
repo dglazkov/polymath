@@ -471,7 +471,7 @@ The mapping of `asset_token` to `access_tag` they give access to is configured i
     "message": "Contact alex@komoroske.com for an access_token."
   },
 
-  "webclient": {
+  "info": {
     "headername": "Dion's",
     "placeholder": "What is the best side effect of using an AI assistant?"
     "fun_queries": [

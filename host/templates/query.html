@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>{{ config.webclient.headername }} Polymath</title>
+  <title>{{ config.info.headername }} Polymath</title>
   <link rel="stylesheet" href="static/output.css" />
 
   <link rel="apple-touch-icon" sizes="180x180" href="static/apple-touch-icon.png">
@@ -21,7 +21,7 @@
     <img src="static/polymath-logo-120x120.png" width="120" height="120" class="float-left" alt="">
   </a>
   <div class="px-5 float-right border-b-0">
-    <h1 class="text-2xl md:text-3xl text-center font-bold">{{ config.webclient.headername }} Polymath</h1>
+    <h1 class="text-2xl md:text-3xl text-center font-bold">{{ config.info.headername }} Polymath</h1>
     <div class="w-full border-t-0 text-sm md:text-base">This is a <a href="https://github.com/dglazkov/polymath" class="text-indigo-600 hover:text-indigo-700 hover:underline">polymath</a> endpoint.</div>
   </div>
 </header>
@@ -42,7 +42,7 @@
 <template id="query-view">
   <div>
     <div class="relative mt-1 rounded-md shadow-sm">
-      <input type="text" name="query" placeholder="{{ config.webclient.placeholder }}" id="query" class="w-full input-primary">
+      <input type="text" name="query" placeholder="{{ config.info.placeholder }}" id="query" class="w-full input-primary">
       <div class="absolute inset-y-0 right-0 flex items-center pr-3">
         <!-- Heroicon name: mini/cursor-arrow-rays -->
         <svg id="random-query" class="h-5 w-5 text-gray-400 hover:brightness-110 active:brightness-110 hover:cursor-pointer" xmlns="http://www.w3.org/2000/svg" fill="none"
@@ -96,8 +96,8 @@
     this.querySelector('#clear')?.addEventListener('click',
       () => controller.clearKeys());
 
-    {% if config.webclient.fun_queries %}
-    let funQueries = {{ config.webclient.fun_queries | safe }};
+    {% if config.info.fun_queries %}
+    let funQueries = {{ config.info.fun_queries | safe }};
     {% else %}
     let funQueries = ["What is a Polymath?", "What has been written about Generative AI?"];
     {% endif %}
@@ -198,8 +198,8 @@
       let escapedTitle = (info.description || info.title).replace(/"/g, "\\\"");
       let prefix = "";
 
-      {% if config.webclient.source_prefixes %}
-      let sourcePrefixes = {{ config.webclient.source_prefixes | safe }};
+      {% if config.info.source_prefixes %}
+      let sourcePrefixes = {{ config.info.source_prefixes | safe }};
 
       for (let url in sourcePrefixes) {
         if (info.url.startsWith(url)) {

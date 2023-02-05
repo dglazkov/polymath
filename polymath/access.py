@@ -15,7 +15,7 @@ def _get_access_data():
     access_file = DEFAULT_CONFIG_FILE
     if not os.path.exists(access_file):
         _access_data = {
-            "webclient": {}
+            "info": {}
         }
         return _access_data
     with open(DEFAULT_CONFIG_FILE, 'r') as f:
