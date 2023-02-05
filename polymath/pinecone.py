@@ -5,7 +5,9 @@ import pinecone
 from library import EXPECTED_EMBEDDING_LENGTH, Bit, Library, vector_from_base64
 from overrides import override
 
-# TODO: Make this configurable
+# TODO: Make this configurable. Alternatively if we run out of content before
+# hitting our content bar, fetch another chunk of content from pinecone until we
+# have enough to return as many as the user asked for.
 TOP_K = 100
 
 
@@ -37,7 +39,7 @@ class PineconeLibrary(Library):
             embedding = np.random.rand(embedding_length).tolist()
         result = index.query(
             namespace=self.config.namespace,
-            top_k=100,
+            top_k=TOP_K,
             include_metadata=True,
             vector=embedding
         )
