@@ -25,14 +25,14 @@ class PineconeLibrary(Library):
         super().__init__()
 
     @override
-    def _produce_query_result(self, query_embedding, sort):
+    def _produce_query_result(self, query_embedding):
         self.omit = 'embedding'
         pinecone.init(
             api_key=self.config.api_key,
             environment=self.config.environment)
         index = pinecone.Index(self.config.index)
         embedding = None
-        if sort == 'similarity':
+        if query_embedding:
             embedding = vector_from_base64(query_embedding).tolist()
         else:
             embedding_length = EXPECTED_EMBEDDING_LENGTH[self.embedding_model]

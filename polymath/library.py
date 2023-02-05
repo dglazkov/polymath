@@ -764,7 +764,6 @@ class Library:
         query_embedding_model = args.get('query_embedding_model')
         count = int(args.get('count', 0))
         count_type = args.get('count_type', 'token')
-        sort = args.get('sort', 'similarity')
         omit = args.get('omit', 'embedding')
         access_token = args.get('access_token', '')
 
@@ -792,20 +791,12 @@ class Library:
             raise Exception(
                 f'If query_embedding is passed, query_embedding_model must be {EMBEDDINGS_MODEL_ID} but it was {query_embedding_model}')
 
-        if sort not in LEGAL_SORTS:
-            raise Exception(
-                f'sort {sort} is not one of the legal options: {LEGAL_SORTS}')
-
-        if sort == 'manual':
-            raise Exception('sort of manual is not allowed in query')
-
         if count_type not in LEGAL_COUNT_TYPES:
             raise Exception(
                 f'count_type {count_type} is not one of the legal options: {LEGAL_COUNT_TYPES}')
 
         return ({
             'query_embedding': query_embedding,
-            'sort': sort,
         }, {
             'count': count,
             'count_type': count_type,
@@ -813,15 +804,13 @@ class Library:
             'access_token': access_token
         })
 
-    def _produce_query_result(self, query_embedding, sort):
+    def _produce_query_result(self, query_embedding):
         if query_embedding:
             if type(query_embedding) == str:
                 embedding = vector_from_base64(query_embedding)
             else:  # assuming it's a list of vectors now
                 embedding = query_embedding
             self.compute_similarities(embedding)
-
-        self.sort = sort
 
     def _remove_restricted_bits(self, count, omit, count_type, access_token):
         count_type_is_bit = count_type == 'bit'
@@ -846,6 +835,7 @@ class Library:
     def query(self, args):
         query_args, access_args = self._validate_query_arguments(args)
         result = self.copy()
+        result.sort = 'similarity'
         result._produce_query_result(**query_args)
         return result._remove_restricted_bits(**access_args)
 

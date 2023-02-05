@@ -23,11 +23,9 @@ def query_server(query_embedding, server, random=False, count=DEFAULT_CONTEXT_TO
         "count": count
     }
     if random:
-        fields["sort"] = "random"
         fields["omit"] = "similarity,embedding"
     else:
         fields["query_embedding"] = query_embedding
-        fields["sort"] = "similarity"
     response = http.request(
         'POST', server, fields=fields).data
     obj = json.loads(response)
