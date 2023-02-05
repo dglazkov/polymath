@@ -798,7 +798,6 @@ class Library:
         count = int(args.get('count', 0))
         count_type = args.get('count_type', 'token')
         sort = args.get('sort', 'similarity')
-        sort_reversed = args.get('sort_reversed') is not None
         seed = args.get('seed')
         omit = args.get('omit', 'embedding')
         access_token = args.get('access_token', '')
@@ -841,7 +840,6 @@ class Library:
         return ({
             'query_embedding': query_embedding,
             'sort': sort,
-            'sort_reversed': sort_reversed,
             'seed': seed,
         }, {
             'count': count,
@@ -850,7 +848,7 @@ class Library:
             'access_token': access_token
         })
 
-    def _produce_query_result(self, query_embedding, sort, sort_reversed, seed):
+    def _produce_query_result(self, query_embedding, sort, seed):
         if query_embedding:
             if type(query_embedding) == str:
                 embedding = vector_from_base64(query_embedding)
@@ -859,7 +857,6 @@ class Library:
             self.compute_similarities(embedding)
 
         self.seed = seed
-        self.sort_reversed = sort_reversed
         self.sort = sort
 
     def _remove_restricted_bits(self, count, omit, count_type, access_token):
