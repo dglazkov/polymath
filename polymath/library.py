@@ -5,7 +5,7 @@ import hashlib
 import json
 import os
 import random
-from typing import List
+from typing import List, Union
 
 import numpy as np
 
@@ -206,11 +206,11 @@ class Bit:
         return self.text
 
     @property
-    def library(self) -> 'Library' | None:
+    def library(self) -> Union['Library', None]:
         # There is no exposed library setter. Call library.insert_bit or library.remove_bit to reparent.
         return self._library
 
-    def _set_library(self, library: 'Library' | None):
+    def _set_library(self, library: Union['Library', None]):
         # _set_library should only be called by a library in insert_bit or in our constructor.
         self._library = library
         self.validate()
