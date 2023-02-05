@@ -771,8 +771,6 @@ class Library:
         # of request.get() directly and if it's None, we'll use the default.
         if count_type == None:
             count_type = 'token'
-        if sort == None:
-            sort = 'similarity'
         if omit == None:
             omit = 'embedding'
 
@@ -809,6 +807,7 @@ class Library:
             else:  # assuming it's a list of vectors now
                 embedding = query_embedding
             self.compute_similarities(embedding)
+            self.sort = 'similarity'
 
     def _remove_restricted_bits(self, count, omit, count_type, access_token):
         count_type_is_bit = count_type == 'bit'
@@ -833,7 +832,6 @@ class Library:
     def query(self, args):
         query_embedding, access_args = self._validate_query_arguments(args)
         result = self.copy()
-        result.sort = 'similarity'
         result._produce_query_result(query_embedding)
         return result._remove_restricted_bits(**access_args)
 
