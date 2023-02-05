@@ -8,8 +8,6 @@ The format of the library files is as follows:
   omit: 'embedding',
   //The type of the sort. May be omitted if type is 'any'. Legal values are 'any', 'similarity', 'manual', and 'random'.
   sort: 'random',
-  //If provided, will be used as the seed to sort.random to yield a deterministic order. May be omitted.
-  seed: 'abc',
   //details is optional. It's typically only set for libraries generated from Library.query()
   details: {
     //Message is optional and will be displayed when 

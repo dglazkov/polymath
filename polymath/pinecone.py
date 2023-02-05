@@ -25,7 +25,7 @@ class PineconeLibrary(Library):
         super().__init__()
 
     @override
-    def _produce_query_result(self, query_embedding, sort, seed):
+    def _produce_query_result(self, query_embedding, sort):
         self.omit = 'embedding'
         pinecone.init(
             api_key=self.config.api_key,
