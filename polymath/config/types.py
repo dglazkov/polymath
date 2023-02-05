@@ -34,7 +34,7 @@ class InfoConfig:
 class HostConfig:
     def __init__(self, args: HostConfigType):
         restricted = args.get('restricted', {})
-        self.include_restructed_count = restricted.get('count', False)
+        self.include_restricted_count = restricted.get('count', False)
         self.restricted_message = restricted.get('message', '')
         self.info = InfoConfig(args.get('info', {}))
         self.tokens = args.get('tokens', {})
