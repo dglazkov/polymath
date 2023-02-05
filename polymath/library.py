@@ -414,19 +414,6 @@ class Library:
             bit.strip()
 
     @property
-    def seed(self):
-        return self._data.get('seed', None)
-
-    @seed.setter
-    def seed(self, value):
-        if value == self.seed:
-            return
-        self._data['seed'] = value
-        if not value:
-            del self._data['seed']
-        self._re_sort()
-
-    @property
     def sort(self):
         return self._data.get('sort', 'any')
 
@@ -477,7 +464,6 @@ class Library:
         bits_in_order = self._bits_in_order
         if sort_type == 'random':
             rng = random.Random()
-            rng.seed(self.seed)
             rng.shuffle(bits_in_order)
         elif sort_type == 'similarity':
             def get_similarity(bit):
@@ -690,9 +676,6 @@ class Library:
         self._bits_in_order.pop(index)
         self._data['bits'].pop(index)
         del self._bits[bit_id]
-        # TODO: technically if this is a random sort with seed we do need a
-        # resort, but in all other cases it's unnecessarily slower to sort
-        # on every bit you remove.
 
     def insert_bit(self, bit: Bit):
         if bit.library == self:
