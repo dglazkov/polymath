@@ -8,6 +8,7 @@ from flask import Flask, jsonify, render_template, request
 from flask_compress import Compress
 
 import polymath
+from polymath.config import JSON
 
 DEFAULT_TOKEN_COUNT = 1000
 
@@ -19,7 +20,7 @@ openai.api_key = os.getenv("OPENAI_API_KEY")
 library_filename = os.getenv("LIBRARY_FILENAME")
 
 library = polymath.load_libraries(library_filename, True)
-config = polymath.host_config()
+config = JSON.load_host_config()
 
 
 class Endpoint:
