@@ -16,7 +16,7 @@ EnvironmentConfigType = dict[str, str]
 class EnvironmentConfig:
     def __init__(self, args: EnvironmentConfigType):
         # TODO: Throw an error if the api key is not set.
-        self.openai_api_key = args.get('api_key')
+        self.openai_api_key = args.get('openai_api_key')
         self.library_filename = args.get('library_filename')
 
 

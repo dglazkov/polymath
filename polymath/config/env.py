@@ -9,8 +9,7 @@ from polymath.config.types import EnvironmentConfig
 class EnvConfigStore:
     def load(self) -> Any:
         return {
-            'openai_api_key': os.getenv("OPENAI_API_KEY"),
-            'library_filename': os.getenv("LIBRARY_FILENAME"),
+            key.lower(): value for key, value in os.environ.items()
         }
 
 

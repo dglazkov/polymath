@@ -2,7 +2,6 @@ import argparse
 import os
 import traceback
 
-import openai
 from flask import Flask, jsonify, render_template, request
 from flask_compress import Compress
 
@@ -18,8 +17,6 @@ Compress(app)
 env_config = Env.load_environment_config()
 host_config = JSON.load_host_config()
 
-
-openai.api_key = env_config.openai_api_key
 library = polymath.load_libraries(env_config.library_filename, True)
 
 
