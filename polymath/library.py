@@ -795,9 +795,7 @@ class Library:
             raise Exception(
                 f'count_type {count_type} is not one of the legal options: {LEGAL_COUNT_TYPES}')
 
-        return ({
-            'query_embedding': query_embedding,
-        }, {
+        return (query_embedding, {
             'count': count,
             'count_type': count_type,
             'omit': omit,
@@ -833,10 +831,10 @@ class Library:
         return result
 
     def query(self, args):
-        query_args, access_args = self._validate_query_arguments(args)
+        query_embedding, access_args = self._validate_query_arguments(args)
         result = self.copy()
         result.sort = 'similarity'
-        result._produce_query_result(**query_args)
+        result._produce_query_result(query_embedding)
         return result._remove_restricted_bits(**access_args)
 
 
