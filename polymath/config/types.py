@@ -2,12 +2,25 @@
 from collections.abc import Sequence
 from typing import Union
 
+# HostConfig-related types
 SourcePrefixesType = dict[str, str]
 FunQueriesType = Sequence[str]
 InfoConfigType = dict[str, Union[str, SourcePrefixesType, FunQueriesType]]
 TokensConfigType = dict[str, dict[str, str]]
 HostConfigType = dict[str, Union[str, InfoConfigType, TokensConfigType]]
-ConfigTypes = HostConfigType
+
+# EnvironmentConfig-related types
+EnvironmentConfigType = dict[str, str]
+
+# The union of all config types
+ConfigTypes = Union[HostConfigType, EnvironmentConfigType]
+
+
+class EnvironmentConfig:
+    def __init__(self, args: EnvironmentConfigType):
+        # TODO: Throw an error if the api key is not set.
+        self.openai_api_key = args.get('api_key')
+        self.library_filename = args.get('library_filename')
 
 
 class InfoConfig:
@@ -25,5 +38,3 @@ class HostConfig:
         self.restricted_message = restricted.get('message', '')
         self.info = InfoConfig(args.get('info', {}))
         self.tokens = args.get('tokens', {})
-
-
