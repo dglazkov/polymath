@@ -14,6 +14,7 @@ class PineconeConfig:
         self.namespace = config['namespace']
         self.index = config.get('index', 'polymath')
         self.environment = config.get('environment', 'us-west1-gcp')
+        self.api_key = config.get('api_key', os.getenv("PINECONE_API_KEY"))
 
 
 class PineconeLibrary(Library):
@@ -25,7 +26,7 @@ class PineconeLibrary(Library):
     def _produce_query_result(self, query_embedding, sort, sort_reversed, seed):
         self.omit = 'embedding'
         pinecone.init(
-            api_key=os.getenv("PINECONE_API_KEY"),
+            api_key=self.config.api_key,
             environment=self.config.environment)
         index = pinecone.Index(self.config.index)
         embedding = None
