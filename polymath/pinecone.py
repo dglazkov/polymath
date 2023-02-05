@@ -31,17 +31,11 @@ class PineconeLibrary(Library):
             api_key=self.config.api_key,
             environment=self.config.environment)
         index = pinecone.Index(self.config.index)
-        embedding = None
-        if query_embedding:
-            embedding = vector_from_base64(query_embedding).tolist()
-        else:
-            embedding_length = EXPECTED_EMBEDDING_LENGTH[self.embedding_model]
-            embedding = np.random.rand(embedding_length).tolist()
         result = index.query(
             namespace=self.config.namespace,
             top_k=TOP_K,
             include_metadata=True,
-            vector=embedding
+            vector=query_embedding
         )
         for item in result['matches']:
             bit = Bit(data={

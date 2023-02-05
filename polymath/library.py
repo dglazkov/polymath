@@ -760,7 +760,7 @@ class Library:
     @classmethod
     def _validate_query_arguments(cls, args):
         version = int(args.get('version', -1))
-        query_embedding = args.get('query_embedding')
+        raw_query_embedding = args.get('query_embedding')
         query_embedding_model = args.get('query_embedding_model')
         count = int(args.get('count', 0))
         count_type = args.get('count_type', 'token')
@@ -785,9 +785,15 @@ class Library:
             # should work.
             raise Exception(f'version must be at least {CURRENT_VERSION}')
 
-        if query_embedding and query_embedding_model != EMBEDDINGS_MODEL_ID:
-            raise Exception(
-                f'If query_embedding is passed, query_embedding_model must be {EMBEDDINGS_MODEL_ID} but it was {query_embedding_model}')
+        if query_embedding_model != EMBEDDINGS_MODEL_ID:
+            raise Exception(f'Embedding model was {query_embedding_model} but expected {EMBEDDINGS_MODEL_ID}')
+
+        query_embedding = None
+        if raw_query_embedding:
+            query_embedding = vector_from_base64(raw_query_embedding).tolist() if type(raw_query_embedding) == str else raw_query_embedding
+        else:
+            embedding_length = EXPECTED_EMBEDDING_LENGTH[query_embedding_model]
+            query_embedding = np.random.rand(embedding_length).tolist()
 
         if count_type not in LEGAL_COUNT_TYPES:
             raise Exception(
@@ -800,14 +806,9 @@ class Library:
             'access_token': access_token
         })
 
-    def _produce_query_result(self, query_embedding):
-        if query_embedding:
-            if type(query_embedding) == str:
-                embedding = vector_from_base64(query_embedding)
-            else:  # assuming it's a list of vectors now
-                embedding = query_embedding
-            self.compute_similarities(embedding)
-            self.sort = 'similarity'
+    def _produce_query_result(self, query_embedding : List[float]):
+        self.compute_similarities(query_embedding)
+        self.sort = 'similarity'
 
     def _remove_restricted_bits(self, count, omit, count_type, access_token):
         count_type_is_bit = count_type == 'bit'
