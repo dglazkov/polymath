@@ -6,9 +6,6 @@ from typing import Union
 
 from polymath.config.types import HostConfig
 
-
-from polymath.config.types import ConfigTypes, HostConfig
-
 class JSONConfigStore:
     def __init__(self):
         self._cache = {}
