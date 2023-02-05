@@ -12,9 +12,6 @@ HostConfigType = dict[str, Union[str, InfoConfigType, TokensConfigType]]
 # EnvironmentConfig-related types
 EnvironmentConfigType = dict[str, str]
 
-# The union of all config types
-ConfigTypes = Union[HostConfigType, EnvironmentConfigType]
-
 
 class EnvironmentConfig:
     def __init__(self, args: EnvironmentConfigType):

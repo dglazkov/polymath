@@ -1,10 +1,12 @@
+from typing import Any
+
 from google.cloud import firestore
 
-from polymath.config.types import ConfigTypes, HostConfig
+from polymath.config.types import HostConfig
 
 
 class FirestoreConfigStore:
-    def load(self, ref) -> ConfigTypes:
+    def load(self, ref) -> Any:
         return ref.get().to_dict()
 
 
