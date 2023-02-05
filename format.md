@@ -47,3 +47,13 @@ The format of the library files is as follows:
 The file is represented as JSON (with extension `.json`).
 
 The host API endpoint returns a library.
+
+The endpoint passes all of its arguments to Library.query() to return a new library. The arguments it accepts are:
+
+- `version` - The version of library result that the client expects. This number must be greater than or equal to the host's current version.
+- `query_embedding` - Optional. A base64 encoded embedding of the query. The returned chunks will be semantically similar to this. If one is not provided, a random embedding will be used, which will return a random but semantically similar set of results.
+- `query_embedding_model` - The name of the embedding model in use. The embedding model provided must match the host's embedding model.
+- `count` - An integer for how many bits of content to return. If `count_type` is `token` then it will return up to this many tokens total. If it is `bit` then it will return up to that many bits. If not provided, count will be set to a reasonable number.
+- `count_type` - Optional. Whether `count` is of type `token` or `bit`
+- `omit` - Optional. Fields to omit from the returned bits. e.g. 'embeddings,similarity'
+- `access_token` - Optional. If provided then it will also include bits of content who have an `access_tag` that requires this access_token.
