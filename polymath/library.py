@@ -37,11 +37,6 @@ LEGAL_OMIT_KEYS = set(
     ['*', '', 'similarity', 'embedding', 'token_count', 'info', 'access_tag'])
 
 
-def _load_data_file(file):
-    with open(file, "r") as f:
-        return json.load(f)
-
-
 def canonical_id(bit_text, url=''):
     """
     Returns the canonical ID for a given bit of text.
@@ -306,7 +301,7 @@ class Library:
         # changes, also change copy().
 
         if filename:
-            data = _load_data_file(filename)
+            data = Library.load_data_file(filename)
         if blob:
             data = json.loads(blob)
         if data:
@@ -345,6 +340,11 @@ class Library:
                 bit.access_tag = access_tag
 
         self.validate()
+
+    @classmethod
+    def load_data_file(cls, file):
+        with open(file, "r") as f:
+            return json.load(f)
 
     @property
     def upgraded(self):
@@ -877,5 +877,4 @@ def _keys_to_omit(configuration=''):
     return (omit_whole_bit, set(result), configuration)
 
 
-Library.load_data_file = _load_data_file
 Library.base64_from_vector = _base64_from_vector
