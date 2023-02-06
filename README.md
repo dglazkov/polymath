@@ -471,6 +471,24 @@ The mapping of `asset_token` to `access_tag` they give access to is configured i
     "message": "Contact alex@komoroske.com for an access_token."
   },
 
+  "completions_options": {
+    "model": "text-davinci-003",
+
+    // change the prompt that you want to use. the tokens {context} and {query} will be replaced by the Polymath context results and the user inputted query
+    "prompt_template": "Answer the question as truthfully as possible using the provided context, and if don't have the answer, say \"I don't know\" and suggest looking for this information elsewhere.\n\nContext:\n${context} \n\nQuestion:\n${query}\n\nAnswer:",
+    
+    // OpenAI config options
+    "max_tokens": 256,
+    "temperature": 0,
+    "top_p": 1,
+    "n": 1,
+    "stream": false,
+    "logprobs": null,
+    "stop": "\n",
+    // if you set this to true, the full prompt will be logged to the console
+    "debug": false
+  },
+
   "info": {
     "headername": "Dion's",
     "placeholder": "What is the best side effect of using an AI assistant?"
@@ -480,6 +498,7 @@ The mapping of `asset_token` to `access_tag` they give access to is configured i
       "What is an Ajaxian?",
       "What happened to webOS?"
     ],
+
     "source_prefixes": {
       "https://remix.run/": "Remix: ",
       "https://reactrouter.com/": "React Router: "
