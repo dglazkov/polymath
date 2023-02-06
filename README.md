@@ -344,7 +344,7 @@ python3 -m convert.out \
 
 ## Running the server
 
-To start the host server, run `python3 -m host.server`. It will start a Flask app as a local server. Go to `http://127.0.0.1:8080/api/query` to see the API endpoint.
+To start the host server, run `python3 -m host.server`. It will start a Flask app as a local server. Go to `http://127.0.0.1:8080/` to see the API endpoint.
 
 It will automatically load up all libaries in `libraries/` and its subdirectories.
 
