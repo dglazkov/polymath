@@ -55,9 +55,12 @@ load_dotenv()
 openai.api_key = os.getenv("OPENAI_API_KEY")
 
 
-def strip_emoji(text: str) -> str:
+def normalize_text(text: str) -> str:
     """
-    Removes all emojis from a string."""
+    Removes all non-standard characters from a string.
+    
+    Currently just removes emoji.
+    """
     emoji_pattern = re.compile("["
                                u"\U0001F600-\U0001F64F"  # emoticons
                                u"\U0001F300-\U0001F5FF"  # symbols & pictographs
@@ -126,6 +129,7 @@ seen_ids = {}
 
 try:
     for raw_bit in importer.get_chunks(filename):
+        raw_bit['text'] = normalize_text(raw_bit.get('text', ''))
         temp_bit = Bit(data=raw_bit)
         id = temp_bit.id
         seen_ids[id] = True

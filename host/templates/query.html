@@ -226,6 +226,23 @@
 </template>
 
 <script type="module">
+  {% if config.completions_options %}
+  let completions_options = {{ config.completions_options | tojson | safe }};
+  {% else %}
+  let completions_options = {
+    model: 'text-davinci-003',
+    prompt_template: "Answer the question as truthfully as possible using the provided context, and if don't have the answer, say in a friendly tone that this Polymath instance does not contain the answer and suggest looking for this information elsewhere.\n\nContext:\n{context} \n\nQuestion:\n{query}\n\nAnswer:",
+    max_tokens: 256,
+    temperature: 0,
+    top_p: 1,
+    n: 1,
+    stream: false,
+    logprobs: null,
+    stop: '\n',
+    debug: false
+  }
+  {% endif %}
+
 
   // Contains all UI-specific logic.
   class Controller {
@@ -356,7 +373,6 @@
       const form = new FormData();
       form.append('version', '1');
       form.append('query_embedding_model', 'openai.com:text-embedding-ada-002');
-      form.append('sort', 'similarity');
       for (const [key, value] of Object.entries(query)) {
         form.append(key, value);
       }
@@ -374,7 +390,13 @@
 
     static create_prompt({ query, results }) {
       const context = results.bits.map(chunk => chunk.text).join('\n');
-      return `Answer the question as truthfully as possible using the provided context, and if don't have the answer, say in a friendly tone that this Polymath instance does not contain the answer and suggest looking for this information elsewhere.\n\nContext:\n${context} \n\nQuestion:\n${query}\n\nAnswer:`;
+
+      let full_prompt = (completions_options.prompt_template) ?
+        completions_options.prompt_template.replace("{context}", context).replace("{query}", query) :
+         `Answer the question as truthfully as possible using the provided context, and if don't have the answer, say in a friendly tone that this Polymath instance does not contain the answer and suggest looking for this information elsewhere.\n\nContext:\n${context} \n\nQuestion:\n${query}\n\nAnswer:`;
+      
+         if (completions_options.debug) console.log("Prompt: ", full_prompt);
+         return full_prompt;
     }
 
     static async synthesizeAnswers({ key, query, access_token, progress }) {

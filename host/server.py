@@ -1,14 +1,13 @@
 import argparse
-import os
 import traceback
 
-import openai
-from dotenv import load_dotenv
 from flask import Flask, jsonify, render_template, request
 from flask_compress import Compress
 from flask_cors import CORS
 
 import polymath
+from polymath.config.json import JSON
+from polymath.config.env import Env
 
 DEFAULT_TOKEN_COUNT = 1000
 
@@ -16,12 +15,10 @@ app = Flask(__name__)
 CORS(app)
 Compress(app)
 
-load_dotenv()
-openai.api_key = os.getenv("OPENAI_API_KEY")
-library_filename = os.getenv("LIBRARY_FILENAME")
+env_config = Env.load_environment_config()
+host_config = JSON.load_host_config()
 
-library = polymath.load_libraries(library_filename, True)
-config = polymath.host_config()
+library = polymath.load_libraries(env_config.library_filename, True)
 
 
 class Endpoint:
@@ -58,7 +55,7 @@ def index():
 
 @app.route("/", methods=["GET"])
 def render_index():
-    return render_template("query.html", config=config)
+    return render_template("query.html", config=host_config)
 
 
 if __name__ == "__main__":

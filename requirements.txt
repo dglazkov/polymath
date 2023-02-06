@@ -46,6 +46,7 @@ pyasn1==0.4.8
 pyasn1-modules==0.2.8
 pycodestyle==2.10.0
 pyparsing==3.0.9
+pytesseract==0.3.10
 python-dateutil==2.8.2
 python-dotenv==0.21.0
 python-frontmatter==1.0.0
@@ -68,4 +69,6 @@ uritemplate==4.1.1
 urllib3==1.26.13
 wcwidth==0.2.5
 Werkzeug==2.2.2
+wpparser==1.1.2
 overrides
+google-cloud-firestore

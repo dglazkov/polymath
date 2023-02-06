@@ -9,8 +9,6 @@ def _upgrade_from_0(library_data):
     sort = library_data.get('sort', {})
     sort_ids = sort.get('ids', [])
     sort_type = sort.get('type', '')
-    sort_reversed = sort.get('reversed', False)
-    sort_seed = sort.get('seed', '')
     if 'sort' in library_data:
         del library_data['sort']
     bits_dict = library_data.get('bits', {})
@@ -22,10 +20,6 @@ def _upgrade_from_0(library_data):
     library_data['bits'] = bits
     if sort_type:
         library_data['sort'] = sort_type
-    if sort_reversed:
-        library_data['reversed'] = sort_reversed
-    if sort_seed:
-        library_data['seed'] = sort_seed
     return True
 
 # Each upgrader knows how to upgrade from the version integer at key, up by one

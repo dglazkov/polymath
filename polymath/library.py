@@ -5,9 +5,11 @@ import hashlib
 import json
 import os
 import random
-from typing import List
+from typing import List, Union, Final
 
 import numpy as np
+
+from numpy.typing import NDArray
 
 from .access import DEFAULT_PRIVATE_ACCESS_TAG, host_config, permitted_access
 from .upgrade import upgrade_library_data
@@ -37,11 +39,6 @@ LEGAL_OMIT_KEYS = set(
     ['*', '', 'similarity', 'embedding', 'token_count', 'info', 'access_tag'])
 
 
-def _load_data_file(file):
-    with open(file, "r") as f:
-        return json.load(f)
-
-
 def canonical_id(bit_text, url=''):
     """
     Returns the canonical ID for a given bit of text.
@@ -63,17 +60,6 @@ def canonical_id(bit_text, url=''):
 def vector_from_base64(str):
     return np.frombuffer(base64.b64decode(str), dtype=np.float32)
 
-# In JS, the argument can be produced with with:
-# ```
-# new Float32Array(new Uint8Array([...atob(encoded_data)].map(c => c.charCodeAt(0))).buffer);
-# ```
-# where `encoded_data` is a base64 string
-
-
-def _base64_from_vector(vector):
-    data = np.array(vector, dtype=np.float32)
-    return base64.b64encode(data)
-
 
 def vector_similarity(x, y):
     # np.dot returns a float32 but those aren't serializable in json. Just
@@ -82,7 +68,7 @@ def vector_similarity(x, y):
 
 
 class BitInfo:
-    def __init__(self, bit: 'Bit' = None, data=None):
+    def __init__(self, bit: Union['Bit', None] = None, data=None):
         self._data = data if data else {}
         self._bit = bit
 
@@ -175,7 +161,7 @@ class Bit:
             if 'embedding' not in self._data:
                 raise Exception(f'{bit_id} is missing embedding')
             if expected_embedding_length != None:
-                if len(self.embedding) != expected_embedding_length:
+                if self.embedding is not None and len(self.embedding) != expected_embedding_length:
                     raise Exception(
                         f'{bit_id} had the wrong length of embedding, expected {expected_embedding_length}')
         if 'token_count' not in fields_to_omit:
@@ -206,11 +192,11 @@ class Bit:
         return self.text
 
     @property
-    def library(self) -> 'Library':
+    def library(self) -> Union['Library', None]:
         # There is no exposed library setter. Call library.insert_bit or library.remove_bit to reparent.
         return self._library
 
-    def _set_library(self, library: 'Library'):
+    def _set_library(self, library: Union['Library', None]):
         # _set_library should only be called by a library in insert_bit or in our constructor.
         self._library = library
         self.validate()
@@ -242,7 +228,7 @@ class Bit:
         self._data['token_count'] = value
 
     @property
-    def embedding(self):
+    def embedding(self) -> Union[NDArray[np.float32], None]:
         if self._cached_embedding is None:
             raw_embedding = self._data.get('embedding', None)
             if not raw_embedding:
@@ -253,7 +239,7 @@ class Bit:
     @embedding.setter
     def embedding(self, value):
         self._cached_embedding = value
-        self._data['embedding'] = _base64_from_vector(value).decode('ascii')
+        self._data['embedding'] = Library.base64_from_vector(value).decode('ascii')
 
     @property
     def similarity(self):
@@ -289,20 +275,24 @@ class Bit:
         if not self.library:
             return
         if self.library.omit_whole_bit:
-            self.clear()
+            self._data = {}
         for field_to_omit in self.library.fields_to_omit:
             if field_to_omit in self._data:
                 del self._data[field_to_omit]
 
 
 class Library:
+
+    EMBEDDINGS_MODEL_ID : Final[str] = EMBEDDINGS_MODEL_ID
+    CURRENT_VERSION : Final[int] = CURRENT_VERSION
+
     def __init__(self, data=None, blob=None, filename=None, access_tag=None):
 
         # The only actual data member of the class is _data. If that ever
         # changes, also change copy().
 
         if filename:
-            data = _load_data_file(filename)
+            data = Library.load_data_file(filename)
         if blob:
             data = json.loads(blob)
         if data:
@@ -341,6 +331,22 @@ class Library:
                 bit.access_tag = access_tag
 
         self.validate()
+
+    @classmethod
+    def load_data_file(cls, file):
+        with open(file, "r") as f:
+            return json.load(f)
+        
+    # In JS, the argument can be produced with with:
+    # ```
+    # new Float32Array(new Uint8Array([...atob(encoded_data)].map(c => c.charCodeAt(0))).buffer);
+    # ```
+    # where `encoded_data` is a base64 string
+
+    @classmethod
+    def base64_from_vector(cls, vector):
+        data = np.array(vector, dtype=np.float32)
+        return base64.b64encode(data)
 
     @property
     def upgraded(self):
@@ -414,32 +420,6 @@ class Library:
             bit.strip()
 
     @property
-    def seed(self):
-        return self._data.get('seed', None)
-
-    @seed.setter
-    def seed(self, value):
-        if value == self.seed:
-            return
-        self._data['seed'] = value
-        if not value:
-            del self._data['seed']
-        self._re_sort()
-
-    @property
-    def sort_reversed(self):
-        return self._data.get('reversed', False)
-
-    @sort_reversed.setter
-    def sort_reversed(self, value):
-        if value == self.sort_reversed:
-            return
-        self._data['reversed'] = value
-        if not value:
-            del self._data['reversed']
-        self._re_sort()
-
-    @property
     def sort(self):
         return self._data.get('sort', 'any')
 
@@ -461,8 +441,8 @@ class Library:
         bits = self._data['bits']
         bits_in_order = self._bits_in_order
         if sort_type == 'similarity':
-            # TODO: handle sort_reversed correctly. This assumes a descending
-            # sort by similarity.
+            # NOTE: if sort_reversed is ever supported, then bisect_left will
+            # not be sufficient.
             def get_similarity(bit):
                 if not bit:
                     return -1
@@ -485,13 +465,11 @@ class Library:
         Called when the sort type might have changed and _data.sort.ids needs to be resorted
         """
         sort_type = self._data.get('sort', 'any')
-        sort_reversed = self._data.get('reversed', False)
         # We'll operate on bits_in_order and then replicate that order in
         # self._data['bits]
         bits_in_order = self._bits_in_order
         if sort_type == 'random':
             rng = random.Random()
-            rng.seed(self.seed)
             rng.shuffle(bits_in_order)
         elif sort_type == 'similarity':
             def get_similarity(bit):
@@ -508,8 +486,6 @@ class Library:
         else:
             # effectively any, which means any order is fine.
             pass
-        if sort_reversed:
-            bits_in_order.reverse()
         # replicate the final order of bits_in_order in bits.
         bits = self._data['bits']
         # Operate on the existing list in place to maintain object equality
@@ -706,9 +682,6 @@ class Library:
         self._bits_in_order.pop(index)
         self._data['bits'].pop(index)
         del self._bits[bit_id]
-        # TODO: technically if this is a random sort with seed we do need a
-        # resort, but in all other cases it's unnecessarily slower to sort
-        # on every bit you remove.
 
     def insert_bit(self, bit: Bit):
         if bit.library == self:
@@ -793,13 +766,10 @@ class Library:
     @classmethod
     def _validate_query_arguments(cls, args):
         version = int(args.get('version', -1))
-        query_embedding = args.get('query_embedding')
+        raw_query_embedding = args.get('query_embedding')
         query_embedding_model = args.get('query_embedding_model')
         count = int(args.get('count', 0))
         count_type = args.get('count_type', 'token')
-        sort = args.get('sort', 'similarity')
-        sort_reversed = args.get('sort_reversed') is not None
-        seed = args.get('seed')
         omit = args.get('omit', 'embedding')
         access_token = args.get('access_token', '')
 
@@ -807,8 +777,6 @@ class Library:
         # of request.get() directly and if it's None, we'll use the default.
         if count_type == None:
             count_type = 'token'
-        if sort == None:
-            sort = 'similarity'
         if omit == None:
             omit = 'embedding'
 
@@ -823,57 +791,43 @@ class Library:
             # should work.
             raise Exception(f'version must be at least {CURRENT_VERSION}')
 
-        if query_embedding and query_embedding_model != EMBEDDINGS_MODEL_ID:
-            raise Exception(
-                f'If query_embedding is passed, query_embedding_model must be {EMBEDDINGS_MODEL_ID} but it was {query_embedding_model}')
+        if query_embedding_model != EMBEDDINGS_MODEL_ID:
+            raise Exception(f'Embedding model was {query_embedding_model} but expected {EMBEDDINGS_MODEL_ID}')
 
-        if sort not in LEGAL_SORTS:
-            raise Exception(
-                f'sort {sort} is not one of the legal options: {LEGAL_SORTS}')
-
-        if sort == 'manual':
-            raise Exception('sort of manual is not allowed in query')
+        query_embedding = None
+        if raw_query_embedding:
+            query_embedding = vector_from_base64(raw_query_embedding).tolist() if type(raw_query_embedding) == str else raw_query_embedding
+        else:
+            embedding_length = EXPECTED_EMBEDDING_LENGTH[query_embedding_model]
+            query_embedding = np.random.rand(embedding_length).tolist()
 
         if count_type not in LEGAL_COUNT_TYPES:
             raise Exception(
                 f'count_type {count_type} is not one of the legal options: {LEGAL_COUNT_TYPES}')
 
-        return ({
-            'query_embedding': query_embedding,
-            'sort': sort,
-            'sort_reversed': sort_reversed,
-            'seed': seed,
-        }, {
+        return (query_embedding, {
             'count': count,
             'count_type': count_type,
             'omit': omit,
             'access_token': access_token
         })
 
-    def _produce_query_result(self, query_embedding, sort, sort_reversed, seed):
-        if query_embedding:
-            if type(query_embedding) == str:
-                embedding = vector_from_base64(query_embedding)
-            else:  # assuming it's a list of vectors now
-                embedding = query_embedding
-            self.compute_similarities(embedding)
-
-        self.seed = seed
-        self.sort_reversed = sort_reversed
-        self.sort = sort
+    def _produce_query_result(self, query_embedding : List[float]):
+        self.compute_similarities(query_embedding)
+        self.sort = 'similarity'
 
     def _remove_restricted_bits(self, count, omit, count_type, access_token):
         count_type_is_bit = count_type == 'bit'
         restricted_count = self.delete_restricted_bits(access_token)
         result = self.slice(count, count_type_is_bit=count_type_is_bit)
-        result.count_bits = len(self.bits)
+        result.count_bits = len(result.bits)
         # Now that we know how many bits exist we can set omit, which might
         # remove all bits.
         result.omit = omit
 
         config = host_config()
         include_restricted_count = config["include_restricted_count"]
-        restricted_message = config["restricted_message"]
+        restricted_message = str(config["restricted_message"])
 
         if include_restricted_count:
             result.count_restricted = restricted_count
@@ -883,9 +837,9 @@ class Library:
         return result
 
     def query(self, args):
-        query_args, access_args = self._validate_query_arguments(args)
+        query_embedding, access_args = self._validate_query_arguments(args)
         result = self.copy()
-        result._produce_query_result(**query_args)
+        result._produce_query_result(query_embedding)
         return result._remove_restricted_bits(**access_args)
 
 
@@ -923,9 +877,3 @@ def _keys_to_omit(configuration=''):
     if len(configuration) == 1:
         configuration = configuration[0]
     return (omit_whole_bit, set(result), configuration)
-
-
-Library.EMBEDDINGS_MODEL_ID = EMBEDDINGS_MODEL_ID
-Library.CURRENT_VERSION = CURRENT_VERSION
-Library.load_data_file = _load_data_file
-Library.base64_from_vector = _base64_from_vector

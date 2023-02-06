@@ -1,6 +1,7 @@
 import argparse
 import json
 import os
+import sys
 
 import openai
 import urllib3
@@ -23,11 +24,9 @@ def query_server(query_embedding, server, random=False, count=DEFAULT_CONTEXT_TO
         "count": count
     }
     if random:
-        fields["sort"] = "random"
         fields["omit"] = "similarity,embedding"
     else:
         fields["query_embedding"] = query_embedding
-        fields["sort"] = "similarity"
     response = http.request(
         'POST', server, fields=fields).data
     obj = json.loads(response)
@@ -45,7 +44,7 @@ parser.add_argument("--dev", action="store_true",
 parser.add_argument(
     "--config", help=f"A path to a config file to use. If not provided it will try to use {DEFAULT_CONFIG_FILE} if it exists. Pass \"\" explicitly to proactively ignore that file even if it exists", default=None)
 parser.add_argument("--server", help="A server to use for querying",
-                    action="append"),
+                    action="append")
 parser.add_argument("--only", help=f"If provided, will ignore any hosts without this name or endpoint in {DEFAULT_CONFIG_FILE}", action="append")
 parser.add_argument("--exclude", help=f"If provided, will ignore any hosts that have this name or endpoint in {DEFAULT_CONFIG_FILE}", action="append")
 parser.add_argument("--completion", help="Request completion based on the query and context",
@@ -109,7 +108,7 @@ if 'hosts' in config:
 
 if len(server_list) == 0:
     print('No hosts provided.')
-    os.exit(1)
+    sys.exit(1)
 
 if args.verbose:
     if args.random:

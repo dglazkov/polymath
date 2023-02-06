@@ -344,7 +344,7 @@ python3 -m convert.out \
 
 ## Running the server
 
-To start the host server, run `python3 -m host.server`. It will start a Flask app as a local server. Go to `http://127.0.0.1:8080/api/query` to see the API endpoint.
+To start the host server, run `python3 -m host.server`. It will start a Flask app as a local server. Go to `http://127.0.0.1:8080/` to see the API endpoint.
 
 It will automatically load up all libaries in `libraries/` and its subdirectories.
 
@@ -471,6 +471,24 @@ The mapping of `asset_token` to `access_tag` they give access to is configured i
     "message": "Contact alex@komoroske.com for an access_token."
   },
 
+  "completions_options": {
+    "model": "text-davinci-003",
+
+    // change the prompt that you want to use. the tokens {context} and {query} will be replaced by the Polymath context results and the user inputted query
+    "prompt_template": "Answer the question as truthfully as possible using the provided context, and if don't have the answer, say \"I don't know\" and suggest looking for this information elsewhere.\n\nContext:\n${context} \n\nQuestion:\n${query}\n\nAnswer:",
+    
+    // OpenAI config options
+    "max_tokens": 256,
+    "temperature": 0,
+    "top_p": 1,
+    "n": 1,
+    "stream": false,
+    "logprobs": null,
+    "stop": "\n",
+    // if you set this to true, the full prompt will be logged to the console
+    "debug": false
+  },
+
   "info": {
     "headername": "Dion's",
     "placeholder": "What is the best side effect of using an AI assistant?"
@@ -480,6 +498,7 @@ The mapping of `asset_token` to `access_tag` they give access to is configured i
       "What is an Ajaxian?",
       "What happened to webOS?"
     ],
+
     "source_prefixes": {
       "https://remix.run/": "Remix: ",
       "https://reactrouter.com/": "React Router: "
@@ -507,6 +526,14 @@ Instead of generating keys yourself and modifying the file, you can use the foll
 This will generate a new key, store it in `host.SECRET.json` and print it.
 
 You can also revoke a key with `python3 -m config.host access revoke <user_vanity_id>`
+
+## Content
+
+Hosts should only host content for public access that they have the rights to.
+
+The intention of a polymath host is not to make the content available for
+scraping for arbitrary use, but specifically to be used by a polymath client to
+mix into a prompt to return a polymath answer.
 
 ## Developing
 
