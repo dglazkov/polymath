@@ -1,5 +1,4 @@
 import argparse
-import os
 import traceback
 
 from flask import Flask, jsonify, render_template, request
