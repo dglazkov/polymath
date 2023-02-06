@@ -477,17 +477,15 @@
     }
 
     async completion(prompt) {
-      return await this._call_api('completions', {
-        model: 'text-davinci-003',
-        prompt: prompt,
-        max_tokens: 1024,
-        temperature: 0,
-        top_p: 1,
-        n: 1,
-        stream: false,
-        logprobs: null,
-        stop: '\n'
-      }, out => out.choices[0].text);
+      let openai_options = { ...completions_options };
+
+      openai_options.prompt = prompt;
+      delete openai_options["prompt_template"];
+      delete openai_options["debug"];
+
+      return await this._call_api('completions',
+        openai_options, 
+        out => out.choices[0].text);
     }
 
     async embedding(query) {
