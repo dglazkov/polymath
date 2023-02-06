@@ -6,12 +6,14 @@ import openai
 from dotenv import load_dotenv
 from flask import Flask, jsonify, render_template, request
 from flask_compress import Compress
+from flask_cors import CORS
 
 import polymath
 
 DEFAULT_TOKEN_COUNT = 1000
 
 app = Flask(__name__)
+CORS(app)
 Compress(app)
 
 load_dotenv()
@@ -35,10 +37,18 @@ class Endpoint:
 def index():
     try:
         endpoint = Endpoint(library)
-        return endpoint.query({
-            'count': DEFAULT_TOKEN_COUNT,
-            **request.form.to_dict()
-        })
+        content_type = request.headers.get('Content-Type')
+        if (content_type == 'application/json'):
+            json = request.json
+            return endpoint.query({
+                'count': DEFAULT_TOKEN_COUNT,
+                **json
+            })
+        else:
+            return endpoint.query({
+                'count': DEFAULT_TOKEN_COUNT,
+                **request.form.to_dict()
+            })
 
     except Exception as e:
         return jsonify({
