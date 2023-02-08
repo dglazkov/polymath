@@ -3,7 +3,7 @@ requires = ["flit_core >=3.2,<4"]
 build-backend = "flit_core.buildapi"
 
 [project]
-name = "polymath"
+name = "polymath-ai"
 version = "0.0.3"
 authors = [
   { name="Alex Komoroske", email="alex@komoroske.com" },
@@ -12,13 +12,12 @@ authors = [
 ]
 description = "Federating wisdom one library at a time."
 readme = "README.md"
-requires-python = ">=3.7"
+requires-python = ">=3.9"
 classifiers = ["License :: OSI Approved :: MIT License"]
 dependencies = [
   "numpy",
   "openai",
-  "transformers",
-  "numpy"
+  "transformers"
 ]
 
 [project.urls]
