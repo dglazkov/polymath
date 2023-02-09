@@ -182,19 +182,8 @@
   </div>
   
   <script action="show" arguments="completion,infos">
-    function removeDuplicates(arr) {
-      let seen = new Set();
-      return arr.filter(item => {
-        if (!seen.has(item.url)) {
-          seen.add(item.url);
-          return true;
-        }
-        return false;
-      });
-    }
-
     this.querySelector('#completion').textContent = completion;
-    this.querySelector('#sources').innerHTML = removeDuplicates(infos).map(info => {
+    this.querySelector('#sources').innerHTML = infos.map(info => {
       let escapedTitle = (info.description || info.title).replace(/"/g, "\\\"");
       let prefix = "";
 
@@ -243,6 +232,21 @@
   }
   {% endif %}
 
+  // Given the array of bits, return info objects ordered by the most similarity, no duplicates
+  function infoSortedBySimilarity(bits) {
+    const uniqueInfos = [];
+    return bits
+      .sort((a, b) => b.similarity - a.similarity)
+      .filter((bit) => {
+        const info = bit.info;
+        if (!uniqueInfos.some((ui) => ui.url === info.url)) {
+          uniqueInfos.push(info);
+          return true;
+        }
+        return false;
+      })
+      .map((bit) => bit.info);
+  }
 
   // Contains all UI-specific logic.
   class Controller {
@@ -434,7 +438,7 @@
         result.error = completion_result.error;
         return result;
       }
-      result.infos = polymath_results.bits.map(entry => entry.info);
+      result.infos = infoSortedBySimilarity(polymath_results.bits);
       result.completion = completion_result.result;
       progress('');
       return result;
