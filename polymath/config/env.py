@@ -20,6 +20,3 @@ class EnvConfigLoader:
     def load_environment_config(self) -> EnvironmentConfig:
         config = EnvConfigStore().load()
         return EnvironmentConfig(config)
-
-
-Env = EnvConfigLoader()

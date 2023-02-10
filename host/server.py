@@ -5,16 +5,16 @@ from flask import Flask, jsonify, render_template, request
 from flask_compress import Compress
 
 import polymath
-from polymath.config.json import JSON
-from polymath.config.env import Env
+from polymath.config.json import JSONConfigLoader
+from polymath.config.env import EnvConfigLoader
 
 DEFAULT_TOKEN_COUNT = 1000
 
 app = Flask(__name__)
 Compress(app)
 
-env_config = Env.load_environment_config()
-host_config = JSON.load_host_config()
+env_config = EnvConfigLoader().load_environment_config()
+host_config = JSONConfigLoader().load_host_config()
 
 library = polymath.load_libraries(env_config.library_filename, True)
 

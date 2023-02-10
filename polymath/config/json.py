@@ -29,6 +29,3 @@ class JSONConfigLoader:
             filename = 'host.SECRET.json'
         config = self._config_store.load(filename)
         return HostConfig(config)
-
-
-JSON = JSONConfigLoader()

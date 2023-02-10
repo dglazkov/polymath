@@ -19,6 +19,3 @@ class FirestoreConfigLoader:
             ref = self._client.document('sites/127')
         config = FirestoreConfigStore().load(ref)
         return HostConfig(config)
-
-
-Firestore = FirestoreConfigLoader()
