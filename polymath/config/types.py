@@ -1,6 +1,14 @@
 
 from collections.abc import Sequence
+from dataclasses import field
 from typing import Union
+
+from polymath.base.dataclasses import config, empty
+
+# First time here? Read the README.md file in this directory.
+
+# For pretty much any reasonable flat property bag
+PropertyBagConfigType = dict[str, Union[bool, str, int]]
 
 # HostConfig-related types
 SourcePrefixesType = dict[str, str]
@@ -13,27 +21,24 @@ HostConfigType = dict[str, Union[str, InfoConfigType, TokensConfigType]]
 EnvironmentConfigType = dict[str, str]
 
 
+@config
 class EnvironmentConfig:
-    def __init__(self, args: EnvironmentConfigType):
-        # TODO: Throw an error if the api key is not set.
-        self.openai_api_key = args.get('openai_api_key')
-        self.library_filename = args.get('library_filename')
+    openai_api_key: str
+    library_filename: str = None
 
 
+@config
 class InfoConfig:
-    def __init__(self, args: InfoConfigType):
-        self.headername = args.get('headername', '')
-        self.placeholder = args.get('placeholder', '')
-        self.fun_queries = args.get('fun_queries', [])
-        self.source_prefixes = args.get('source_prefixes', {})
+    headername: str = ''
+    placeholder: str = ''
+    fun_queries: FunQueriesType = empty(list)
+    source_prefixes: SourcePrefixesType = empty(dict)
 
 
+@config
 class HostConfig:
-    def __init__(self, args: HostConfigType):
-        restricted = args.get('restricted', {})
-        self.default_api_key = restricted.get('default_api_key', False)
-        self.include_restricted_count = restricted.get('count', False)
-        self.restricted_message = restricted.get('message', '')
-        self.info = InfoConfig(args.get('info', {}))
-        self.tokens = args.get('tokens', {})
-        self.completions_options = args.get('completions_options', {})
+    restricted: PropertyBagConfigType = empty(dict)
+    default_api_key: str = ''
+    info: InfoConfig = InfoConfig()
+    tokens: TokensConfigType = empty(dict)
+    completions_options: PropertyBagConfigType = empty(dict)

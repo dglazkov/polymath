@@ -29,8 +29,8 @@
 <main id="surface" class="p-4"></main>
 
 <footer class="p-4">
-  {% if config.restricted_message %}
-  <p class="py-1">This server has additional private content that requires an access token to access. {{ config.restricted_message }}</p>
+  {% if config.restricted.message %}
+  <p class="py-1">This server has additional private content that requires an access token to access. {{ config.restricted.message }}</p>
   {% endif %}
 
   <p class="italic py-1 border-t border-indigo-500/30 hover:border-indigo-500/60">
