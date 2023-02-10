@@ -1,8 +1,8 @@
 # Configuring Polymath
 
-## Lay of the land
-
 This directory contains the configuration system for Polymath. It's a little hand-rolled ditty that is designed to accommodate multiple types of stores and allow expressing configuration flexibly and reliably.
+
+## Lay of the land
 
 There are three key groups of files:
 

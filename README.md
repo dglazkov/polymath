@@ -551,6 +551,10 @@ After checking out the repo and activating your environment install dependencies
 
 Every time you add a new dependency, update the dependency list manually and re-run the command above.
 
+### Writing tests
+
+Tests are written using the [Pytest](https://docs.pytest.org/en/7.2.x/) framework. To run the tests, run `pytest` from the root of the repo. Add your own tests right next to the code they are testing, and name them `test_*.py`.
+
 ### Optimizing Tailwind
 
 When using new Tailwind classes, you will want to create an updated `output.css` file by running:
