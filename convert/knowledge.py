@@ -15,12 +15,33 @@ The format is just a piece of knowledge / information separated by some "-------
 
 E.g.
 
+```
 Question: What is the male name for a duck?
 Answer: Drake
 --------------------------------------------
 Dion is British and was born in Essex
 --------------------------------------------
 There are two forms of persistent Enterprise JavaBeans (EJB) because Oracle and IBM disagreed and both shipped
+```
+
+You can also add metadata before the knowledge to setup the info. They are all optional.
+
+E.g.
+
+```
+title: Hydrogen uses Remix!
+description: Hydrogen uses Remix for the best online store development
+
+Question: What is the best way to build an online store with Remix?
+
+Answer: We recommend Hydrogen, Shopify's solution that uses the Remix you love at it's core, and then gives you all of the commerce helpers you need.
+----------
+url: https://remix.run/blog/remixing-react-router
+
+Question: How is Remix related to React Router?
+
+Answer: They are from the same team and they work great together!
+```
 
 ## Usage
 
@@ -50,13 +71,27 @@ class KnowledgeImporter:
                 knowledgeLines = knowledge.split('\n')
 
                 title = knowledgeLines[0]
-
                 info = {
                     'url': google_url(title),
                     'title': title
                 }
 
-                for chunk in generate_chunks([knowledgeLines]):
+                cleanKnowledge = []
+                for line in knowledgeLines:
+                    if line.startswith("url:"):
+                        info["url"] = re.sub(r"url:\s*", "", line)
+                    elif line.startswith("title:"):
+                        info["title"] = re.sub(r"title:\s*", "", line)
+                    elif line.startswith("description:"):
+                        info["description"] = re.sub(r"description:\s*", "", line)
+                    elif not line.strip():
+                        continue
+                    else:
+                        cleanKnowledge.append(line)
+
+                # print("Knowledge Lines:", cleanKnowledge)
+                # print("Info: ", info)
+                for chunk in generate_chunks([cleanKnowledge]):
                     # print(chunk)
                     yield {
                         "text": chunk,

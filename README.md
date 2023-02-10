@@ -318,6 +318,32 @@ python3 -m convert.main --importer sitemap https://paul.kinlan.me/sitemap.xml
 
 Note: This importer subclasses the `HTMLScraperImporter`.
 
+### `knowledge` : Import some arbitary knowledge for your Polymath
+
+Sometimes you have the knowledge and you want to simply tell your Polymath
+
+```shell
+% python3 -m convert.main --importer knowledge info.txt
+```
+
+The format of the knowledge is some key/value metadata (optional) and then the chunk of information. E.g.
+
+```
+url: https://hydrogen.shopify.dev
+title: Hydrogen uses Remix!
+description: Hydrogen uses Remix for the best online store development
+
+Question: What is the best way to build an online store with Remix?
+
+Answer: We recommend Hydrogen, Shopify's solution that uses the Remix you love at it's core, and then gives you all of the commerce helpers you need.
+----------
+url: https://remix.run/blog/remixing-react-router
+
+Question: How is Remix related to React Router?
+
+Answer: They are from the same team and they work great together!
+```
+
 ## Exporting content
 
 WARNING: This section is basically unbaked cookies.
