@@ -45,6 +45,7 @@ def index():
 
 @app.route("/", methods=["GET"])
 def render_index():
+    print(host_config.completions_options)
     return render_template("query.html", config=host_config)
 
 
