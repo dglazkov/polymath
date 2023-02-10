@@ -5,6 +5,8 @@ from typing import Union
 
 from polymath.base.dataclasses import config, empty
 
+# First time here? Read the README.md file in this directory.
+
 # For pretty much any reasonable flat property bag
 PropertyBagConfigType = dict[str, Union[bool, str, int]]
 
