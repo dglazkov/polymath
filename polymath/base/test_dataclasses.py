@@ -1,5 +1,3 @@
-from dataclasses import field
-
 import pytest
 
 from polymath.base.dataclasses import config, empty, omit_empties_factory

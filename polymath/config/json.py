@@ -4,17 +4,19 @@ from typing import Any, Union
 
 
 class JSONConfigStore:
-    def __init__(self):
+    def __init__(self, path: str = ''):
         self._cache = {}
+        self.path = path
 
     def _load(self, filename: str) -> Any:
-        if filename in self._cache:
-            return self._cache[filename]
-        if not os.path.exists(filename):
+        location = os.path.join(self.path, filename)
+        if location in self._cache:
+            return self._cache[location]
+        if not os.path.exists(location):
             return {}
-        with open(filename, 'r') as f:
+        with open(location, 'r') as f:
             result = json.load(f)
-        self._cache[filename] = result
+        self._cache[location] = result
         return result
 
     def default(self, config_type) -> str:
@@ -28,3 +30,11 @@ class JSONConfigStore:
                 raise Exception(f'Config file "{filename}" does not exist')
         config = self._load(filename)
         return config_type(config)
+
+    def save(self, config: Any, filename: Union[str, None] = None) -> None:
+        config_type = type(config)
+        if filename is None:
+            filename = self.default(config_type)
+        location = os.path.join(self.path, filename)
+        with open(location, 'w') as f:
+            json.dump(config.to_dict(), f, indent=4)
