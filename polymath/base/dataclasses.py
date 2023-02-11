@@ -1,5 +1,5 @@
 
-from dataclasses import dataclass, field, is_dataclass
+from dataclasses import asdict, dataclass, field, is_dataclass
 
 import inspect
 from typing import Any
@@ -12,6 +12,23 @@ def empty(factory):
 def is_a_dataclass_dict(type):
     is_a_dict_subclass = type is not dict and type.__subclasscheck__(dict)
     return is_a_dict_subclass and is_dataclass(type.__args__[1])
+
+
+def omit_empties_factory(items):
+    def is_empty(value):
+        if isinstance(value, list):
+            return len(value) == 0
+        if isinstance(value, dict):
+            return len(value) == 0
+        return False
+
+    items = [(k, v) for k, v in items if is_empty(v) is False]
+    return dict(items)
+
+
+def to_dict(self):
+    result = asdict(self, dict_factory=omit_empties_factory)
+    return result
 
 
 def build_config_kwards(cls, config_args):
@@ -52,7 +69,7 @@ def config(*args, **kwargs):
             else:
                 dataclass_init(self,
                                **build_config_kwards(cls, config_args))
-
+        setattr(cls, 'to_dict', to_dict)
         cls.__init__ = init
         return cls
     return wrapper(args[0]) if args else wrapper

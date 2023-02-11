@@ -2,7 +2,17 @@ from dataclasses import field
 
 import pytest
 
-from polymath.base.dataclasses import config, empty
+from polymath.base.dataclasses import config, empty, omit_empties_factory
+
+
+def test_omit_empties_factory():
+    items = [('bar', 'simple'), ('baz', 42), ('items', []), ('bag', {})]
+    result = omit_empties_factory(items)
+    assert result == {'bar': 'simple', 'baz': 42}
+
+    items = [('bar', 'simple'), ('items', None), ('bag', {})]
+    result = omit_empties_factory(items)
+    assert result == {'bar': 'simple', 'items': None}
 
 
 @config
@@ -25,6 +35,7 @@ def test_config():
     assert config.baz == 0
     assert config.items == [1, 2, 3]
     assert config.bag == {'a': 1}
+    assert config.to_dict() == simple_args
 
     no_args = {}
     config = SimpleConfig(no_args)
@@ -32,6 +43,10 @@ def test_config():
     assert config.baz == 42
     assert config.items == []
     assert config.bag == {}
+    assert config.to_dict() == {
+        'bar': 'simple',
+        'baz': 42,
+    }
 
 
 @config(id='marked')
@@ -92,16 +107,21 @@ def test_nested_config():
     assert qux.foo.bar == 'bar'
     assert qux.foo.baz == 0
     assert qux.roh == True
+    assert qux.to_dict() == nested_args
 
     optional_nested_args = {}
     qux = OptionalNestedConfig(optional_nested_args)
     assert qux.foo == None
     assert qux.roh == False
+    assert qux.to_dict() == {
+        'foo': None,
+        'roh': False
+    }
 
 
 @config
 class OptionalDefaultsNestedConfig:
-    foo: SimpleConfig = SimpleConfig
+    foo: SimpleConfig = SimpleConfig()
     roh: bool = False
 
 
@@ -117,11 +137,25 @@ def test_optional_defaults_nested_config():
     assert qux.foo.bar == 'simple'
     assert qux.foo.baz == 42
     assert qux.roh == False
+    assert qux.to_dict() == {
+        'foo': {
+            'bar': 'simple',
+            'baz': 42,
+        },
+        'roh': False
+    }
 
     qux = OptionalDefaultsNestedConfig2(optional_defaults_nested_args)
     assert qux.foo.bar == 'woo'
     assert qux.foo.baz == 0
     assert qux.roh == False
+    assert qux.to_dict() == {
+        'foo': {
+            'bar': 'woo',
+            'baz': 0,
+        },
+        'roh': False
+    }
 
 
 @config
@@ -137,6 +171,7 @@ def test_multiple_dicts():
     assert config.foo == {}
     assert config.bar == {}
     assert config.baz == {}
+    assert config.to_dict() == empty_args
 
 
 @config
@@ -155,7 +190,20 @@ def test_dicts_of_configs():
     config = DictsOfConfigsConfig(dicts_of_configs_args)
     assert config.foo['wdl'].bar == 'one'
     assert config.foo['flux'].bar == 'simple'
+    assert config.to_dict() == {
+        'foo': {
+            'flux': {
+                'bar': 'simple',
+                'baz': 42,
+            },
+            'wdl': {
+                'bar': 'one',
+                'baz': 42,
+            }
+        }
+    }
 
     empty_args = {}
     config = DictsOfConfigsConfig(empty_args)
     assert config.foo == {}
+    assert config.to_dict() == empty_args
