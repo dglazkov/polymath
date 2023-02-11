@@ -25,8 +25,14 @@ class JSONConfigLoader:
     def __init__(self):
         self._config_store = JSONConfigStore()
 
+    def default_config_file(self, config_type) -> str:
+        return f'{config_type.__id__}.SECRET.json'
+
     def load(self, config_type, filename: Union[str, None] = None) -> Any:
         if filename is None:
-            filename = f'{config_type.__id__}.SECRET.json'
+            filename = self.default_config_file(config_type)
+        else:
+            if not os.path.exists(filename):
+                raise Exception(f'Config file "{filename}" does not exist')
         config = self._config_store.load(filename)
         return config_type(config)

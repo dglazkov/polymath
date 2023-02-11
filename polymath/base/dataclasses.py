@@ -19,7 +19,7 @@ def build_config_kwards(cls, config_args):
     for name in cls.__annotations__.keys():
         field_type = cls.__annotations__.get(name)
         value = config_args.get(name)
-        if is_a_dataclass_dict(field_type):
+        if is_a_dataclass_dict(field_type) and value is not None:
             dataclass_dict = {}
             dataclass_type = field_type.__args__[1]
             for key, sub_value in value.items():

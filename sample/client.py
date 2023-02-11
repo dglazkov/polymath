@@ -8,11 +8,16 @@ import urllib3
 from dotenv import load_dotenv
 
 from polymath import (Library, get_completion_with_context, get_embedding,
-                        get_max_tokens_for_completion_model)
+                      get_max_tokens_for_completion_model)
+from polymath.config.env import EnvConfigLoader
+from polymath.config.json import JSONConfigLoader
+from polymath.config.types import DirectoryConfig, EnvironmentConfig
+
+config_loader = JSONConfigLoader()
 
 DEFAULT_CONTEXT_TOKEN_COUNT = 1500
 
-DEFAULT_CONFIG_FILE = "directory.SECRET.json"
+DEFAULT_CONFIG_FILE = config_loader.default_config_file(DirectoryConfig)
 
 
 def query_server(query_embedding, server, random=False, count=DEFAULT_CONTEXT_TOKEN_COUNT):
@@ -37,43 +42,48 @@ def query_server(query_embedding, server, random=False, count=DEFAULT_CONTEXT_TO
 
 
 parser = argparse.ArgumentParser()
-parser.add_argument("query", help="The question to ask",
-                    default="Tell me about 3P")
-parser.add_argument("--dev", action="store_true",
-                    help=f"If set, will use the dev_* properties for each endpoint in config if they exist")
 parser.add_argument(
-    "--config", help=f"A path to a config file to use. If not provided it will try to use {DEFAULT_CONFIG_FILE} if it exists. Pass \"\" explicitly to proactively ignore that file even if it exists", default=None)
-parser.add_argument("--server", help="A server to use for querying",
-                    action="append")
-parser.add_argument("--only", help=f"If provided, will ignore any hosts without this name or endpoint in {DEFAULT_CONFIG_FILE}", action="append")
-parser.add_argument("--exclude", help=f"If provided, will ignore any hosts that have this name or endpoint in {DEFAULT_CONFIG_FILE}", action="append")
-parser.add_argument("--completion", help="Request completion based on the query and context",
-                    action=argparse.BooleanOptionalAction, default=True)
-parser.add_argument("--random", help="Ask for a random set of bits",
-                    action=argparse.BooleanOptionalAction, default=False)
-parser.add_argument("--verbose", help="Print out context and sources and other useful intermediate data",
-                    action=argparse.BooleanOptionalAction, default=False)
+    "query",
+    help="The question to ask",
+    default="Tell me about 3P")
+parser.add_argument(
+    "--dev",
+    action="store_true",
+    help=f"If set, will use the dev_* properties for each endpoint in config if they exist")
+parser.add_argument(
+    "--config",
+    help=f"A path to a config file to use. If not provided it will try to use {DEFAULT_CONFIG_FILE} if it exists. Pass \"\" explicitly to proactively ignore that file even if it exists",
+    default=None)
+parser.add_argument(
+    "--server",
+    help="A server to use for querying",
+    action="append")
+parser.add_argument(
+    "--only",
+    help=f"If provided, will ignore any hosts without this name or endpoint in {DEFAULT_CONFIG_FILE}",
+    action="append")
+parser.add_argument(
+    "--exclude",
+    help=f"If provided, will ignore any hosts that have this name or endpoint in {DEFAULT_CONFIG_FILE}",
+    action="append")
+parser.add_argument(
+    "--completion",
+    help="Request completion based on the query and context",
+    action=argparse.BooleanOptionalAction,
+    default=True)
+parser.add_argument(
+    "--random", help="Ask for a random set of bits",
+    action=argparse.BooleanOptionalAction,
+    default=False)
+parser.add_argument(
+    "--verbose", help="Print out context and sources and other useful intermediate data",
+    action=argparse.BooleanOptionalAction,
+    default=False)
 args = parser.parse_args()
 
-config = {}
-
-config_file = args.config
-complain_for_missing_config = True
-if config_file == None:
-    config_file = DEFAULT_CONFIG_FILE
-    complain_for_missing_config = False
-
-if config_file:
-    if os.path.exists(config_file):
-        print(f'Using config {config_file}')
-        with open(config_file, 'r') as f:
-            config = json.load(f)
-    else:
-        if complain_for_missing_config:
-            print(f'{config_file} was not found.')
-
-load_dotenv()
-openai.api_key = os.getenv("OPENAI_API_KEY")
+config = config_loader.load(DirectoryConfig, args.config)
+env_config = EnvConfigLoader().load(EnvironmentConfig)
+openai.api_key = env_config.openai_api_key
 
 query = args.query
 server_list = args.server
@@ -90,21 +100,23 @@ if not server_list:
 
 server_tokens = {}
 
-if 'hosts' in config:
-    for (server_name, server_config) in config['hosts'].items():
-        endpoint = server_config.get('endpoint', '')
-        if dev_mode and 'dev_endpoint' in server_config:
-            endpoint = server_config['dev_endpoint']
-        if not endpoint:
-            continue
-        if len(only) and endpoint not in only and server_name not in only:
-            print(f'Excluding {server_name} because neither it nor its endpoint was included in --only')
-            continue
-        if len(exclude) and (endpoint in exclude or server_name in exclude):
-            print(f'Excluding {server_name} because either it or its endpoint was included in --exclude')
-            continue
-        server_list.append(endpoint)
-        server_tokens[endpoint] = server_config.get('token', '')
+for (server_name, server_config) in config.hosts.items():
+    endpoint = server_config.endpoint
+    if dev_mode and server_config.dev_endpoint:
+        endpoint = server_config.dev_endpoint
+    if not endpoint:
+        continue
+    if len(only) and endpoint not in only and server_name not in only:
+        print(
+            f'Excluding {server_name} because neither it nor its endpoint was included in --only')
+        continue
+    if len(exclude) and (endpoint in exclude or server_name in exclude):
+        print(
+            f'Excluding {server_name} because either it or its endpoint was included in --exclude')
+        continue
+    server_list.append(endpoint)
+    if server_config.token is not None:
+        server_tokens[endpoint] = server_config.token
 
 if len(server_list) == 0:
     print('No hosts provided.')
@@ -135,7 +147,8 @@ combined_library = Library()
 
 for server in server_list:
     print(f"Querying {server} ...") if args.verbose else None
-    library = query_server(query_vector, server, random=args.random, count=context_count)
+    library = query_server(query_vector, server,
+                           random=args.random, count=context_count)
     if library.message:
         print(f'{server} said: ' + library.message)
     combined_library.extend(library)
@@ -154,5 +167,6 @@ if args.verbose:
 
 if args.completion:
     print("Getting completion ...") if args.verbose else None
-    print(f"\nAnswer:\n{get_completion_with_context(query, context, answer_length=answer_length)}")
+    print(
+        f"\nAnswer:\n{get_completion_with_context(query, context, answer_length=answer_length)}")
     print(f"\nSources:\n  {sources}")

@@ -153,7 +153,9 @@ def test_dicts_of_configs():
         },
     }
     config = DictsOfConfigsConfig(dicts_of_configs_args)
-    print(config)
-    print(config.foo)
     assert config.foo['wdl'].bar == 'one'
     assert config.foo['flux'].bar == 'simple'
+
+    empty_args = {}
+    config = DictsOfConfigsConfig(empty_args)
+    assert config.foo == {}
