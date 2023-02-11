@@ -13,43 +13,6 @@ class SimpleConfig:
     bag: dict = empty(dict)
 
 
-@config
-class RequiredFieldConfig:
-    bar: str
-    baz: int = 42
-
-
-@config
-class NestedConfig:
-    foo: RequiredFieldConfig
-    roh: bool = False
-
-
-@config
-class OptionalNestedConfig:
-    foo: SimpleConfig = None
-    roh: bool = False
-
-
-@config
-class OptionalDefaultsNestedConfig:
-    foo: SimpleConfig = SimpleConfig
-    roh: bool = False
-
-
-@config
-class OptionalDefaultsNestedConfig2:
-    foo: SimpleConfig = SimpleConfig({'bar': 'woo', 'baz': 0})
-    roh: bool = False
-
-
-@config
-class MultipleDictsConfig:
-    foo: dict = empty(dict)
-    bar: dict = empty(dict)
-    baz: dict = empty(dict)
-
-
 def test_config():
     simple_args = {
         'bar': 'bar',
@@ -70,6 +33,14 @@ def test_config():
     assert config.items == []
     assert config.bag == {}
 
+
+@config
+class RequiredFieldConfig:
+    bar: str
+    baz: int = 42
+
+
+def test_required_field_config():
     required_args = {'bar': 'bar'}
     foo = RequiredFieldConfig(required_args)
     assert foo.bar == 'bar'
@@ -85,6 +56,20 @@ def test_config():
     assert foo.baz == 42
     assert not hasattr(foo, 'qux')
 
+
+@config
+class NestedConfig:
+    foo: RequiredFieldConfig
+    roh: bool = False
+
+
+@config
+class OptionalNestedConfig:
+    foo: SimpleConfig = None
+    roh: bool = False
+
+
+def test_nested_config():
     nested_args = {
         'foo': {
             'bar': 'bar',
@@ -102,6 +87,20 @@ def test_config():
     assert qux.foo == None
     assert qux.roh == False
 
+
+@config
+class OptionalDefaultsNestedConfig:
+    foo: SimpleConfig = SimpleConfig
+    roh: bool = False
+
+
+@config
+class OptionalDefaultsNestedConfig2:
+    foo: SimpleConfig = SimpleConfig({'bar': 'woo', 'baz': 0})
+    roh: bool = False
+
+
+def test_optional_defaults_nested_config():
     optional_defaults_nested_args = {}
     qux = OptionalDefaultsNestedConfig(optional_defaults_nested_args)
     assert qux.foo.bar == 'simple'
@@ -113,8 +112,37 @@ def test_config():
     assert qux.foo.baz == 0
     assert qux.roh == False
 
+
+@config
+class MultipleDictsConfig:
+    foo: dict = empty(dict)
+    bar: dict = empty(dict)
+    baz: dict = empty(dict)
+
+
+def test_multiple_dicts():
     empty_args = {}
     config = MultipleDictsConfig(empty_args)
     assert config.foo == {}
     assert config.bar == {}
     assert config.baz == {}
+
+
+@config
+class DictsOfConfigsConfig:
+    foo: dict[str, SimpleConfig] = empty(dict)
+    bar: dict = empty(dict)
+
+
+def test_dicts_of_configs():
+    dicts_of_configs_args = {
+        'foo': {
+            'wdl': {'bar': 'one'},
+            'flux': {}
+        },
+    }
+    config = DictsOfConfigsConfig(dicts_of_configs_args)
+    print(config)
+    print(config.foo)
+    assert config.foo['wdl'].bar == 'one'
+    assert config.foo['flux'].bar == 'simple'

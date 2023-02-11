@@ -2,10 +2,38 @@
 from dataclasses import dataclass, field, is_dataclass
 
 import inspect
+from typing import Any
 
 
 def empty(factory):
     return field(default_factory=factory)
+
+
+def is_a_dataclass_dict(type):
+    is_a_dict_subclass = type is not dict and type.__subclasscheck__(dict)
+    return is_a_dict_subclass and is_dataclass(type.__args__[1])
+
+
+def build_config_kwards(cls, config_args):
+    config_kwargs = {}
+    for name in cls.__annotations__.keys():
+        field_type = cls.__annotations__.get(name)
+        value = config_args.get(name)
+        if is_a_dataclass_dict(field_type):
+            dataclass_dict = {}
+            dataclass_type = field_type.__args__[1]
+            for key, sub_value in value.items():
+                dataclass_dict[key] = dataclass_type(sub_value)
+            config_kwargs[name] = dataclass_dict
+        elif is_dataclass(field_type) and isinstance(value, dict):
+            config_kwargs[name] = field_type(value)
+        elif value is not None:
+            config_kwargs[name] = value
+    return config_kwargs
+
+
+def is_config(type, value):
+    return is_dataclass(type) and isinstance(value, dict)
 
 
 def config(*args, **kwargs):
@@ -17,16 +45,10 @@ def config(*args, **kwargs):
         def init(self, config_args=None):
             if config_args is None:
                 dataclass_init(self)
-                return
-            config_kwargs = {}
-            for name in cls.__annotations__.keys():
-                field_type = cls.__annotations__.get(name, None)
-                value = config_args.get(name, None)
-                if is_dataclass(field_type) and isinstance(value, dict):
-                    config_kwargs[name] = field_type(value)
-                elif value is not None:
-                    config_kwargs[name] = value
-            dataclass_init(self, **config_kwargs)
+            else:
+                dataclass_init(self,
+                               **build_config_kwards(cls, config_args))
+
         cls.__init__ = init
         return cls
     return wrapper(args[0]) if args else wrapper

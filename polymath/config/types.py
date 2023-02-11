@@ -42,3 +42,16 @@ class HostConfig:
     info: InfoConfig = InfoConfig()
     tokens: TokensConfigType = empty(dict)
     completions_options: PropertyBagConfigType = empty(dict)
+
+
+@config
+class EndpointConfig:
+    endpoint: str
+    dev_endpoint: str = None
+    token: str = None
+
+
+@config
+class DirectoryConfig:
+    hosts: PropertyBagConfigType = empty(dict)
+    hosts2: dict[str, EndpointConfig] = empty(dict)
