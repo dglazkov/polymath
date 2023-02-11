@@ -17,6 +17,6 @@ class EnvConfigLoader:
     def __init__(self):
         load_dotenv()
 
-    def load_environment_config(self) -> EnvironmentConfig:
+    def load(self, config_type) -> Any:
         config = EnvConfigStore().load()
-        return EnvironmentConfig(config)
+        return config_type(config)

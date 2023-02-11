@@ -14,8 +14,8 @@ class FirestoreConfigLoader:
     def __init__(self):
         self._client = firestore.Client()
 
-    def load_host_config(self, path: str = 'sites/127') -> HostConfig:
+    def load(self, config_type, path: str = 'sites/127') -> HostConfig:
         """The default is to load the config for the local host."""
         ref = self._client.document(path)
         config = FirestoreConfigStore().load(ref)
-        return HostConfig(config)
+        return config_type(config)

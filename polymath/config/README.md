@@ -68,20 +68,33 @@ class HostConfig:
     completions_options: PropertyBagConfigType = empty(dict)
 ```
 
+Configuration classes can contain dictionaries of other configuration classes. For example `hosts` property in `DirectoryConfig` is a dictionary of `EndpointConfig` instances:
+
+```python
+
+@config()
+class DirectoryConfig:
+    hosts: dict[str, EndpointConfig] = empty(dict)
+
+```
+
+To make them work with `*ConfigLoader`, you need to define an `id` for a `*Config` file. This `id` will be used to locate the config within the store, used by the `*ConfigLoader` to load the config. For example, `DirectoryConfig` has an `id` of `directory`:
+
+```python
+
+@config(id='directory')
+class DirectoryConfig:
+    hosts: dict[str, EndpointConfig] = empty(dict)
+
+```
+
+When used with `JSONConfigLoader`, this will result in the `JSONConfigLoader` looking for a file named `directory.SECRET.json`.
+
 ## Configuration stores
 You should not need to edit configuration stores, other than to fix bugs in them. There will be bugs.
 
 ## Configuration loaders
-To load new kinds of configurations, add a new method to the respective loader. Look for other methods around, it should be fairly straightforward. For example, here's the `load_host_config` method for `FirestoreConfigLoader`:
-
-```python
-    def load_host_config(self, ref: firestore.DocumentReference = None) -> HostConfig:
-        if ref is None:
-            ref = self._client.document('sites/127')
-        config = FirestoreConfigStore().load(ref)
-        return HostConfig(config)
-
-```
+You should not need to edit configuration loaders, other than to fix bugs in them. There will be bugs.
 
 ## Using configuration system
 
@@ -89,7 +102,8 @@ Depending on where you'd like to request configuration from, pick the right load
 
 ```python
 from polymath.config.json import JSONConfigLoader
+from polymath.config.types import HostConfig
 
-host_config = JSONConfigLoader().load_host_config()
+host_config = JSONConfigLoader().load(HostConfig)
 ```
 The resulting `host_config` will be an instance of `HostConfig` with all the fields populated.

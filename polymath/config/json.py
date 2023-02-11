@@ -5,6 +5,7 @@ from typing import Union
 
 from polymath.config.types import HostConfig
 
+
 class JSONConfigStore:
     def __init__(self):
         self._cache = {}
@@ -24,8 +25,8 @@ class JSONConfigLoader:
     def __init__(self):
         self._config_store = JSONConfigStore()
 
-    def load_host_config(self, filename: Union[str, None] = None) -> HostConfig:
+    def load(self, config_type, filename: Union[str, None] = None) -> Any:
         if filename is None:
-            filename = 'host.SECRET.json'
+            filename = f'{config_type.__id__}.SECRET.json'
         config = self._config_store.load(filename)
-        return HostConfig(config)
+        return config_type(config)

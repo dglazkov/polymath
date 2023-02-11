@@ -7,14 +7,15 @@ from flask_compress import Compress
 import polymath
 from polymath.config.json import JSONConfigLoader
 from polymath.config.env import EnvConfigLoader
+from polymath.config.types import EnvironmentConfig, HostConfig
 
 DEFAULT_TOKEN_COUNT = 1000
 
 app = Flask(__name__)
 Compress(app)
 
-env_config = EnvConfigLoader().load_environment_config()
-host_config = JSONConfigLoader().load_host_config()
+env_config = EnvConfigLoader().load(EnvironmentConfig)
+host_config = JSONConfigLoader().load(HostConfig)
 
 library = polymath.load_libraries(env_config.library_filename, True)
 

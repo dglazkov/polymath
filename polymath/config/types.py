@@ -53,5 +53,4 @@ class EndpointConfig:
 
 @config(id='directory')
 class DirectoryConfig:
-    hosts: PropertyBagConfigType = empty(dict)
-    hosts2: dict[str, EndpointConfig] = empty(dict)
+    hosts: dict[str, EndpointConfig] = empty(dict)
