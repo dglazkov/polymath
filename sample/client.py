@@ -16,7 +16,7 @@ config_store = JSONConfigStore()
 
 DEFAULT_CONTEXT_TOKEN_COUNT = 1500
 
-DEFAULT_CONFIG_FILE = config_store.default_config_file(DirectoryConfig)
+DEFAULT_CONFIG_FILE = config_store.default(DirectoryConfig)
 
 
 def query_server(query_embedding, server, random=False, count=DEFAULT_CONTEXT_TOKEN_COUNT):

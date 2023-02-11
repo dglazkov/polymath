@@ -17,12 +17,12 @@ class JSONConfigStore:
         self._cache[filename] = result
         return result
 
-    def default_config_file(self, config_type) -> str:
+    def default(self, config_type) -> str:
         return f'{config_type.__id__}.SECRET.json'
 
     def get(self, config_type, filename: Union[str, None] = None) -> Any:
         if filename is None:
-            filename = self.default_config_file(config_type)
+            filename = self.default(config_type)
         else:
             if not os.path.exists(filename):
                 raise Exception(f'Config file "{filename}" does not exist')
