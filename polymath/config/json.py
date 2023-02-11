@@ -20,7 +20,7 @@ class JSONConfigStore:
     def default(self, config_type) -> str:
         return f'{config_type.__id__}.SECRET.json'
 
-    def get(self, config_type, filename: Union[str, None] = None) -> Any:
+    def load(self, config_type, filename: Union[str, None] = None) -> Any:
         if filename is None:
             filename = self.default(config_type)
         else:

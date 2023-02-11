@@ -80,7 +80,7 @@ parser.add_argument(
     default=False)
 args = parser.parse_args()
 
-config = config_store.get(DirectoryConfig, args.config)
+config = config_store.load(DirectoryConfig, args.config)
 env_config = EnvConfigStore().get(EnvironmentConfig)
 openai.api_key = env_config.openai_api_key
 
