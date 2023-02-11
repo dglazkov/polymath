@@ -5,8 +5,8 @@ from flask import Flask, jsonify, render_template, request
 from flask_compress import Compress
 
 import polymath
-from polymath.config.json import JSONConfigLoader
-from polymath.config.env import EnvConfigLoader
+from polymath.config.json import JSONConfigStore
+from polymath.config.env import EnvConfigStore
 from polymath.config.types import EnvironmentConfig, HostConfig
 
 DEFAULT_TOKEN_COUNT = 1000
@@ -14,8 +14,8 @@ DEFAULT_TOKEN_COUNT = 1000
 app = Flask(__name__)
 Compress(app)
 
-env_config = EnvConfigLoader().load(EnvironmentConfig)
-host_config = JSONConfigLoader().load(HostConfig)
+env_config = EnvConfigStore().get(EnvironmentConfig)
+host_config = JSONConfigStore().get(HostConfig)
 
 library = polymath.load_libraries(env_config.library_filename, True)
 

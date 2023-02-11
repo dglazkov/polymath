@@ -5,19 +5,18 @@ import sys
 
 import openai
 import urllib3
-from dotenv import load_dotenv
 
 from polymath import (Library, get_completion_with_context, get_embedding,
                       get_max_tokens_for_completion_model)
-from polymath.config.env import EnvConfigLoader
-from polymath.config.json import JSONConfigLoader
+from polymath.config.env import EnvConfigStore
+from polymath.config.json import JSONConfigStore
 from polymath.config.types import DirectoryConfig, EnvironmentConfig
 
-config_loader = JSONConfigLoader()
+config_store = JSONConfigStore()
 
 DEFAULT_CONTEXT_TOKEN_COUNT = 1500
 
-DEFAULT_CONFIG_FILE = config_loader.default_config_file(DirectoryConfig)
+DEFAULT_CONFIG_FILE = config_store.default_config_file(DirectoryConfig)
 
 
 def query_server(query_embedding, server, random=False, count=DEFAULT_CONTEXT_TOKEN_COUNT):
@@ -81,8 +80,8 @@ parser.add_argument(
     default=False)
 args = parser.parse_args()
 
-config = config_loader.load(DirectoryConfig, args.config)
-env_config = EnvConfigLoader().load(EnvironmentConfig)
+config = config_store.get(DirectoryConfig, args.config)
+env_config = EnvConfigStore().get(EnvironmentConfig)
 openai.api_key = env_config.openai_api_key
 
 query = args.query

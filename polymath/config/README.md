@@ -4,18 +4,14 @@ This directory contains the configuration system for Polymath. It's a little han
 
 ## Lay of the land
 
-There are three key groups of files:
+There are two key groups of files:
 
 * Files that end with `*Config` are the configuration classes. They are effectively [dataclasses](https://docs.python.org/3/library/dataclasses.html) with some extra features. They are used to define the configuration schema.
 
-* Files that end with `*ConfigStore` are the configuration stores. They are responsible for loading (and hopefully soon, saving) configuration data. They are specific to the kind of store, but not to any particular configuration class. There are currently three stores):
+* Files that end with `*ConfigStore` are the configuration stores. They are responsible for loading (and hopefully soon, saving) configuration data. They are specific to the kind of store, but not to any particular configuration class. There are currently three stores::
   * `FilestoreConfigStore`
   * `EnvConfigStore`
   * `JSONConfigStore`
-* Files that end with `*ConfigLoader` are the configuration loaders. They are responsible for loading configuration data from a specific configuration store into a specific configuration class. They are the link between `*Config` classes to `*ConfigStore` classes: a `*ConfigLoader` knows how to use a `*ConfigStore` to produce a `*Config`. There are currently three loaders:
-  * `FilestoreConfigLoader`
-  * `EnvConfigLoader`
-  * `JSONConfigLoader`
 
 ## Configuration classes
 
@@ -48,7 +44,7 @@ class InfoConfig:
     source_prefixes: SourcePrefixesType = empty(dict)
 ```
 
-Configuration classes can be nested. For example, `InfoConfig` is nested inside `HostConfig`. The nifty `@config` decorator will ensure that the configuration loader automatically creates the right instances and populates them.
+Configuration classes can be nested. For example, `InfoConfig` is nested inside `HostConfig`. The nifty `@config` decorator will ensure that the configuration store automatically creates the right instances and populates them.
 
 ```python
 from polymath.base.dataclasses import config, empty
@@ -78,7 +74,7 @@ class DirectoryConfig:
 
 ```
 
-To make them work with `*ConfigLoader`, you need to define an `id` for a `*Config` file. This `id` will be used to locate the config within the store, used by the `*ConfigLoader` to load the config. For example, `DirectoryConfig` has an `id` of `directory`:
+Every top-level (not nested by some other `*Config` class) `*Config` class needs  an `id`. This `id` will be used to locate the config within the store by the `*ConfigStore`. For example, `DirectoryConfig` has an `id` of `directory`:
 
 ```python
 
@@ -88,22 +84,20 @@ class DirectoryConfig:
 
 ```
 
-When used with `JSONConfigLoader`, this will result in the `JSONConfigLoader` looking for a file named `directory.SECRET.json`.
+When used with `JSONConfigStore`, this will result in the `JSONConfigStore` looking for a file named `directory.SECRET.json`. The `directory` part of the filename comes from the `id`.
 
 ## Configuration stores
 You should not need to edit configuration stores, other than to fix bugs in them. There will be bugs.
 
-## Configuration loaders
-You should not need to edit configuration loaders, other than to fix bugs in them. There will be bugs.
-
 ## Using configuration system
 
-Depending on where you'd like to request configuration from, pick the right loader. For example, to load from a JSON file, use the `JSONConfigLoader`:
+Depending on where you'd like to request configuration from, pick the right store. For example, to load from a JSON file, use the `JSONConfigStore`:
 
 ```python
-from polymath.config.json import JSONConfigLoader
+from polymath.config.json import JSONConfigStore
 from polymath.config.types import HostConfig
 
-host_config = JSONConfigLoader().load(HostConfig)
+host_config = JSONConfigStore().get(HostConfig)
 ```
+
 The resulting `host_config` will be an instance of `HostConfig` with all the fields populated.

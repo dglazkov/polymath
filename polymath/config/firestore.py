@@ -1,21 +1,15 @@
-from typing import Any
+from typing import Any, Union
 
 from google.cloud import firestore
 
-from polymath.config.types import HostConfig
-
 
 class FirestoreConfigStore:
-    def load(self, ref) -> Any:
-        return ref.get().to_dict()
-
-
-class FirestoreConfigLoader:
     def __init__(self):
         self._client = firestore.Client()
 
-    def load(self, config_type, path: str = 'sites/127') -> HostConfig:
-        """The default is to load the config for the local host."""
+    def get(self, config_type, path: Union[str, None] = None) -> Any:
+        if path is None:
+            path = config_type.__id__
         ref = self._client.document(path)
-        config = FirestoreConfigStore().load(ref)
+        config = ref.get().to_dict()
         return config_type(config)
