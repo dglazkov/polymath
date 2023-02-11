@@ -35,7 +35,7 @@ class InfoConfig:
     source_prefixes: SourcePrefixesType = empty(dict)
 
 
-@config
+@config(id='host')
 class HostConfig:
     restricted: PropertyBagConfigType = empty(dict)
     default_api_key: str = ''
@@ -51,7 +51,7 @@ class EndpointConfig:
     token: str = None
 
 
-@config
+@config(id='directory')
 class DirectoryConfig:
     hosts: PropertyBagConfigType = empty(dict)
     hosts2: dict[str, EndpointConfig] = empty(dict)

@@ -38,6 +38,10 @@ def is_config(type, value):
 
 def config(*args, **kwargs):
     def wrapper(cls):
+        id = kwargs.get('id')
+        if id:
+            cls.__id__ = id
+            kwargs.__delitem__('id')
         kwargs['kw_only'] = True
         cls = dataclass(cls, **kwargs)
         dataclass_init = cls.__init__

@@ -34,6 +34,17 @@ def test_config():
     assert config.bag == {}
 
 
+@config(id='marked')
+class MarkedConfig:
+    bar: str = 'simple'
+
+
+def test_config_id():
+    config_type = MarkedConfig
+    assert MarkedConfig.__id__ == 'marked'
+    assert not hasattr(SimpleConfig, '__id__')
+
+
 @config
 class RequiredFieldConfig:
     bar: str
