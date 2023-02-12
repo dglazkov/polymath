@@ -13,9 +13,7 @@ PropertyBagConfigType = dict[str, Union[bool, str, int]]
 # HostConfig-related types
 SourcePrefixesType = dict[str, str]
 FunQueriesType = Sequence[str]
-InfoConfigType = dict[str, Union[str, SourcePrefixesType, FunQueriesType]]
 TokensConfigType = dict[str, dict[str, str]]
-HostConfigType = dict[str, Union[str, InfoConfigType, TokensConfigType]]
 
 # EnvironmentConfig-related types
 EnvironmentConfigType = dict[str, str]
