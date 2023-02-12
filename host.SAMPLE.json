@@ -4,6 +4,8 @@
 
     "default_api_key": "<Be careful. If you use this, it will be used... and in the source>",
     
+    "endpoint": "https://polymath.example.com",
+
     "restricted": {
       "count": true,
       "message": "Contact alex@komoroske.com for an access_token."

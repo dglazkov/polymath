@@ -117,12 +117,14 @@ class HostConfig:
     Used to configure a host for Polymath.
 
     Attributes:
+        endpoint: The URL where this endpoint is publicly accessible
         default_private_access_tag: Defaults to 'unpublished' if not set.
         restricted: Query page customizations for restricted access cases
         default_api_key: The default API key to use for this host
         info: Query page custom parameters
         tokens: Restricted access tokens
     '''
+    endpoint: str = ''
     default_private_access_tag: str = ''
     restricted: RestrictedConfig = RestrictedConfig()
     default_api_key: str = ''
