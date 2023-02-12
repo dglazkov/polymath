@@ -14,7 +14,7 @@ DEFAULT_TOKEN_COUNT = 1000
 app = Flask(__name__)
 Compress(app)
 
-env_config = EnvConfigStore().get(EnvironmentConfig)
+env_config = EnvConfigStore().load(EnvironmentConfig)
 host_config = JSONConfigStore().load(HostConfig)
 
 library = polymath.load_libraries(env_config.library_filename, True)

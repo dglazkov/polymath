@@ -13,6 +13,6 @@ class EnvConfigStore:
             key.lower(): value for key, value in os.environ.items()
         }
 
-    def get(self, config_type) -> Any:
+    def load(self, config_type) -> Any:
         config = self._load()
         return config_type(config)

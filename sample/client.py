@@ -81,7 +81,7 @@ parser.add_argument(
 args = parser.parse_args()
 
 config = config_store.load(DirectoryConfig, args.config)
-env_config = EnvConfigStore().get(EnvironmentConfig)
+env_config = EnvConfigStore().load(EnvironmentConfig)
 openai.api_key = env_config.openai_api_key
 
 query = args.query
