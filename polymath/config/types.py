@@ -24,7 +24,7 @@ class EnvironmentConfig:
         library_filename: The filename of the Polymath library to use
     '''
     openai_api_key: str
-    library_filename: str = None
+    library_filename: str = ''
 
 
 @config
@@ -144,8 +144,8 @@ class EndpointConfig:
         token: Token to use when accessing the endpoint
     '''
     endpoint: str
-    dev_endpoint: str = None
-    token: str = None
+    dev_endpoint: str = ''
+    token: str = ''
 
 
 @config(id='directory')
