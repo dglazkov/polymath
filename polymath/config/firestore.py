@@ -1,4 +1,4 @@
-from typing import Any, Union, TypeVar
+from typing import Union, TypeVar
 
 from google.cloud import firestore
 
