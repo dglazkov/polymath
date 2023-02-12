@@ -1,8 +1,8 @@
 import json
 import os
-from typing import Any, Union, TypeVar
+from typing import Any, Union, TypeVar, Callable
 
-T = TypeVar('T')
+T = TypeVar('T', bound=Callable)
 
 class JSONConfigStore:
     def __init__(self, path: str = ''):
