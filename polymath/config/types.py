@@ -54,6 +54,19 @@ class InfoConfig:
     fun_queries: FunQueriesType = empty(list)
     source_prefixes: SourcePrefixesType = empty(dict)
 
+@config
+class RestrictedConfig:
+    '''
+    Restricted sub-config for host
+
+    Used to configure how much a host should reveal about restricted bits.
+
+    Attributes:
+        count: Whether to reveal a count of how many items were restricted.
+        message: The message to show to the user about how to gain access if the bits were restricted.
+    '''
+    count: bool = False
+    message: str = ''
 
 @config(id='host')
 class HostConfig:
@@ -70,7 +83,7 @@ class HostConfig:
         tokens: Restricted access tokens
     '''
     default_private_access_tag: str = ''
-    restricted: PropertyBagConfigType = empty(dict)
+    restricted: RestrictedConfig = RestrictedConfig()
     default_api_key: str = ''
     info: InfoConfig = InfoConfig()
     tokens: TokensConfigType = empty(dict)

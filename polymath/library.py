@@ -825,10 +825,10 @@ class Library:
         # remove all bits.
         result.omit = omit
 
-        if HOST_CONFIG.restricted.get('count', False):
+        if HOST_CONFIG.restricted.count:
             result.count_restricted = restricted_count
 
-        restricted_message = HOST_CONFIG.restricted.get('message', '')
+        restricted_message = HOST_CONFIG.restricted.message
 
         if restricted_message and restricted_count > 0:
             result.message = 'Restricted results were omitted. ' + restricted_message
