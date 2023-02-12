@@ -48,6 +48,7 @@ class InfoConfig:
     fun_queries: FunQueriesType = empty(list)
     source_prefixes: SourcePrefixesType = empty(dict)
 
+
 @config
 class RestrictedConfig:
     '''
@@ -61,6 +62,7 @@ class RestrictedConfig:
     '''
     count: bool = False
     message: str = ''
+
 
 @config
 class CompletionsOptionsConfig:
@@ -91,6 +93,7 @@ class CompletionsOptionsConfig:
     logprobs: Union[int, None] = None
     stop: str = "\n"
     debug: bool = False
+
 
 @config(id='host')
 class HostConfig:
