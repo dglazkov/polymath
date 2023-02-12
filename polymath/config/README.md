@@ -61,7 +61,7 @@ class InfoConfig:
 class HostConfig:
     info: InfoConfig = InfoConfig()
     tokens: TokensConfigType = empty(dict)
-    completions_options: PropertyBagConfigType = empty(dict)
+    completions_options: CompletionsOptionsConfig = CompletionsOptionsConfig()
 ```
 
 Configuration classes can contain dictionaries of other configuration classes. For example `hosts` property in `DirectoryConfig` is a dictionary of `EndpointConfig` instances:

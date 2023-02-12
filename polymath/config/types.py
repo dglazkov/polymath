@@ -1,14 +1,10 @@
 
 from collections.abc import Sequence
-from dataclasses import field
-from typing import Union
+from typing import Union, Literal
 
 from polymath.base.dataclasses import config, empty
 
 # First time here? Read the README.md file in this directory.
-
-# For pretty much any reasonable flat property bag
-PropertyBagConfigType = dict[str, Union[bool, str, int]]
 
 # HostConfig-related types
 SourcePrefixesType = dict[str, str]
@@ -66,6 +62,36 @@ class RestrictedConfig:
     count: bool = False
     message: str = ''
 
+@config
+class CompletionsOptionsConfig:
+    '''
+    The completions_options sub-config for host
+
+    Used to configure what is sent back to the OpenAI server. See https://platform.openai.com/docs/api-reference/completions for documentation
+
+    Attributes:
+       model: The completion model to use
+       prompt_template: The prompt to use
+       max_tokens: the number of tokens in the response
+       temperature: The temperature
+       top_p: Alternate to temperature
+       n: how many responses to return
+       stream: Whether to stream
+       logprobs: Include the probabilities
+       stop: The stop string
+       debug: Whether to return debug information
+    '''
+    model: Literal["text-davinci-003"] = "text-davinci-003"
+    prompt_template: str = "Answer the question as truthfully as possible using the provided context, and if don't have the answer, say \"I don't know\" and suggest looking for this information elsewhere.\n\nContext:\n{context} \n\nQuestion:\n{query}\n\nAnswer:"
+    max_tokens: int = 256
+    temperature: float = 0
+    top_p: float = 1
+    n: int = 1
+    stream: bool = False
+    logprobs: Union[int, None] = None
+    stop: str = "\n"
+    debug: bool = False
+
 @config(id='host')
 class HostConfig:
     '''
@@ -85,7 +111,7 @@ class HostConfig:
     default_api_key: str = ''
     info: InfoConfig = InfoConfig()
     tokens: TokensConfigType = empty(dict)
-    completions_options: PropertyBagConfigType = empty(dict)
+    completions_options: CompletionsOptionsConfig = CompletionsOptionsConfig()
 
 
 @config
