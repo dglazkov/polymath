@@ -9,7 +9,7 @@ from polymath.base.dataclasses import config, empty
 # HostConfig-related types
 SourcePrefixesType = dict[str, str]
 FunQueriesType = Sequence[str]
-TokensConfigType = dict[str, dict[str, str]]
+AccessTagsType = Sequence[str]
 
 
 @config
@@ -62,6 +62,23 @@ class RestrictedConfig:
 
 
 @config
+class TokenConfig:
+    '''
+    Token sub-config for host
+
+    Used to configure properties for one user's token have which access permissions
+
+    Attributes:
+        token: The secret token that will grant access
+        description: Free-form text describing the user
+        access_tags: a list of strings of access tags to provide acceess to. If not provided defaults to ['unpublished']
+    '''
+    token: str = ''
+    description: str = ''
+    access_tags: AccessTagsType = empty(list)
+
+
+@config
 class CompletionsOptionsConfig:
     '''
     The completions_options sub-config for host
@@ -110,7 +127,7 @@ class HostConfig:
     restricted: RestrictedConfig = RestrictedConfig()
     default_api_key: str = ''
     info: InfoConfig = InfoConfig()
-    tokens: TokensConfigType = empty(dict)
+    tokens: dict[str, TokenConfig] = empty(dict)
     completions_options: CompletionsOptionsConfig = CompletionsOptionsConfig()
 
 
