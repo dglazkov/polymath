@@ -13,8 +13,10 @@ def permitted_access(access_token):
     if not access_token:
         return set([])
 
-    # TODO: make default_private_access_tag on HOST_CONFIG too.
-    private_access_tag = DEFAULT_PRIVATE_ACCESS_TAG
+
+    set_default_private_access_tag = HOST_CONFIG.default_private_access_tag
+
+    private_access_tag = set_default_private_access_tag if set_default_private_access_tag else DEFAULT_PRIVATE_ACCESS_TAG
 
     token_record = None
     for record in HOST_CONFIG.tokens.values():

@@ -63,11 +63,13 @@ class HostConfig:
     Used to configure a host for Polymath.
 
     Attributes:
+        default_private_access_tag: Defaults to 'unpublished' if not set.
         restricted: Query page customizations for restricted access cases
         default_api_key: The default API key to use for this host
         info: Query page custom parameters
         tokens: Restricted access tokens
     '''
+    default_private_access_tag: str = ''
     restricted: PropertyBagConfigType = empty(dict)
     default_api_key: str = ''
     info: InfoConfig = InfoConfig()
