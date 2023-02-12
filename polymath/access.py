@@ -3,7 +3,7 @@ from polymath.config.types import HostConfig
 
 DEFAULT_PRIVATE_ACCESS_TAG = 'unpublished'
 
-HOST_CONFIG : HostConfig = JSONConfigStore().load(HostConfig)
+HOST_CONFIG = JSONConfigStore().load(HostConfig)
 
 def permitted_access(access_token):
     """

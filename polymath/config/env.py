@@ -1,8 +1,9 @@
 import os
-from typing import Any
+from typing import Any, TypeVar
 
 from dotenv import load_dotenv
 
+T = TypeVar('T')
 
 class EnvConfigStore:
     def __init__(self):
@@ -13,6 +14,6 @@ class EnvConfigStore:
             key.lower(): value for key, value in os.environ.items()
         }
 
-    def load(self, config_type) -> Any:
+    def load(self, config_type = T) -> T:
         config = self._load()
         return config_type(config)

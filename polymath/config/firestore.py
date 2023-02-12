@@ -1,7 +1,8 @@
-from typing import Any, Union
+from typing import Any, Union, TypeVar
 
 from google.cloud import firestore
 
+T = TypeVar('T')
 
 class FirestoreConfigStore:
     def __init__(self):
@@ -10,7 +11,7 @@ class FirestoreConfigStore:
     def default(self, config_type) -> str:
         return config_type.__id__
 
-    def load(self, config_type, path: Union[str, None] = None) -> Any:
+    def load(self, config_type = T, path: Union[str, None] = None) -> T:
         if path is None:
             path = self.default(config_type)
         ref = self._client.document(path)
