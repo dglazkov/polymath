@@ -3,6 +3,7 @@ import traceback
 
 from flask import Flask, jsonify, render_template, request
 from flask_compress import Compress
+from flask_cors import CORS
 
 import polymath
 from polymath.config.json import JSONConfigStore
@@ -12,6 +13,7 @@ from polymath.config.types import EnvironmentConfig, HostConfig
 DEFAULT_TOKEN_COUNT = 1000
 
 app = Flask(__name__)
+CORS(app)
 Compress(app)
 
 env_config = EnvConfigStore().load(EnvironmentConfig)
@@ -33,10 +35,18 @@ class Endpoint:
 def index():
     try:
         endpoint = Endpoint(library)
-        return endpoint.query({
-            'count': DEFAULT_TOKEN_COUNT,
-            **request.form.to_dict()
-        })
+        content_type = request.headers.get('Content-Type')
+        if (content_type == 'application/json'):
+            json = request.json
+            return endpoint.query({
+                'count': DEFAULT_TOKEN_COUNT,
+                **json
+            })
+        else:
+            return endpoint.query({
+                'count': DEFAULT_TOKEN_COUNT,
+                **request.form.to_dict()
+            })
 
     except Exception as e:
         return jsonify({
