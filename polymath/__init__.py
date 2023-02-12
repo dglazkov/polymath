@@ -9,4 +9,4 @@ from polymath.ask_embeddings import (
     get_completion_with_context,
     ask
 )
-from polymath.access import host_config
+from polymath.access import HOST_CONFIG

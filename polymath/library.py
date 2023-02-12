@@ -11,7 +11,7 @@ import numpy as np
 
 from numpy.typing import NDArray
 
-from .access import DEFAULT_PRIVATE_ACCESS_TAG, host_config, permitted_access
+from .access import DEFAULT_PRIVATE_ACCESS_TAG, HOST_CONFIG, permitted_access
 from .upgrade import upgrade_library_data
 
 EMBEDDINGS_MODEL_ID = "openai.com:text-embedding-ada-002"
@@ -825,12 +825,10 @@ class Library:
         # remove all bits.
         result.omit = omit
 
-        config = host_config()
-        include_restricted_count = config["include_restricted_count"]
-        restricted_message = str(config["restricted_message"])
-
-        if include_restricted_count:
+        if HOST_CONFIG.restricted.get('count', False):
             result.count_restricted = restricted_count
+
+        restricted_message = HOST_CONFIG.restricted.get('message', '')
 
         if restricted_message and restricted_count > 0:
             result.message = 'Restricted results were omitted. ' + restricted_message
