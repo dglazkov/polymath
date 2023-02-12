@@ -73,3 +73,4 @@ wpparser==1.1.2
 overrides
 google-cloud-firestore
 pytest
+docstring-parser

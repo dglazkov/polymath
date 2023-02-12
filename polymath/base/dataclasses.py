@@ -1,8 +1,7 @@
 
 from dataclasses import asdict, dataclass, field, is_dataclass
-
-import inspect
-from typing import Any
+from typing import Union
+from docstring_parser import parse
 
 
 def empty(factory):
@@ -29,6 +28,50 @@ def omit_empties_factory(items):
 def to_dict(self):
     result = asdict(self, dict_factory=omit_empties_factory)
     return result
+
+
+@dataclass
+class AttrDoc:
+    name: str
+    type: str
+    description: str = None
+    doc: 'AttrDoc' = None
+
+
+@dataclass
+class ConfigDoc:
+    description: str
+    attributes: list[AttrDoc]
+
+
+def _document_attr(name: str, type, description: str = None):
+    doc = AttrDoc(
+        name,
+        type=type.__name__,
+        description=description
+    )
+    if is_a_dataclass_dict(type):
+        dataclass_type = type.__args__[1]
+        doc.doc = create_doc(dataclass_type)
+    elif is_dataclass(type):
+        doc.doc = create_doc(type)
+    return doc
+
+
+def create_doc(cls):
+    parsed = parse(cls.__doc__)
+    params = {
+        param.arg_name: param.description
+        for param in parsed.params
+    }
+    attrs = [
+        _document_attr(name, type, params.get(name))
+        for name, type in cls.__annotations__.items()
+    ]
+    return ConfigDoc(
+        description=parsed.short_description,
+        attributes=attrs
+    )
 
 
 def build_config_kwards(cls, config_args):

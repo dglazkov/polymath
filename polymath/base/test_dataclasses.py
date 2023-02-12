@@ -1,6 +1,7 @@
+from typing import Union
 import pytest
 
-from polymath.base.dataclasses import config, empty, omit_empties_factory
+from polymath.base.dataclasses import config, empty, omit_empties_factory, create_doc
 
 
 def test_omit_empties_factory():
@@ -15,6 +16,15 @@ def test_omit_empties_factory():
 
 @config
 class SimpleConfig:
+    '''
+    A Simple Config
+
+    Attributes:
+        bar: A simple string
+        baz: A simple integer
+        items: A simple list of items
+        bag: A simple dictionary of items
+    '''
     bar: str = 'simple'
     baz: int = 42
     items: list = empty(list)
@@ -205,3 +215,34 @@ def test_dicts_of_configs():
     config = DictsOfConfigsConfig(empty_args)
     assert config.foo == {}
     assert config.to_dict() == empty_args
+
+
+@config
+class DocumentedConfig:
+    """This is a documented config.
+
+    Stuff goes here.
+
+    Attributes:
+        bar: This is a documented attribute.
+        baz: This is another documented attribute.
+        simple: This is a documented SimpleConfig.
+            It goes on for multiple lines.
+    """
+    bar: str = 'simple'
+    baz: Union[int,str]
+    simple: SimpleConfig = SimpleConfig()
+
+def test_create_doc():
+    config_doc = create_doc(DocumentedConfig)
+    print(config_doc)
+    assert config_doc.description == 'This is a documented config.'
+    assert len(config_doc.attributes) == 3
+    assert config_doc.attributes[0].description == 'This is a documented attribute.'
+    assert config_doc.attributes[0].type == 'str'
+    assert config_doc.attributes[1].description == 'This is another documented attribute.'
+    assert config_doc.attributes[1].type == 'Union'
+    assert config_doc.attributes[2].description == 'This is a documented SimpleConfig.\nIt goes on for multiple lines.'
+    assert config_doc.attributes[2].type == 'SimpleConfig'
+    assert config_doc.attributes[2].doc.description == 'A Simple Config'
+    assert len(config_doc.attributes[2].doc.attributes) == 4

@@ -101,3 +101,49 @@ host_config = JSONConfigStore().get(HostConfig)
 ```
 
 The resulting `host_config` will be an instance of `HostConfig` with all the fields populated.
+
+## Automatic documentation
+
+The `*Config` classes come with automatically generated documentation that can be used for to create UI for editing configuration. There are two components to making this work.
+
+First, document your `*Config` class using a well-established convention. I recommend using [Google-docstring](https://sphinxcontrib-napoleon.readthedocs.io/en/latest/example_google.html) style. For example:
+
+```python
+
+@config
+class EnvironmentConfig:
+    '''
+    General environment configuration
+
+    Used for configuring the environment in which this Polymath instance is running.
+
+    Attributes:
+        openai_api_key: The OpenAI API key to use
+        library_filename: The filename of the Polymath library to use
+    '''
+    openai_api_key: str
+    library_filename: str = None
+
+```
+
+Second, use the `polymath.config.dataclasses.create_doc` function to create the documentation. For example:
+
+```python
+
+from polymath.config.dataclasses import create_doc
+
+doc = create_doc(EnvironmentConfig)
+
+```
+
+The doc will contain a `ConfigDoc` instance that has the following properties:
+
+* `description`: The description of the configuration class (first line of the docstring)
+* `attributes`: A list of `AttrDoc` instances, one for each attribute in the configuration class
+
+The `AttrDoc` instances have the following properties:
+
+* `name`: The name of the attribute (pulled from the class definition)
+* `type`: The type of the attribute (pulled from the type annotation)
+* `description`: The description of the attribute (pulled from the docstring)
+* `doc`: If the attribute is a `*Config` class, this will be a `ConfigDoc` instance for that class.
