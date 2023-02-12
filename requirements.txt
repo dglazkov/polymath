@@ -15,6 +15,7 @@ feedparser==6.0.10
 filelock==3.8.2
 Flask==2.2.2
 Flask-Compress==1.13
+Flask-Cors==3.0.10
 flit==3.8.0
 flit_core==3.8.0
 ftfy==6.1.1
