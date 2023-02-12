@@ -1,6 +1,5 @@
 
 from dataclasses import asdict, dataclass, field, is_dataclass
-from typing import Union
 from docstring_parser import parse
 
 
