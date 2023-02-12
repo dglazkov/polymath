@@ -11,9 +11,6 @@ SourcePrefixesType = dict[str, str]
 FunQueriesType = Sequence[str]
 TokensConfigType = dict[str, dict[str, str]]
 
-# EnvironmentConfig-related types
-EnvironmentConfigType = dict[str, str]
-
 
 @config
 class EnvironmentConfig:
