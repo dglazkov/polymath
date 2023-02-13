@@ -5,6 +5,8 @@ from flask import Flask, jsonify, render_template, request
 from flask_compress import Compress
 from flask_cors import CORS
 
+from typing import Union
+
 import polymath
 from polymath.config.json import JSONConfigStore
 from polymath.config.env import EnvConfigStore
@@ -23,10 +25,10 @@ library = polymath.load_libraries(env_config.library_filename, True)
 
 
 class Endpoint:
-    def __init__(self, library):
+    def __init__(self, library : polymath.Library):
         self.library = library
 
-    def query(self, args: dict[str, str]):
+    def query(self, args: dict[str, Union[str, int]]):
         result = self.library.query(args)
         return jsonify(result.serializable())
 
