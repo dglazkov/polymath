@@ -35,7 +35,7 @@ class PineconeLibrary(Library):
             namespace=self.config.namespace,
             top_k=TOP_K,
             include_metadata=True,
-            vector=query_embedding
+            vector=query_embedding.tolist()
         )
         for item in result['matches']:
             bit = Bit(data={

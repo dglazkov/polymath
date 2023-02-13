@@ -57,11 +57,11 @@ def canonical_id(bit_text, url=''):
 # where `data` is an array of floats
 
 
-def vector_from_base64(str):
+def vector_from_base64(str) -> NDArray[np.float32]:
     return np.frombuffer(base64.b64decode(str), dtype=np.float32)
 
 
-def vector_similarity(x, y):
+def vector_similarity(x: NDArray[np.float32], y: NDArray[np.float32]) -> float:
     # np.dot returns a float32 but those aren't serializable in json. Just
     # covert to a float64 now.
     return float(np.dot(np.array(x), np.array(y)))
@@ -747,11 +747,12 @@ class Library:
         with open(filename, 'w') as f:
             json.dump(result, f, indent='\t')
 
-    def _similarities(self, query_embedding):
+    def _similarities(self, query_embedding : NDArray[np.float32]):
         bits = sorted([
             (vector_similarity(query_embedding, bit.embedding), bit.id)
             for bit
-            in self.bits], reverse=True)
+            in self.bits
+            if bit.embedding], reverse=True)
         return {key: value for value, key in bits}
 
     def compute_similarities(self, query_embedding):
@@ -812,7 +813,7 @@ class Library:
             'access_token': access_token
         })
 
-    def _produce_query_result(self, query_embedding : List[float]):
+    def _produce_query_result(self, query_embedding : NDArray[np.float32]):
         self.compute_similarities(query_embedding)
         self.sort = 'similarity'
 
