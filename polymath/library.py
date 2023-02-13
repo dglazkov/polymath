@@ -764,10 +764,10 @@ class Library:
             bit.similarity = similarity
 
     @classmethod
-    def _validate_query_arguments(cls, args):
+    def _validate_query_arguments(cls, args : dict[str, Union[str, int]]):
         version = int(args.get('version', -1))
         raw_query_embedding = args.get('query_embedding')
-        query_embedding_model = args.get('query_embedding_model')
+        query_embedding_model = str(args.get('query_embedding_model'))
         count = int(args.get('count', 0))
         count_type = args.get('count_type', 'token')
         omit = args.get('omit', 'embedding')
@@ -834,7 +834,7 @@ class Library:
             result.message = 'Restricted results were omitted. ' + restricted_message
         return result
 
-    def query(self, args):
+    def query(self, args : dict[str, Union[str, int]]):
         query_embedding, access_args = self._validate_query_arguments(args)
         result = self.copy()
         result._produce_query_result(query_embedding)
