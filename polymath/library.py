@@ -344,9 +344,11 @@ class Library:
     # where `encoded_data` is a base64 string
 
     @classmethod
-    def base64_from_vector(cls, vector):
+    def base64_from_vector(cls, vector: Union[NDArray[np.float32], List[float], None]):
+        if not vector:
+            raise Exception('Vector was none')
         data = np.array(vector, dtype=np.float32)
-        return base64.b64encode(data)
+        return base64.b64encode(data.tobytes())
 
     @property
     def upgraded(self):
