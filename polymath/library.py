@@ -797,10 +797,13 @@ class Library:
 
         query_embedding = None
         if raw_query_embedding:
-            query_embedding = vector_from_base64(raw_query_embedding).tolist() if type(raw_query_embedding) == str else raw_query_embedding
+            if type(raw_query_embedding) is not str:
+                # TODO: allow accepting a query_embedding argument that is already NDArray[np.float32]
+                raise Exception('query_embedding must be str')
+            query_embedding = vector_from_base64(raw_query_embedding)
         else:
             embedding_length = EXPECTED_EMBEDDING_LENGTH[query_embedding_model]
-            query_embedding = np.random.rand(embedding_length).tolist()
+            query_embedding = np.random.rand(embedding_length).astype(np.float32)
 
         if count_type not in LEGAL_COUNT_TYPES:
             raise Exception(
