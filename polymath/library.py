@@ -752,7 +752,7 @@ class Library:
             (vector_similarity(query_embedding, bit.embedding), bit.id)
             for bit
             in self.bits
-            if bit.embedding], reverse=True)
+            if bit.embedding is not None], reverse=True)
         return {key: value for value, key in bits}
 
     def compute_similarities(self, query_embedding):
