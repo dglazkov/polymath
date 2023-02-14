@@ -5,6 +5,8 @@ from time import sleep
 import openai
 from transformers import GPT2TokenizerFast
 
+from typing import Any
+
 from .library import Library
 
 COMPLETION_MODEL_NAME = "text-davinci-003"
@@ -27,7 +29,8 @@ def get_embedding(text, model_id=Library.EMBEDDINGS_MODEL_ID):
     # Occasionally, API returns an error.
     # Retry a few times before giving up.
     retry_count = 10
-    result = None
+    # TODO: type this better
+    result : Any = None
     while retry_count > 0:
         try:
             result = openai.Embedding.create(
@@ -88,7 +91,8 @@ def get_max_answer_length(prompt, completion_model=COMPLETION_MODEL_NAME):
 def get_completion(prompt, answer_length=None, completion_model=COMPLETION_MODEL_NAME):
     if answer_length is None:
         answer_length = get_max_answer_length(prompt, completion_model=completion_model)
-    response = openai.Completion.create(
+    # TODO: type this better
+    response : Any = openai.Completion.create(
         model=completion_model,
         prompt=prompt,
         temperature=0.7,

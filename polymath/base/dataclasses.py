@@ -1,6 +1,7 @@
 
 from dataclasses import asdict, dataclass, field, is_dataclass
 from docstring_parser import parse
+from typing import Union
 
 
 def empty(factory):
@@ -33,17 +34,17 @@ def to_dict(self):
 class AttrDoc:
     name: str
     type: str
-    description: str = None
-    doc: 'AttrDoc' = None
+    description: Union[str, None] = None
+    doc: Union['AttrDoc', None] = None
 
 
 @dataclass
 class ConfigDoc:
-    description: str
+    description: Union[str, None]
     attributes: list[AttrDoc]
 
 
-def _document_attr(name: str, type, description: str = None):
+def _document_attr(name: str, type, description: Union[str, None] = None):
     doc = AttrDoc(
         name,
         type=type.__name__,
