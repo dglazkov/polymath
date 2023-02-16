@@ -2,6 +2,8 @@
 from dataclasses import asdict, dataclass, field, is_dataclass
 from docstring_parser import parse
 from typing import Union
+import typing
+import inspect
 
 
 def empty(factory):
@@ -9,9 +11,17 @@ def empty(factory):
 
 
 def is_a_dataclass_dict(type):
-    is_a_dict_subclass = type is not dict and type.__subclasscheck__(dict)
-    return is_a_dict_subclass and is_dataclass(type.__args__[1])
-
+    if not inspect.isclass(type):
+        return False
+    is_a_dict_subclass = False
+    if issubclass(type, typing.Generic):
+        origin = typing.get_origin(type)
+        if origin is dict:
+            args = typing.get_args(type)
+            if all(issubclass(arg, object) for arg in args):
+                is_a_dict_subclass = True
+    return is_a_dict_subclass and is_dataclass(args[1])
+    
 
 def omit_empties_factory(items):
     def is_empty(value):

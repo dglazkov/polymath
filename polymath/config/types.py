@@ -126,11 +126,11 @@ class HostConfig:
     '''
     endpoint: str = ''
     default_private_access_tag: str = ''
-    restricted: RestrictedConfig = RestrictedConfig()
+    restricted: RestrictedConfig = empty(RestrictedConfig)
     default_api_key: str = ''
-    info: InfoConfig = InfoConfig()
+    info: InfoConfig = empty(InfoConfig)
     tokens: dict[str, TokenConfig] = empty(dict)
-    completions_options: CompletionsOptionsConfig = CompletionsOptionsConfig()
+    completions_options: CompletionsOptionsConfig = empty(CompletionsOptionsConfig)
 
 
 @config
