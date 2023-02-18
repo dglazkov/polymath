@@ -14,12 +14,11 @@ def is_a_dataclass_dict(type):
     if not inspect.isclass(type):
         return False
     is_a_dict_subclass = False
-    if issubclass(type, typing.Generic):
-        origin = typing.get_origin(type)
-        if origin is dict:
-            args = typing.get_args(type)
-            if all(issubclass(arg, object) for arg in args):
-                is_a_dict_subclass = True
+    origin = typing.get_origin(type)
+    if origin is dict:
+        args = typing.get_args(type)
+        if all(issubclass(arg, object) for arg in args):
+            is_a_dict_subclass = True
     return is_a_dict_subclass and is_dataclass(args[1])
     
 
