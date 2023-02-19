@@ -119,7 +119,7 @@ OPENAI_API_KEY=<key goes here>
 
 Any library files you have in `libraries/` will be used as the content. If none exist, the sample will use `sample-content.json`.
 
-Then run `python3 -m sample.main "How does building a platform differ from building a product?"`
+Then run `python3 -m sample.client "How does building a platform differ from building a product?"`
 
 You can run it with production libraries that others host with `python3 -m sample.client --server https://polymath.komoroske.com "What are best practices for managing platforms?"`
 
