@@ -3,8 +3,7 @@ import json
 import re
 from .og import get_og_data
 from bs4 import BeautifulSoup
-from typing import Tuple
-from argparse import (ArgumentParser, Namespace)
+from argparse import Namespace
 from .chunker import generate_chunks
 
 HEADERS = ["h1", "h2", "h3", "h4", "h5", "h6"]
@@ -79,6 +78,7 @@ def get_sections(filename: str, exclude: list):
     with open(filename, 'r') as file:
         soup = BeautifulSoup(file, "html.parser")
         section_content = []
+        # See https://github.com/python/typeshed/issues/8369 for typehint errors with beautifulsoup
         for sibling in soup.children:
             if sibling.name in LISTS:
                 section_content.extend([get_text(item)
