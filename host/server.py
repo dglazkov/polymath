@@ -40,6 +40,10 @@ def index():
         content_type = request.headers.get('Content-Type')
         if (content_type == 'application/json'):
             json = request.json
+            if not json:
+                return jsonify({
+                    "error": "No arguments provided"
+                })
             return endpoint.query({
                 'count': DEFAULT_TOKEN_COUNT,
                 **json
