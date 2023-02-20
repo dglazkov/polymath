@@ -2,7 +2,7 @@ import glob
 import json
 import re
 from .og import get_og_data
-from bs4 import BeautifulSoup
+from bs4 import BeautifulSoup, Tag
 from argparse import Namespace
 from .chunker import generate_chunks
 
@@ -80,6 +80,8 @@ def get_sections(filename: str, exclude: list):
         section_content = []
         # See https://github.com/python/typeshed/issues/8369 for typehint errors with beautifulsoup
         for sibling in soup.children:
+            if not isinstance(sibling, Tag):
+                continue
             if sibling.name in LISTS:
                 section_content.extend([get_text(item)
                                        for item in sibling.children])
