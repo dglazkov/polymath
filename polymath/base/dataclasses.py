@@ -44,7 +44,7 @@ class AttrDoc:
     name: str
     type: str
     description: Union[str, None] = None
-    doc: Union['AttrDoc', None] = None
+    doc: Union['ConfigDoc', None] = None
 
 
 @dataclass
