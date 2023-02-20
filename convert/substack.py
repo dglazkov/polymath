@@ -18,7 +18,7 @@ def get_issue_slug(file_name: str) -> str:
     return ''
 
 
-def get_issue_info(substack_url, issue_slug: str) -> Tuple[str, str, str, str]:
+def get_issue_info(substack_url, issue_slug: str) -> dict[str, str]:
     """"
     Returns issue metadata as a dict following the `info` format,
     specified in https://github.com/dglazkov/polymath/blob/main/format.md
@@ -31,12 +31,19 @@ def get_issue_info(substack_url, issue_slug: str) -> Tuple[str, str, str, str]:
     """
     url = f"{substack_url}/p/{issue_slug}"
     og_data = get_og_data(url)
-    return {
-        "url": url,
-        "image_url": og_data.get("og:image"),
-        "title": og_data.get("og:title"),
-        "description": og_data.get("og:description")
+    result = {
+        "url": url
     }
+    image_url = og_data.get("og:image")
+    if image_url:
+        result["image_url"] = image_url
+    title = og_data.get("og:title")
+    if title:
+        result["title"] = title
+    description = og_data.get("og:description")
+    if description:
+        result["description"] = description
+    return result
 
 
 class SubstackImporter:
