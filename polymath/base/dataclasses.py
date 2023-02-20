@@ -15,8 +15,8 @@ def is_a_dataclass_dict(type):
         return False
     is_a_dict_subclass = False
     origin = typing.get_origin(type)
+    args = typing.get_args(type)
     if origin is dict:
-        args = typing.get_args(type)
         if all(issubclass(arg, object) for arg in args):
             is_a_dict_subclass = True
     return is_a_dict_subclass and is_dataclass(args[1])
@@ -67,7 +67,7 @@ def _document_attr(name: str, type, description: Union[str, None] = None):
     return doc
 
 
-def create_doc(cls):
+def create_doc(cls) -> ConfigDoc:
     parsed = parse(cls.__doc__)
     params = {
         param.arg_name: param.description
