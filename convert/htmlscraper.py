@@ -1,6 +1,6 @@
 import requests
 
-from bs4 import BeautifulSoup
+from bs4 import BeautifulSoup, Tag
 from urllib.parse import urlparse
 
 from .chunker import generate_chunks
@@ -32,15 +32,17 @@ class HTMLScraperImporter:
             'url': url
         }
 
-        title = soup.find("title").text
+        title_ele = soup.find("title")
+        title = title_ele.text if title_ele else ''
         if title:
             info['title'] = title
         
         meta = soup.find("meta", attrs={"name": "description"})
-        if meta and meta["content"]:
+        if meta and isinstance(meta, Tag) and meta["content"]:
             info['description'] = meta["content"]
 
-        body = soup.find('body').get_text()
+        body_ele = soup.find('body')
+        body = body_ele.get_text() if body_ele else ''
 
         for chunk in generate_chunks([body.split('\n')]):
             yield {
