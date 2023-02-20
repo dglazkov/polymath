@@ -2,7 +2,7 @@ import glob
 import os
 from argparse import ArgumentParser, Namespace
 
-from bs4 import BeautifulSoup
+from bs4 import BeautifulSoup, Tag
 
 from .chunker import generate_chunks
 
@@ -34,21 +34,29 @@ class MediumImporter:
         with open(profile_path, "r") as f:
             soup = BeautifulSoup(f, "html.parser")
             ele = soup.find('a', class_='u-url')
+            if not ele:
+                raise Exception("Can't find title a")
             username = ele.get_text(strip=True)
             return 'medium-' + username.replace('@', '') + '-' + self._include
 
     def extract_url_from_soup(self, base_filename: str, soup: BeautifulSoup):
         if (base_filename.startswith('draft_')):
             footer = soup.find('footer')
+            if not footer:
+                raise Exception("Didn't find footer in draft")
             ele = footer.find('a')
         else:
             ele = soup.find('a', class_='p-canonical')
+        if not isinstance(ele, Tag):
+            raise Exception("ele not Tag as expected")
         return ele.get('href')
 
     def extract_image_url_from_soup(self, soup: BeautifulSoup):
         img = soup.find('img', class_='graf-image')
         if not img:
             return ''
+        if not isinstance(img, Tag):
+            raise Exception("img not Tag as expected")
         return img.get('src')
 
     def extract_title_from_soup(self, soup: BeautifulSoup):
@@ -68,6 +76,8 @@ class MediumImporter:
 
     def extract_chunks_from_soup(self, soup: BeautifulSoup):
         body = soup.find('section', class_='e-content')
+        if not isinstance(body, Tag):
+            raise Exception("body not presetnt as expected")
         ps = body.find_all('p')
         text = [p.get_text(" ", strip=True) for p in ps]
         return generate_chunks([text])
