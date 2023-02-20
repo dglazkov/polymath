@@ -1,3 +1,6 @@
+# type: ignore
+# TODO: Reanble type checking for this file
+
 from typing import Union
 import pytest
 
