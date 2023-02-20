@@ -60,6 +60,8 @@ class SubstackImporter:
         return self._config["substack_url"].replace('https://', '').replace('http://', '').replace('.', '_')
 
     def get_chunks(self, filename: str):
+        if not self._config:
+            raise Exception('No config set')
         for page in get_pages(filename, self._config):
             info = page["info"]
             sections = page["sections"]
