@@ -3,9 +3,8 @@ import os
 import pinecone
 import argparse
 
-from polymath import Library
+from polymath import Library, Bit
 from dotenv import load_dotenv
-import numpy as np
 
 
 load_dotenv()
@@ -38,7 +37,6 @@ class PineconeExporter:
     def start(self, args: argparse.Namespace) -> None:
         self.index_name = args.index
         self.namespace = args.namespace
-        return True
 
     def install_args(self, parser: argparse.ArgumentParser):
         parser.add_argument('--index',
@@ -48,7 +46,7 @@ class PineconeExporter:
                             help='Pinecone index namespace to export to',
                             default=None)
 
-    def export_bit(self, bit):
+    def export_bit(self, bit : Bit):
         metadata = {
             'text': bit.text,
             'url': bit.info.url,
@@ -64,7 +62,11 @@ class PineconeExporter:
         if bit.access_tag:
             metadata['access_tag'] = bit.access_tag
 
-        embedding = bit.embedding.tolist()
+        raw_embedding = bit.embedding
+        if not raw_embedding:
+            return
+
+        embedding = raw_embedding.tolist()
         self.vectors.append((bit.id, embedding, metadata))
 
     def finish(self):
@@ -72,12 +74,21 @@ class PineconeExporter:
             for i in range(0, len(vectors), size):
                 yield vectors[i:i + size]
 
+        api_key = PINECONE_API_KEY
+        if not api_key:
+            raise Exception('No pinecone key provided')
+        
+        index_name = self.index_name
+
+        if not index_name:
+            raise Exception('No index name provided')
+
         pinecone.init(
-            api_key=PINECONE_API_KEY,
+            api_key=api_key,
             environment=PINECONE_ENVIRONMENT)
         if self.index_name not in pinecone.list_indexes():
-            pinecone.create_index(self.index_name, dimension=VECTOR_DIMENSIONS)
-        index = pinecone.Index(self.index_name)
+            pinecone.create_index(index_name, dimension=VECTOR_DIMENSIONS)
+        index = pinecone.Index(index_name)
         for batch in make_batches(self.vectors, BATCH_SIZE):
             index.upsert(
                 vectors=batch,
@@ -105,7 +116,7 @@ def get_args():
 if __name__ == '__main__':
     args = get_args()
 
-    exporter = EXPORTERS.get(args.exporter, NullExporter)
+    exporter = EXPORTERS.get(args.exporter, NullExporter())
     print(f'Starting exporter "{args.exporter}" ...')
     if not exporter.start(args):
         print('Failed to set up exporter')
