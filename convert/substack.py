@@ -15,7 +15,7 @@ def get_issue_slug(file_name: str) -> str:
     match = re.search(r"(?<=\.)[^.]*(?=\.)", file_name)
     if match:
         return match.group()
-    return None
+    return ''
 
 
 def get_issue_info(substack_url, issue_slug: str) -> Tuple[str, str, str, str]:

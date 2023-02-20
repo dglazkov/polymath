@@ -58,7 +58,7 @@ class PolarisImporter:
                 # print(self.unmark(page.content))
 
                 info = {
-                    'url': url_from_filename(filename, file)
+                    'url': url_from_filename(directory, file)
                 }
 
                 title = page.get('title')
