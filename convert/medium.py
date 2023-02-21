@@ -3,15 +3,18 @@ import os
 from argparse import ArgumentParser, Namespace
 
 from bs4 import BeautifulSoup, Tag
+from overrides import override
 
 from .chunker import generate_chunks
+from .base import BaseImporter, GetChunksResult
 
 
-class MediumImporter:
+class MediumImporter(BaseImporter):
 
     def __init__(self):
         self._include = 'all'
 
+    @override
     def install_arguments(self, parser: ArgumentParser):
         """
         An opportunity to install arguments on the parser.
@@ -23,13 +26,15 @@ class MediumImporter:
         medium_group.add_argument('--medium-include', help='If provided and the importer is medium, which set to include',
                                   choices=['all', 'drafts', 'published'], default='published')
 
+    @override
     def retrieve_arguments(self, args: Namespace):
         """
         An opportunity to retrieve arguments configured via install_arguments.
         """
         self._include = args.medium_include
 
-    def output_base_filename(self, directory):
+    @override
+    def output_base_filename(self, directory) -> str:
         profile_path = f"{directory}/profile/profile.html"
         with open(profile_path, "r") as f:
             soup = BeautifulSoup(f, "html.parser")
@@ -82,7 +87,8 @@ class MediumImporter:
         text = [p.get_text(" ", strip=True) for p in ps]
         return generate_chunks([text])
 
-    def get_chunks(self, directory):
+    @override
+    def get_chunks(self, directory) -> GetChunksResult:
         filenames = glob.glob(f"{directory}/posts/*.html")
         for file in filenames:
             with open(file, 'r') as f:
