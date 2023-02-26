@@ -1,7 +1,7 @@
-
 import os
 import pinecone
 import argparse
+from overrides import override
 
 from polymath import Library, Bit
 from dotenv import load_dotenv
@@ -14,30 +14,32 @@ VECTOR_DIMENSIONS = 1536
 BATCH_SIZE = 100 # Size of the vector batch to send to Pinecone
 
 
-class NullExporter:
-    def start(self, args):
+class BaseExporter:
+    def start(self, args : argparse.Namespace) -> None:
         pass
 
-    def export_bit(self, bit):
+    def export_bit(self, bit : Bit):
         pass
 
     def finish(self):
         pass
 
-    def install_args(self, parser):
+    def install_args(self, parser : argparse.ArgumentParser):
         pass
 
 
-class PineconeExporter:
+class PineconeExporter(BaseExporter):
     def __init__(self) -> None:
         self.index_name = None
         self.namespace = None
         self.vectors = []
 
+    @override
     def start(self, args: argparse.Namespace) -> None:
         self.index_name = args.index
         self.namespace = args.namespace
 
+    @override
     def install_args(self, parser: argparse.ArgumentParser):
         parser.add_argument('--index',
                             help='Name of Pinecone index to export to',
@@ -46,6 +48,7 @@ class PineconeExporter:
                             help='Pinecone index namespace to export to',
                             default=None)
 
+    @override
     def export_bit(self, bit : Bit):
         metadata = {
             'text': bit.text,
@@ -69,6 +72,7 @@ class PineconeExporter:
         embedding = raw_embedding.tolist()
         self.vectors.append((bit.id, embedding, metadata))
 
+    @override
     def finish(self):
         def make_batches(vectors, size):
             for i in range(0, len(vectors), size):
@@ -95,7 +99,7 @@ class PineconeExporter:
                 namespace=self.namespace)
 
 
-EXPORTERS = {
+EXPORTERS : dict[str, BaseExporter] = {
     'pinecone': PineconeExporter(),
 }
 
@@ -116,7 +120,7 @@ def get_args():
 if __name__ == '__main__':
     args = get_args()
 
-    exporter = EXPORTERS.get(args.exporter, NullExporter())
+    exporter = EXPORTERS.get(args.exporter, BaseExporter())
     print(f'Starting exporter "{args.exporter}" ...')
     if not exporter.start(args):
         print('Failed to set up exporter')
