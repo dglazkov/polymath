@@ -667,7 +667,7 @@ class Library:
         self._bits = {}
         self._bits_in_order = []
 
-    def delete_restricted_bits(self, access_token=None):
+    def delete_restricted_bits(self, access_token : Union[str, None]=None):
         """
         Deletes all bits that are restricted, unless access_token grants access.
 
@@ -688,7 +688,7 @@ class Library:
 
         return restricted_count
 
-    def bit(self, bit_id) -> Union[Bit, None]:
+    def bit(self, bit_id : str) -> Union[Bit, None]:
         return self._bits.get(bit_id, None)
 
     @property
@@ -729,7 +729,7 @@ class Library:
         self._bits[bit.id] = bit
         self._insert_bit_in_order(bit)
 
-    def serializable(self, include_access_tag=False):
+    def serializable(self, include_access_tag:bool=False):
         """
         Returns a dict representing the data in the library that is suitable for
         being serialized e.g. into JSON.
@@ -740,7 +740,7 @@ class Library:
                 del bit['access_tag']
         return result
 
-    def slice(self, count, count_type_is_bit=False):
+    def slice(self, count : int, count_type_is_bit:bool=False) -> 'Library':
         """
         Returns a new library that contains a subset of the first items of self
         up to size count.
@@ -775,7 +775,7 @@ class Library:
             counter += 1
         return result
 
-    def save(self, filename):
+    def save(self, filename : str):
         result = self.serializable()
         with open(filename, 'w') as f:
             json.dump(result, f, indent='\t')
@@ -788,9 +788,9 @@ class Library:
             if bit.embedding is not None], reverse=True)
         return {key: value for value, key in bits}
 
-    def compute_similarities(self, query_embedding):
+    def compute_similarities(self, query_embedding : Union[NDArray[np.float32], None]):
         # if we won't store the similarities anyway then don't bother.
-        if self.omit_whole_bit or 'similarities' in self.fields_to_omit:
+        if self.omit_whole_bit or 'similarities' in self.fields_to_omit or query_embedding is None:
             return
         similarities = self._similarities(query_embedding)
         for bit_id, similarity in similarities.items():
