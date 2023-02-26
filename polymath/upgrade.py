@@ -1,17 +1,18 @@
-from .types import LibraryData
+from .types import LibraryData, BitData
+from typing import Union, List, cast
 
-def _upgrade_from_0(library_data):
+def _upgrade_from_0(library_data : LibraryData) -> bool:
     if library_data.get('version', 0) == 1:
         return False
     library_data['version'] = 1
     library_data['bits'] = library_data['content']
     del library_data['content']
-    sort = library_data.get('sort', {})
+    sort = cast(dict[str, Union[str, List[str]]], library_data.get('sort', {}))
     sort_ids = sort.get('ids', [])
     sort_type = sort.get('type', '')
     if 'sort' in library_data:
         del library_data['sort']
-    bits_dict = library_data.get('bits', {})
+    bits_dict = cast(dict[str, BitData], library_data.get('bits', {}))
     if not sort_ids:
         sort_ids =[key for key in bits_dict.keys()]
     bits = []
