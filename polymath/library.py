@@ -103,7 +103,7 @@ class BitInfo:
         return str(self._data.get('title', ''))
 
     @title.setter
-    def title(self, value -> str):
+    def title(self, value : str):
         if value == self.title:
             return
         self._data['title'] = value
