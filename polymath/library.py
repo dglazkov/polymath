@@ -133,7 +133,7 @@ class BitInfo:
 
 
 class Bit:
-    def __init__(self, library=None, data : Union[BitData, None]=None):
+    def __init__(self, library : Union['Library', None]=None, data : Union[BitData, None]=None):
         self._cached_info = None
         self._cached_embedding = None
         self._canonical_id = None
@@ -146,7 +146,7 @@ class Bit:
         if not self.library:
             # We can't validate without knowing our library, which tells us which fields to omit.
             return
-        fields_to_omit = self.library.fields_to_omit if self.library else set()
+        fields_to_omit = cast(set[str], self.library.fields_to_omit if self.library else set())
         bit_id = self.id
         embedding_model = self.library.embedding_model if self.library else ''
         expected_embedding_length = EXPECTED_EMBEDDING_LENGTH.get(
@@ -302,7 +302,7 @@ class Library:
     EMBEDDINGS_MODEL_ID : Final[str] = EMBEDDINGS_MODEL_ID
     CURRENT_VERSION : Final[int] = CURRENT_VERSION
 
-    def __init__(self, data : Union[LibraryData, None]=None, blob=None, filename=None, access_tag=None):
+    def __init__(self, data : Union[LibraryData, None]=None, blob:Union[str, None]=None, filename:Union[str, None]=None, access_tag:Union[str, None]=None):
 
         # The only actual data member of the class is _data. If that ever
         # changes, also change copy().
