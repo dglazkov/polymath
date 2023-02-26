@@ -39,7 +39,7 @@ LEGAL_OMIT_KEYS = set(
     ['*', '', 'similarity', 'embedding', 'token_count', 'info', 'access_tag'])
 
 
-def canonical_id(bit_text, url=''):
+def canonical_id(bit_text : str, url : str='') -> str:
     """
     Returns the canonical ID for a given bit of text.
     """
@@ -57,7 +57,7 @@ def canonical_id(bit_text, url=''):
 # where `data` is an array of floats
 
 
-def vector_from_base64(str) -> NDArray[np.float32]:
+def vector_from_base64(str : str) -> NDArray[np.float32]:
     return np.frombuffer(base64.b64decode(str), dtype=np.float32)
 
 
@@ -73,11 +73,11 @@ class BitInfo:
         self._bit = bit
 
     @property
-    def url(self):
+    def url(self) -> str:
         return self._data.get('url', '')
 
     @url.setter
-    def url(self, value):
+    def url(self, value : str):
         if value == self.url:
             return
         self._data['url'] = value
@@ -85,11 +85,11 @@ class BitInfo:
             self._bit.info = self
 
     @property
-    def image_url(self):
+    def image_url(self) -> str:
         return self._data.get('image_url', '')
 
     @image_url.setter
-    def image_url(self, value):
+    def image_url(self, value : str):
         if value == self.image_url:
             return
         self._data['image_url'] = value
@@ -97,11 +97,11 @@ class BitInfo:
             self._bit.info = self
 
     @property
-    def title(self):
+    def title(self) -> str:
         return self._data.get('title', '')
 
     @title.setter
-    def title(self, value):
+    def title(self, value -> str):
         if value == self.title:
             return
         self._data['title'] = value
@@ -109,11 +109,11 @@ class BitInfo:
             self._bit.info = self
 
     @property
-    def description(self):
+    def description(self) -> str:
         return self._data.get('description', '')
 
     @description.setter
-    def description(self, value):
+    def description(self, value : str):
         if value == self.description:
             return
         self._data['description'] = value
@@ -121,7 +121,7 @@ class BitInfo:
             self._bit.info = self
 
     @property
-    def contents(self: 'BitInfo'):
+    def contents(self: 'BitInfo') -> str:
         """
         Returns the contents of the whole info as a string, appropriate for
         checking equality via string comparison.
