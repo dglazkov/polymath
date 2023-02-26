@@ -1,14 +1,17 @@
 from pathlib import Path
+from overrides import override
 
 from polymath import Library
 
 from .chunker import generate_chunks
+from .base import BaseImporter, GetChunksResult
 
+class NakedLibraryImporter(BaseImporter):
 
-class NakedLibraryImporter:
-    def get_chunks(self, filename):
+    @override
+    def get_chunks(self, directory : str) -> GetChunksResult:
         # Will return a generator of chunks, possibly missing embedding and token_count.
-        data = Library.load_data_file(filename)
+        data = Library.load_data_file(directory)
 
         chunks = data.get('bits')
         if not chunks:
@@ -25,5 +28,6 @@ class NakedLibraryImporter:
                     'info': chunk.get('info')
                 }
 
-    def output_base_filename(self, input_filename):
-        return Path(input_filename).stem
+    @override
+    def output_base_filename(self, directory : str) -> str:
+        return Path(directory).stem
