@@ -7,6 +7,7 @@ from dotenv import load_dotenv
 
 from polymath import LIBRARY_DIR, Library, Bit, get_embedding, get_token_count
 
+from .base import BaseImporter
 from .medium import MediumImporter
 from .nakedlibrary import NakedLibraryImporter
 from .substack import SubstackImporter
@@ -28,7 +29,7 @@ from .preact import PreactImporter
 from .polaris import PolarisImporter
 from .graphlschema import GraphQLSchemaImporter
 
-IMPORTERS = {
+IMPORTERS : dict[str, BaseImporter] = {
     'library': NakedLibraryImporter(),
     'substack': SubstackImporter(),
     'medium': MediumImporter(),
@@ -88,8 +89,7 @@ parser.add_argument('--truncate', action='store_true',
 parser.add_argument('--debug', action='store_true',
                     help='If set, print out the text chunks but do not get embeddings or save them.')
 for importer in IMPORTERS.values():
-    if 'install_arguments' in dir(importer):
-        importer.install_arguments(parser)
+    importer.install_arguments(parser)
 args = parser.parse_args()
 
 filename = args.filename
@@ -129,7 +129,7 @@ seen_ids = {}
 
 try:
     for raw_bit in importer.get_chunks(filename):
-        raw_bit['text'] = normalize_text(raw_bit.get('text', ''))
+        raw_bit['text'] = normalize_text(str(raw_bit.get('text', '')))
         temp_bit = Bit(data=raw_bit)
         id = temp_bit.id
         seen_ids[id] = True
