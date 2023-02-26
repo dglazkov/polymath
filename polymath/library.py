@@ -654,11 +654,11 @@ class Library:
         return result
 
     def reset(self):
-        self._data = {
+        self._data = cast(LibraryData, {
             'version': CURRENT_VERSION,
             'embedding_model': EMBEDDINGS_MODEL_ID,
             'bits': []
-        }
+        })
         self._bits = {}
         self._bits_in_order = []
 
