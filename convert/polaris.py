@@ -6,6 +6,10 @@ import frontmatter
 from .chunker import generate_chunks
 from .markdown2text import unmark
 
+from overrides import override
+
+from .base import BaseImporter, GetChunksResult
+
 BASE_URL = "https://polaris.shopify.com"
 def url_from_filename(basedir, filename):
     # given /base/path/directory/file.md if index.md return /directory, else /director/file
@@ -27,9 +31,10 @@ Usage: python3 -m convert.main --importer polaris ~/Projects/polaris/polaris.sho
 
 That is from a clone from https://github.com/shopify/polaris
 """
-class PolarisImporter:
+class PolarisImporter(BaseImporter):
 
-    def output_base_filename(self, directory):
+    @override
+    def output_base_filename(self, filename) -> str:
         return 'polaris'
 
     def extract_chunks_from_markdown(self, markdownText):
@@ -42,8 +47,9 @@ class PolarisImporter:
 
         return generate_chunks([text])
 
-    def get_chunks(self, directory):
-        filenames = glob.glob(f"{directory}/**/*.md", recursive=True)
+    @override
+    def get_chunks(self, filename) -> GetChunksResult:
+        filenames = glob.glob(f"{filename}/**/*.md", recursive=True)
         # print("Number of files:", len(filenames))
         for file in filenames:
             # print("File: ", file)
@@ -58,7 +64,7 @@ class PolarisImporter:
                 # print(self.unmark(page.content))
 
                 info = {
-                    'url': url_from_filename(directory, file)
+                    'url': url_from_filename(filename, file)
                 }
 
                 title = page.get('title')
