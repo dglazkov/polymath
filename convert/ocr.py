@@ -3,19 +3,25 @@ import pytesseract
 from pathlib import Path
 from argparse import Namespace
 from .chunker import generate_chunks
+from overrides import override
 
-class OCRImporter:
+from .base import BaseImporter, GetChunksResult
+
+class OCRImporter(BaseImporter):
 
     def __init__(self):
       self._debug = False
 
+    @override
     def retrieve_arguments(self, args: Namespace):
         self._debug = args.debug
 
-    def output_base_filename(self, input_filename):
-        return Path(input_filename).stem
+    @override
+    def output_base_filename(self, filename) -> str:
+        return Path(filename).stem
 
-    def get_chunks(self, filename):
+    @override
+    def get_chunks(self, filename) -> GetChunksResult:
         try:
             friendly_filename = Path(filename).stem
 
