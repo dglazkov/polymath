@@ -5,14 +5,20 @@ from urllib.parse import urlparse
 
 from .chunker import generate_chunks
 
-class RSSImporter:
+from overrides import override
 
-    def output_base_filename(self, filename):
+from .base import BaseImporter, GetChunksResult
+
+class RSSImporter(BaseImporter):
+
+    @override
+    def output_base_filename(self, filename) -> str:
         url = urlparse(filename)
         path = url.path.replace('/', '-')
         return 'rss-%s%s' % (url.hostname, path)
-       
-    def get_chunks(self, filename):
+    
+    @override
+    def get_chunks(self, filename) -> GetChunksResult:
         feed = feedparser.parse(filename)
 
         for entry in feed.entries:
