@@ -610,8 +610,8 @@ class Library:
 
     @property
     def unique_infos(self: 'Library') -> List[BitInfo]:
-        seen_infos = set()
-        result = []
+        seen_infos = cast(set[str], set())
+        result = cast(list[BitInfo], [])
         for bit in self.bits:
             info = bit.info
             key = info.contents
@@ -644,8 +644,8 @@ class Library:
     def copy(self):
         result = Library()
         result._data = copy.deepcopy(self._data)
-        result._bits = {}
-        result._bits_in_order = []
+        result._bits = cast(dict[str, Bit], {})
+        result._bits_in_order = cast(list[Bit], [])
         raw_bits = cast(list[BitData], result._data.get('bits', []))
         for data in raw_bits:
             bit = Bit(library=result, data=data)
