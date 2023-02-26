@@ -848,7 +848,7 @@ class Library:
         self.compute_similarities(query_embedding)
         self.sort = 'similarity'
 
-    def _remove_restricted_bits(self, count, omit, count_type, access_token):
+    def _remove_restricted_bits(self, count : int, omit : str, count_type : str, access_token : Union[str, None]):
         count_type_is_bit = count_type == 'bit'
         restricted_count = self.delete_restricted_bits(access_token)
         result = self.slice(count, count_type_is_bit=count_type_is_bit)
