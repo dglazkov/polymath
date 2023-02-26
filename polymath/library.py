@@ -473,7 +473,7 @@ class Library:
         if sort_type == 'similarity':
             # NOTE: if sort_reversed is ever supported, then bisect_left will
             # not be sufficient.
-            def get_similarity(bit):
+            def get_similarity(bit : Bit) -> float:
                 if not bit:
                     return -1
                 # We want to revese the similarity, because bisect assumes keys
@@ -502,7 +502,7 @@ class Library:
             rng = random.Random()
             rng.shuffle(bits_in_order)
         elif sort_type == 'similarity':
-            def get_similarity(bit):
+            def get_similarity(bit : Bit) -> float:
                 similarity = bit.similarity
                 if similarity == -1:
                     bit_id = bit.id
@@ -524,7 +524,7 @@ class Library:
             bits.append(bit._data)
         self._assert_bits_synced('_re_sort')
 
-    def _assert_bits_synced(self, callsite=''):
+    def _assert_bits_synced(self, callsite : str=''):
         # Throws if the invariant that self._data[bits] and self._bits and
         # self._bits_in_order is not met. A useful check internally for
         # anything that modifies bits to verify everything is correct and find
@@ -567,40 +567,40 @@ class Library:
         self._details['counts'] = value
 
     @property
-    def count_bits(self):
+    def count_bits(self) -> int:
         counts = self.counts
         if 'bits' not in counts:
             return 0
         return counts['bits']
 
     @count_bits.setter
-    def count_bits(self, value):
+    def count_bits(self, value : int):
         self._details = self._details
         self.counts = self.counts
         self.counts['bits'] = value
 
     @property
-    def count_restricted(self):
+    def count_restricted(self) -> int:
         counts = self.counts
         if 'restricted' not in counts:
             return 0
         return counts['restricted']
 
     @count_restricted.setter
-    def count_restricted(self, value):
+    def count_restricted(self, value : int):
         self._details = self._details
         self.counts = self.counts
         self.counts['restricted'] = value
 
     @property
-    def message(self):
+    def message(self) -> str:
         details = self._details
-        if 'message' not in details:
-            return ''
-        return details['message']
+        result = details.get('message', '')
+        assert isinstance(result, str)
+        return result
 
     @message.setter
-    def message(self, value):
+    def message(self, value : str):
         self._details = self._details
         self._details['message'] = value
 
@@ -688,7 +688,7 @@ class Library:
 
         return restricted_count
 
-    def bit(self, bit_id) -> Bit:
+    def bit(self, bit_id) -> Union[Bit, None]:
         return self._bits.get(bit_id, None)
 
     @property
@@ -795,6 +795,8 @@ class Library:
         similarities = self._similarities(query_embedding)
         for bit_id, similarity in similarities.items():
             bit = self.bit(bit_id)
+            if not bit:
+                continue
             bit.similarity = similarity
 
     @classmethod
