@@ -1,11 +1,13 @@
 from polymath.config.json import JSONConfigStore
 from polymath.config.types import HostConfig
 
+from typing import Union
+
 DEFAULT_PRIVATE_ACCESS_TAG = 'unpublished'
 
 HOST_CONFIG = JSONConfigStore().load(HostConfig)
 
-def permitted_access(access_token):
+def permitted_access(access_token : Union[str, None]) -> set[str]:
     """
     Returns the set of permitted access tags
     """
