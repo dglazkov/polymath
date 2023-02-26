@@ -39,6 +39,7 @@ LEGAL_OMIT_KEYS = set(
     ['*', '', 'similarity', 'embedding', 'token_count', 'info', 'access_tag'])
 
 BitInfoData = dict[str, str]
+BitData = dict[str, Union[None, str, int, float, BitInfoData]]
 
 def canonical_id(bit_text : str, url : str='') -> str:
     """
@@ -134,7 +135,7 @@ class BitInfo:
 
 
 class Bit:
-    def __init__(self, library=None, data=None):
+    def __init__(self, library=None, data : Union[BitData, None]=None):
         self._cached_info = None
         self._cached_embedding = None
         self._canonical_id = None
@@ -173,6 +174,8 @@ class Bit:
             if 'info' not in self._data:
                 raise Exception(f'{bit_id} is missing info')
             info = self._data['info']
+            if type(info) is not dict:
+                raise Exception('info is not dict')
             if 'url' not in info:
                 raise Exception(f'{bit_id} info is missing required url')
 
@@ -189,7 +192,7 @@ class Bit:
             return
         self.library.remove_bit(self)
 
-    def __str__(self):
+    def __str__(self) -> str:
         return self.text
 
     @property
@@ -203,17 +206,17 @@ class Bit:
         self.validate()
 
     @property
-    def id(self):
+    def id(self) -> str:
         if self._canonical_id is None:
             self._canonical_id = canonical_id(self.text, self.info.url)
         return self._canonical_id
 
     @property
-    def text(self):
-        return self._data.get('text', '')
+    def text(self) -> str:
+        return str(self._data.get('text', ''))
 
     @text.setter
-    def text(self, value):
+    def text(self, value : str):
         if self.text == value:
             return
         self._data['text'] = value
@@ -221,11 +224,14 @@ class Bit:
         self._canonical_id = None
 
     @property
-    def token_count(self):
-        return self._data.get('token_count', -1)
+    def token_count(self) -> int:
+        result = self._data.get('token_count', -1)
+        if not isinstance(result, int):
+            raise Exception('token_count not int as expected')
+        return result
 
     @token_count.setter
-    def token_count(self, value):
+    def token_count(self, value : int):
         self._data['token_count'] = value
 
     @property
@@ -234,35 +240,46 @@ class Bit:
             raw_embedding = self._data.get('embedding', None)
             if not raw_embedding:
                 return None
+            if not isinstance(raw_embedding, str):
+                return None
             self._cached_embedding = vector_from_base64(raw_embedding)
         return self._cached_embedding
 
     @embedding.setter
-    def embedding(self, value):
+    def embedding(self, value : Union[NDArray[np.float32], None]):
         self._cached_embedding = value
         self._data['embedding'] = Library.base64_from_vector(value).decode('ascii')
 
     @property
-    def similarity(self):
-        return self._data.get('similarity', -1)
+    def similarity(self) -> float:
+        result = self._data.get('similarity', -1)
+        if not isinstance(result, float):
+            raise Exception('similarity not float as expected')
+        return result
 
     @similarity.setter
-    def similarity(self, value):
+    def similarity(self, value : float):
         self._data['similarity'] = value
 
     @property
-    def access_tag(self):
-        return self._data.get('access_tag', None)
+    def access_tag(self) -> Union[str, None]:
+        result = self._data.get('access_tag', None)
+        if result is None:
+            return result
+        return str(result)
 
     @access_tag.setter
-    def access_tag(self, value):
+    def access_tag(self, value : Union[str, None]):
         self._data['access_tag'] = value
 
     @property
     def info(self) -> BitInfo:
         if self._cached_info is None:
+            info_data = self._data.get('info', None)
+            if info_data is not None and not isinstance(info_data, dict):
+                raise Exception('info not dict as expected')
             self._cached_info = BitInfo(
-                bit=self, data=self._data.get('info', None))
+                bit=self, data=info_data)
         return self._cached_info
 
     @info.setter
