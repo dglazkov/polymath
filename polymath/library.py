@@ -334,9 +334,9 @@ class Library:
 
         content = self._data.get('bits', [])
         assert isinstance(content, list)
-        self._bits = {}
+        self._bits = cast(dict[str,Bit],{})
         # _bits_in_order is an inflated bit in the same order as the underlying data.
-        self._bits_in_order = []
+        self._bits_in_order = cast(list[Bit], [])
         for bit_data in content:
             assert isinstance(bit_data, dict)
             bit = Bit(library=self, data=bit_data)
