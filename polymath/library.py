@@ -40,6 +40,8 @@ LEGAL_OMIT_KEYS = set(
 
 BitInfoData = dict[str, str]
 BitData = dict[str, Union[None, str, int, float, BitInfoData]]
+LibraryDetailsCountsData = dict[str, int]
+LibraryDetailsData = dict[str, Union[str, LibraryDetailsCountsData]]
 
 def canonical_id(bit_text : str, url : str='') -> str:
     """
@@ -533,24 +535,27 @@ class Library:
                             str(bits_in_order_len) + ' ' + str(bits_len) + ' ' + callsite)
 
     @property
-    def _details(self):
+    def _details(self) -> LibraryDetailsData:
         if 'details' not in self._data:
             return {}
         return self._data['details']
 
     @_details.setter
-    def _details(self, value):
+    def _details(self, value : LibraryDetailsData):
         self._data['details'] = value
 
     @property
-    def counts(self):
+    def counts(self) -> LibraryDetailsCountsData:
         details = self._details
         if 'counts' not in details:
             return {}
-        return details['counts']
+        result = details['counts']
+        if not isinstance(result, dict):
+            raise Exception('counts not a dict as expected')
+        return result
 
     @counts.setter
-    def counts(self, value):
+    def counts(self, value : LibraryDetailsCountsData):
         self._details = self._details
         self._details['counts'] = value
 
