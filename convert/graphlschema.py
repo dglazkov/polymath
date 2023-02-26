@@ -1,5 +1,8 @@
-import re
 import urllib.parse
+
+from overrides import override
+
+from .base import BaseImporter, GetChunksResult
 
 from .chunker import generate_chunks
 
@@ -62,12 +65,14 @@ directive @accessRestricted(
 
 % python3 -m convert.main --importer graphqlschema ~/Downloads/graphql-schema.txt
 """
-class GraphQLSchemaImporter:
+class GraphQLSchemaImporter(BaseImporter):
 
-    def output_base_filename(self, filename):
+    @override
+    def output_base_filename(self, filename) -> str:
         return 'graphql-schema'
 
-    def get_chunks(self, filename):
+    @override
+    def get_chunks(self, filename) -> GetChunksResult:
         # print("File: ", filename)
 
         with open(filename, "r") as file:
