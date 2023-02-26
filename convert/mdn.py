@@ -1,10 +1,12 @@
 import glob
-import os
 import re
 import frontmatter
 
 from .chunker import generate_chunks
 from .markdown2text import unmark
+from overrides import override
+
+from .base import BaseImporter, GetChunksResult
 
 BASE_URL = "https://developer.mozilla.org/en-US/docs/"
 def url_from_slug(slug):
@@ -15,9 +17,10 @@ Usage: python3 -m convert.main --importer mdn ~/Projects/mdn-content/files/en-us
 
 That is from a clone from https://github.com/mdn/content
 """
-class MDNImporter:
+class MDNImporter(BaseImporter):
 
-    def output_base_filename(self, directory):
+    @override
+    def output_base_filename(self, filename) -> str:
         return 'mdn'
 
     def extract_chunks_from_markdown(self, markdownText):
@@ -39,8 +42,9 @@ class MDNImporter:
 
         return generate_chunks([text])
 
-    def get_chunks(self, directory):
-        filenames = glob.glob(f"{directory}/web/**/*.md", recursive=True) + glob.glob(f"{directory}/glossary/**/*.md", recursive=True)
+    @override
+    def get_chunks(self, filename) -> GetChunksResult:
+        filenames = glob.glob(f"{filename}/web/**/*.md", recursive=True) + glob.glob(f"{filename}/glossary/**/*.md", recursive=True)
         # print("Number of files:", len(directory))
         for file in filenames:
             # print(file)
