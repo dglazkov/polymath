@@ -870,7 +870,7 @@ class Library:
         return result._remove_restricted_bits(**access_args)
 
 
-def _keys_to_omit(configuration=''):
+def _keys_to_omit(configuration='') -> tuple[bool, set[str], Union[str, list[str]]]:
     """
     Takes a configuration, either None, a single string, or a list of strings
     and returns a tuple of (omit_whole_bit, [keys_to_omit], canonical_configuration).
