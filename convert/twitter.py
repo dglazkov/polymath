@@ -1,5 +1,9 @@
 from argparse import ArgumentParser, Namespace
 
+from overrides import override
+
+from .base import BaseImporter, GetChunksResult
+
 import json
 
 """
@@ -35,12 +39,13 @@ The command line has the following options:
 [] - handle the JS object automatically
 [] - tie together your threads to get chunks across them
 """
-class TwitterArchiveImporter:
+class TwitterArchiveImporter(BaseImporter):
 
     def __init__(self):
         self._include = 'all'
         self._username = 'twitter'
 
+    @override
     def install_arguments(self, parser: ArgumentParser):
         """
         An opportunity to install arguments on the parser.
@@ -56,7 +61,7 @@ class TwitterArchiveImporter:
                                   choices=['all', 'regular', 'retweets', 'replies'], default='all')
         twitter_group.add_argument('--twitter-username', help='If provided and the importer is twitter, which @username to put into the URL')
 
-
+    @override
     def retrieve_arguments(self, args: Namespace):
         """
         An opportunity to retrieve arguments configured via install_arguments.
@@ -64,10 +69,12 @@ class TwitterArchiveImporter:
         self._include = args.twitter_include
         self._username = args.twitter_username
 
-    def output_base_filename(self, filename):
+    @override
+    def output_base_filename(self, filename) -> str:
         return 'twitterarchive-' + self._include
 
-    def get_chunks(self, filename):
+    @override
+    def get_chunks(self, filename) -> GetChunksResult:
         print(filename)
 
         with open(filename, "r") as json_file:
