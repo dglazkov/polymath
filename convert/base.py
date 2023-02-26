@@ -22,9 +22,9 @@ class BaseImporter:
         pass
 
 
-    def output_base_filename(self, directory : str) -> str:
-        return directory
+    def output_base_filename(self, filename : str) -> str:
+        return filename
 
 
-    def get_chunks(self, directory : str) -> GetChunksResult:
+    def get_chunks(self, filename : str) -> GetChunksResult:
         raise Exception('get_chunks must be overridden')

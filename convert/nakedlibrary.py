@@ -9,9 +9,9 @@ from .base import BaseImporter, GetChunksResult
 class NakedLibraryImporter(BaseImporter):
 
     @override
-    def get_chunks(self, directory : str) -> GetChunksResult:
+    def get_chunks(self, filename : str) -> GetChunksResult:
         # Will return a generator of chunks, possibly missing embedding and token_count.
-        data = Library.load_data_file(directory)
+        data = Library.load_data_file(filename)
 
         chunks = data.get('bits')
         if not chunks:
@@ -29,5 +29,5 @@ class NakedLibraryImporter(BaseImporter):
                 }
 
     @override
-    def output_base_filename(self, directory : str) -> str:
-        return Path(directory).stem
+    def output_base_filename(self, filename : str) -> str:
+        return Path(filename).stem

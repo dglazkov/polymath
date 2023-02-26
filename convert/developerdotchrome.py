@@ -31,7 +31,7 @@ That is from a clone from https://github.com/GoogleChrome/developer.chrome.com
 class DeveloperDotChromeImporter(BaseImporter):
 
     @override
-    def output_base_filename(self, directory : str) -> str:
+    def output_base_filename(self, filename : str) -> str:
         return 'developerdotchrome'
 
     def extract_chunks_from_markdown(self, markdownText):
@@ -43,8 +43,8 @@ class DeveloperDotChromeImporter(BaseImporter):
         return generate_chunks([text])
 
     @override
-    def get_chunks(self, directory : str) -> GetChunksResult:
-        filenames = glob.glob(f"{directory}/**/*.md", recursive=True)
+    def get_chunks(self, filename : str) -> GetChunksResult:
+        filenames = glob.glob(f"{filename}/**/*.md", recursive=True)
         # print(len(filenames))
         for file in filenames:
             # print(file)
