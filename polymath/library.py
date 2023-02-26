@@ -809,17 +809,10 @@ class Library:
         omit = args.get('omit', 'embedding')
         access_token = args.get('access_token', '')
 
-        # We do our own defaulting so that servers that call us can pass the result
-        # of request.get() directly and if it's None, we'll use the default.
-        if count_type == None:
-            count_type = 'token'
-        if omit == None:
-            omit = 'embedding'
-
         if count == 0:
             raise Exception('count must be greater than 0')
 
-        if version == None or version < CURRENT_VERSION:
+        if version < CURRENT_VERSION:
             # We expect hosts to potentially lag in updating. We want to ensure
             # the format they spit out is understood by the client (lower
             # versions can be upgraded seamlessly). So as long as our current
