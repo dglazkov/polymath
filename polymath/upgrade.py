@@ -1,4 +1,4 @@
-
+from .types import LibraryData
 
 def _upgrade_from_0(library_data):
     if library_data.get('version', 0) == 1:
@@ -28,14 +28,16 @@ _UPGRADERS = {
     0: _upgrade_from_0
 }
 
-def upgrade_library_data(library_data):
+def upgrade_library_data(library_data : LibraryData) -> bool:
     """"
     Upgrades the library data in place, until it is the highest version
     number it knows how to convert.
 
     Returns True if changes were made, False otherwise
     """
-    upgrader = _UPGRADERS.get(library_data.get('version', 0), None)
+    version = library_data.get('version', 0)
+    assert isinstance(version, int)
+    upgrader = _UPGRADERS.get(version, None)
     changes_made = False
     while upgrader:
         upgrader_changes_made = upgrader(library_data)
@@ -43,7 +45,7 @@ def upgrade_library_data(library_data):
             # Nothing changed; avoid an infinite loop
             return changes_made
         changes_made = True
-        upgrader = _UPGRADERS.get(library_data.get('version', 0), None)
+        upgrader = _UPGRADERS.get(version, None)
 
     return changes_made
 
