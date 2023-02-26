@@ -4,6 +4,10 @@ import urllib.parse
 
 from .chunker import generate_chunks
 
+from overrides import override
+
+from .base import BaseImporter, GetChunksResult
+
 def google_url(title):
     return "https://www.google.com/search?q=" + urllib.parse.quote(title)
 
@@ -54,13 +58,15 @@ Would be great to host the content somewhere and link to it.
 
 For now, cheating by using a Google Search URL :)
 """
-class KnowledgeImporter:
+class KnowledgeImporter(BaseImporter):
 
-    def output_base_filename(self, filename):
+    @override
+    def output_base_filename(self, filename) -> str:
         file_without_ext = os.path.splitext(os.path.basename(filename))[0]
         return 'knowledge-' + file_without_ext
 
-    def get_chunks(self, filename):
+    @override
+    def get_chunks(self, filename) ->  GetChunksResult:
         # print("File: ", filename)
 
         with open(filename, "r") as file:
