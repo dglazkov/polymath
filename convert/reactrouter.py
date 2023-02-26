@@ -6,6 +6,10 @@ import frontmatter
 from .chunker import generate_chunks
 from .markdown2text import unmark
 
+from overrides import override
+
+from .base import BaseImporter, GetChunksResult
+
 BASE_URL = "https://reactrouter.com/en/main/"
 def url_from_filename(basedir):
     # given /long/path/directory/file.md if index.md return /directory, else /director/file
@@ -24,9 +28,10 @@ Usage: python3 -m convert.main --importer reactrouter ~/Projects/react-router/do
 
 That is from a clone from https://github.com/remix-run/react-router
 """
-class ReactRouterImporter:
+class ReactRouterImporter(BaseImporter):
 
-    def output_base_filename(self, directory):
+    @override
+    def output_base_filename(self, filename) -> str:
         return 'reactrouter'
 
     def extract_chunks_from_markdown(self, markdownText):
@@ -40,8 +45,9 @@ class ReactRouterImporter:
 
         return generate_chunks([text])
 
-    def get_chunks(self, directory):
-        filenames = glob.glob(f"{directory}/**/*.md", recursive=True)
+    @override
+    def get_chunks(self, filename) -> GetChunksResult:
+        filenames = glob.glob(f"{filename}/**/*.md", recursive=True)
         # print("Number of files:", len(filenames))
         for file in filenames:
             # print("File: ", file)
