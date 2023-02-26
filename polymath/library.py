@@ -5,7 +5,7 @@ import hashlib
 import json
 import os
 import random
-from typing import List, Union, Final
+from typing import List, Union, Final, cast
 
 import numpy as np
 
@@ -42,6 +42,7 @@ BitInfoData = dict[str, str]
 BitData = dict[str, Union[None, str, int, float, BitInfoData]]
 LibraryDetailsCountsData = dict[str, int]
 LibraryDetailsData = dict[str, Union[str, LibraryDetailsCountsData]]
+LibraryData = dict[str, Union[str, int, List[str], LibraryDetailsData, List[BitData]]]
 
 def canonical_id(bit_text : str, url : str='') -> str:
     """
@@ -306,7 +307,7 @@ class Library:
     EMBEDDINGS_MODEL_ID : Final[str] = EMBEDDINGS_MODEL_ID
     CURRENT_VERSION : Final[int] = CURRENT_VERSION
 
-    def __init__(self, data=None, blob=None, filename=None, access_tag=None):
+    def __init__(self, data : Union[LibraryData, None]=None, blob=None, filename=None, access_tag=None):
 
         # The only actual data member of the class is _data. If that ever
         # changes, also change copy().
@@ -337,10 +338,12 @@ class Library:
             access_tag = DEFAULT_PRIVATE_ACCESS_TAG
 
         content = self._data.get('bits', [])
+        assert isinstance(content, list)
         self._bits = {}
         # _bits_in_order is an inflated bit in the same order as the underlying data.
         self._bits_in_order = []
         for bit_data in content:
+            assert isinstance(bit_data, dict)
             bit = Bit(library=self, data=bit_data)
             bit_id = bit.id
             self._bits[bit_id] = bit
@@ -371,7 +374,7 @@ class Library:
         return base64.b64encode(data.tobytes())
 
     @property
-    def upgraded(self):
+    def upgraded(self) -> bool:
         return self._upgraded
 
     def validate(self):
@@ -379,57 +382,64 @@ class Library:
             raise Exception('Version invalid')
         if self._data.get('embedding_model', '') != EMBEDDINGS_MODEL_ID:
             raise Exception('Invalid model name')
-        omit_whole_bits, _, _ = _keys_to_omit(
-            self._data.get('omit', ''))
+        raw_omit = self._data.get('omit', '')
+        if not isinstance(raw_omit, str):
+            raise Exception('omit not str as expected')
+        omit_whole_bits, _, _ = _keys_to_omit(raw_omit)
         if 'bits' not in self._data:
             raise Exception('bits is a required field')
-        if omit_whole_bits and len(self._data['bits']):
+        raw_bits = self._data['bits']
+        if not isinstance(raw_bits, list):
+            raise Exception('bits not list as expected')
+        if omit_whole_bits and len(raw_bits):
             raise Exception(
                 'omit configured to omit all bits but they were present')
         # no need to validate bits, they were already validated at creation time.
 
     @property
-    def version(self):
-        return self._data['version']
+    def version(self) -> int:
+        result = self._data['version']
+        assert isinstance(result, int)
+        return result
 
     @version.setter
-    def version(self, value):
-        if not isinstance(value, int):
-            raise TypeError('Version must be an integer')
+    def version(self, value : int):
         self._data['version'] = value
 
     @property
-    def embedding_model(self):
-        return self._data['embedding_model']
+    def embedding_model(self) -> str:
+        result = self._data['embedding_model']
+        assert isinstance(result, str)
+        return result
 
     @embedding_model.setter
-    def embedding_model(self, value):
+    def embedding_model(self, value : str):
         if value != EMBEDDINGS_MODEL_ID:
             raise TypeError(
                 f'The only supported value for embedding model is {EMBEDDINGS_MODEL_ID}')
         self._data['embedding_model'] = value
 
     @property
-    def omit(self):
+    def omit(self) -> str:
         """
         Returns either a string or an array of strings all of which are legal omit keys.
         """
-        if 'omit' not in self._data:
-            return ''
-        return self._data['omit']
+        result = self._data.get('omit', '')
+        assert isinstance(result, str)
+        return result
 
     @property
-    def omit_whole_bit(self):
+    def omit_whole_bit(self) -> bool:
         omit_whole_bit, _, _ = _keys_to_omit(self.omit)
         return omit_whole_bit
 
     @property
-    def fields_to_omit(self):
+    def fields_to_omit(self) -> set[str]:
         _, fields_to_omit, _ = _keys_to_omit(self.omit)
         return fields_to_omit
 
     @omit.setter
-    def omit(self, value):
+    def omit(self, value : str):
         _, _, canonical_value = _keys_to_omit(value)
         if 'omit' in self._data and canonical_value == self._data['omit']:
             return
@@ -442,11 +452,13 @@ class Library:
             bit.strip()
 
     @property
-    def sort(self):
-        return self._data.get('sort', 'any')
+    def sort(self) -> str:
+        result = self._data.get('sort', 'any')
+        assert isinstance(result, str)
+        return result
 
     @sort.setter
-    def sort(self, value):
+    def sort(self, value : str):
         if value == self.sort:
             return
         if value not in LEGAL_SORTS:
@@ -456,11 +468,12 @@ class Library:
             del self._data['sort']
         self._re_sort()
 
-    def _insert_bit_in_order(self, bit):
+    def _insert_bit_in_order(self, bit : Bit):
         # bits is already in sorted order so we can do a bisect into it
         # instead of resorting after every insert, considerably faster.
         sort_type = self._data.get('sort', 'any')
         bits = self._data['bits']
+        bits = cast(list[BitData], bits)
         bits_in_order = self._bits_in_order
         if sort_type == 'similarity':
             # NOTE: if sort_reversed is ever supported, then bisect_left will
@@ -509,7 +522,7 @@ class Library:
             # effectively any, which means any order is fine.
             pass
         # replicate the final order of bits_in_order in bits.
-        bits = self._data['bits']
+        bits = cast(list[BitData], self._data['bits'])
         # Operate on the existing list in place to maintain object equality
         bits.clear()
         for bit in bits_in_order:
@@ -522,7 +535,7 @@ class Library:
         # anything that modifies bits to verify everything is correct and find
         # mistakes in logic faster.
         bits_cache_len = len(self._bits)
-        bits_len = len(self._data['bits'])
+        bits_len = len(cast(list[BitData], self._data['bits']))
         bits_in_order_len = len(self._bits_in_order)
         if bits_cache_len != bits_len:
             raise Exception('bits_cache_len != bits_len ' +
@@ -536,9 +549,9 @@ class Library:
 
     @property
     def _details(self) -> LibraryDetailsData:
-        if 'details' not in self._data:
-            return {}
-        return self._data['details']
+        result = self._data.get('details', {})
+        assert isinstance(result, dict)
+        return result
 
     @_details.setter
     def _details(self, value : LibraryDetailsData):
@@ -550,8 +563,7 @@ class Library:
         if 'counts' not in details:
             return {}
         result = details['counts']
-        if not isinstance(result, dict):
-            raise Exception('counts not a dict as expected')
+        assert isinstance(result, dict)
         return result
 
     @counts.setter
@@ -639,7 +651,8 @@ class Library:
         result._data = copy.deepcopy(self._data)
         result._bits = {}
         result._bits_in_order = []
-        for data in result._data.get('bits', []):
+        raw_bits = cast(list[BitData], result._data.get('bits', []))
+        for data in raw_bits:
             bit = Bit(library=result, data=data)
             result._bits[bit.id] = bit
             result._bits_in_order.append(bit)
@@ -705,7 +718,7 @@ class Library:
         if index >= len(self._bits_in_order):
             raise Exception('Bit was not found')
         self._bits_in_order.pop(index)
-        self._data['bits'].pop(index)
+        cast(list[BitData], self._data['bits']).pop(index)
         del self._bits[bit_id]
 
     def insert_bit(self, bit: Bit):
@@ -727,7 +740,7 @@ class Library:
         being serialized e.g. into JSON.
         """
         result = copy.deepcopy(self._data)
-        for bit in result['bits']:
+        for bit in cast(list[BitData], result['bits']):
             if not include_access_tag and 'access_tag' in bit:
                 del bit['access_tag']
         return result
