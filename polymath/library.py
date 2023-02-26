@@ -67,14 +67,16 @@ def vector_similarity(x: NDArray[np.float32], y: NDArray[np.float32]) -> float:
     return float(np.dot(np.array(x), np.array(y)))
 
 
+BitInfoData = dict[str, Union[str, dict[str, str]]]
+
 class BitInfo:
-    def __init__(self, bit: Union['Bit', None] = None, data=None):
+    def __init__(self, bit: Union['Bit', None] = None, data : Union[BitInfoData, None]=None):
         self._data = data if data else {}
         self._bit = bit
 
     @property
     def url(self) -> str:
-        return self._data.get('url', '')
+        return str(self._data.get('url', ''))
 
     @url.setter
     def url(self, value : str):
@@ -86,7 +88,7 @@ class BitInfo:
 
     @property
     def image_url(self) -> str:
-        return self._data.get('image_url', '')
+        return str(self._data.get('image_url', ''))
 
     @image_url.setter
     def image_url(self, value : str):
@@ -98,7 +100,7 @@ class BitInfo:
 
     @property
     def title(self) -> str:
-        return self._data.get('title', '')
+        return str(self._data.get('title', ''))
 
     @title.setter
     def title(self, value -> str):
@@ -110,7 +112,7 @@ class BitInfo:
 
     @property
     def description(self) -> str:
-        return self._data.get('description', '')
+        return str(self._data.get('description', ''))
 
     @description.setter
     def description(self, value : str):
