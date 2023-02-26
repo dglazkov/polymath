@@ -2,6 +2,9 @@ import glob
 import os
 import re
 import frontmatter
+from overrides import override
+
+from .base import BaseImporter, GetChunksResult
 
 from .chunker import generate_chunks
 from .markdown2text import unmark
@@ -25,9 +28,10 @@ Usage: python3 -m convert.main --importer developerdotchrome ~/Projects/dcc/src/
 
 That is from a clone from https://github.com/GoogleChrome/developer.chrome.com
 """
-class DeveloperDotChromeImporter:
+class DeveloperDotChromeImporter(BaseImporter):
 
-    def output_base_filename(self, filename):
+    @override
+    def output_base_filename(self, directory : str) -> str:
         return 'developerdotchrome'
 
     def extract_chunks_from_markdown(self, markdownText):
@@ -38,8 +42,9 @@ class DeveloperDotChromeImporter:
 
         return generate_chunks([text])
 
-    def get_chunks(self, filename):
-        filenames = glob.glob(f"{filename}/**/*.md", recursive=True)
+    @override
+    def get_chunks(self, directory : str) -> GetChunksResult:
+        filenames = glob.glob(f"{directory}/**/*.md", recursive=True)
         # print(len(filenames))
         for file in filenames:
             # print(file)
