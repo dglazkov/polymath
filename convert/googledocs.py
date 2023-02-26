@@ -5,7 +5,10 @@ from google.auth.transport.requests import Request
 from google.oauth2.credentials import Credentials
 from google_auth_oauthlib.flow import InstalledAppFlow
 from googleapiclient.discovery import build
-from googleapiclient.errors import HttpError
+
+from overrides import override
+
+from .base import BaseImporter, GetChunksResult
 
 from convert.chunker import generate_chunks
 
@@ -96,11 +99,14 @@ def get_elements(elements, current_heading_id='', current_run=None):
             # all input.
             yield (current_heading_id, current_run)
 
-class GoogleDocsImporter:
+class GoogleDocsImporter(BaseImporter):
+
+    @override
     def output_base_filename(self, filename) -> str:
         return filename
 
-    def get_chunks(self, filename: str):
+    @override
+    def get_chunks(self, filename: str) -> GetChunksResult:
         creds = authorize()
         service = build('docs', 'v1', credentials=creds)
         document = service.documents().get(documentId=filename).execute()
