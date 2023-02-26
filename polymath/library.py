@@ -38,6 +38,7 @@ LEGAL_COUNT_TYPES = set(['token', 'bit'])
 LEGAL_OMIT_KEYS = set(
     ['*', '', 'similarity', 'embedding', 'token_count', 'info', 'access_tag'])
 
+BitInfoData = dict[str, str]
 
 def canonical_id(bit_text : str, url : str='') -> str:
     """
@@ -66,8 +67,6 @@ def vector_similarity(x: NDArray[np.float32], y: NDArray[np.float32]) -> float:
     # covert to a float64 now.
     return float(np.dot(np.array(x), np.array(y)))
 
-
-BitInfoData = dict[str, Union[str, dict[str, str]]]
 
 class BitInfo:
     def __init__(self, bit: Union['Bit', None] = None, data : Union[BitInfoData, None]=None):
