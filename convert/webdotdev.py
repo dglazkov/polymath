@@ -6,6 +6,10 @@ import frontmatter
 from .chunker import generate_chunks
 from .markdown2text import unmark
 
+from overrides import override
+
+from .base import BaseImporter, GetChunksResult
+
 
 BASE_URL = "https://web.dev/"
 def url_from_filename(filename):
@@ -25,9 +29,10 @@ Usage: python3 -m convert.main --importer webdotdev ~/Projects/web.dev/src/site/
 
 That is from a clone from https://github.com/GoogleChrome/web.dev
 """
-class WebDotDevImporter:
+class WebDotDevImporter(BaseImporter):
 
-    def output_base_filename(self, directory):
+    @override
+    def output_base_filename(self, filename) -> str:
         return 'webdotdev'
 
     def extract_chunks_from_markdown(self, markdownText):
@@ -38,8 +43,9 @@ class WebDotDevImporter:
 
         return generate_chunks([text])
 
-    def get_chunks(self, directory):
-        filenames = glob.glob(f"{directory}/**/*.md", recursive=True)
+    @override
+    def get_chunks(self, filename) -> GetChunksResult:
+        filenames = glob.glob(f"{filename}/**/*.md", recursive=True)
         # print(len(filenames))
         for file in filenames:
             # print(file)
