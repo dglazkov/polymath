@@ -3,6 +3,10 @@ from .chunker import generate_chunks
 
 import wpparser
 
+from overrides import override
+
+from .base import BaseImporter, GetChunksResult
+
 """
 An importer that goes through your downloaded WordPress archive.
 
@@ -12,12 +16,14 @@ An importer that goes through your downloaded WordPress archive.
 
 % python3 -m convert.main --importer wordpress ~/Downloads/exports/dionalmaer.WordPress.2023-01-14.xml
 """
-class WordPressArchiveImporter:
+class WordPressArchiveImporter(BaseImporter):
 
-    def output_base_filename(self, filename):
+    @override
+    def output_base_filename(self, filename) -> str:
         return 'wordpress'
 
-    def get_chunks(self, filename):
+    @override
+    def get_chunks(self, filename) -> GetChunksResult:
         # print(filename)
 
         data = wpparser.parse(filename)
