@@ -3,6 +3,10 @@ import requests
 from bs4 import BeautifulSoup, Tag
 from urllib.parse import urlparse
 
+from overrides import override
+
+from .base import BaseImporter, GetChunksResult
+
 from .chunker import generate_chunks
 
 """
@@ -16,20 +20,22 @@ An importer that goes through a file with simple knowledge
 
 Why stop at one URL? Follow away!
 """
-class HTMLScraperImporter:
+class HTMLScraperImporter(BaseImporter):
 
-    def output_base_filename(self, url):
-        url_parts = urlparse(url)
+    @override
+    def output_base_filename(self, filename) -> str:
+        url_parts = urlparse(filename)
         path = url_parts.path.replace('/', '-')
         return 'html-%s%s' % (url_parts.hostname, path)
-       
-    def get_chunks(self, url):
-        r = requests.get(url)
+    
+    @override
+    def get_chunks(self, filename) -> GetChunksResult:
+        r = requests.get(filename)
 
         soup = BeautifulSoup(r.text, "html.parser")
 
         info = {
-            'url': url
+            'url': filename
         }
 
         title_ele = soup.find("title")
@@ -39,7 +45,7 @@ class HTMLScraperImporter:
         
         meta = soup.find("meta", attrs={"name": "description"})
         if meta and isinstance(meta, Tag) and meta["content"]:
-            info['description'] = meta["content"]
+            info['description'] = str(meta["content"])
 
         body_ele = soup.find('body')
         body = body_ele.get_text() if body_ele else ''
