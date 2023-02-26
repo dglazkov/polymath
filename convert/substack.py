@@ -6,6 +6,10 @@ from bs4 import BeautifulSoup, Tag
 from argparse import Namespace
 from .chunker import generate_chunks
 
+from overrides import override
+
+from .base import BaseImporter, GetChunksResult
+
 HEADERS = ["h1", "h2", "h3", "h4", "h5", "h6"]
 LISTS = ["ul", "ol"]
 
@@ -45,21 +49,24 @@ def get_issue_info(substack_url, issue_slug: str) -> dict[str, str]:
     return result
 
 
-class SubstackImporter:
+class SubstackImporter(BaseImporter):
     def __init__(self):
         self._config = None
 
+    @override
     def retrieve_arguments(self, args: Namespace):
         """
         An opportunity to retrieve arguments configured via install_arguments.
         """
         self._max = args.max
 
+    @override
     def output_base_filename(self, filename) -> str:
         self._config = json.load(open(f"{filename}/config.json"))
         return self._config["substack_url"].replace('https://', '').replace('http://', '').replace('.', '_')
 
-    def get_chunks(self, filename: str):
+    @override
+    def get_chunks(self, filename: str) -> GetChunksResult:
         if not self._config:
             raise Exception('No config set')
         for page in get_pages(filename, self._config):
