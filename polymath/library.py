@@ -302,7 +302,7 @@ class Library:
     EMBEDDINGS_MODEL_ID : Final[str] = EMBEDDINGS_MODEL_ID
     CURRENT_VERSION : Final[int] = CURRENT_VERSION
 
-    def __init__(self, data : Union[LibraryData, None]=None, blob:Union[str, None]=None, filename:Union[str, None]=None, access_tag:Union[str, None]=None):
+    def __init__(self, data : Union[LibraryData, None]=None, blob:Union[str, None]=None, filename:Union[str, None]=None, access_tag:Union[str, bool, None]=None):
 
         # The only actual data member of the class is _data. If that ever
         # changes, also change copy().
@@ -351,7 +351,7 @@ class Library:
         self.validate()
 
     @classmethod
-    def load_data_file(cls, file):
+    def load_data_file(cls, file : str) -> LibraryData:
         with open(file, "r") as f:
             return json.load(f)
         
