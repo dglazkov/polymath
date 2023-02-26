@@ -13,6 +13,7 @@ from numpy.typing import NDArray
 
 from .access import DEFAULT_PRIVATE_ACCESS_TAG, HOST_CONFIG, permitted_access
 from .upgrade import upgrade_library_data
+from .types import BitData, BitInfoData, LibraryData, LibraryDetailsCountsData, LibraryDetailsData
 
 EMBEDDINGS_MODEL_ID = "openai.com:text-embedding-ada-002"
 
@@ -37,12 +38,6 @@ LEGAL_SORTS = set(['similarity', 'any', 'random', 'manual'])
 LEGAL_COUNT_TYPES = set(['token', 'bit'])
 LEGAL_OMIT_KEYS = set(
     ['*', '', 'similarity', 'embedding', 'token_count', 'info', 'access_tag'])
-
-BitInfoData = dict[str, str]
-BitData = dict[str, Union[None, str, int, float, BitInfoData]]
-LibraryDetailsCountsData = dict[str, int]
-LibraryDetailsData = dict[str, Union[str, LibraryDetailsCountsData]]
-LibraryData = dict[str, Union[str, int, List[str], LibraryDetailsData, List[BitData]]]
 
 def canonical_id(bit_text : str, url : str='') -> str:
     """
