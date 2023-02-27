@@ -9,3 +9,5 @@ place to define some of the parts of Polymath:
 - `results` are the resulting bits of knowledge from a given client question
 - A `query` is a string representing a question being asked
 - A `queryEmbedding` is a vector embedding representing a question being asked
+- A `bit` is a container for one URL/text pairing, including metadata and the embedding
+- A `canonical id` for a bit is a hex digest SHA-256 hash of: url + "\n" + the text of the bit
