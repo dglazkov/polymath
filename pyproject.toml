@@ -4,7 +4,7 @@ build-backend = "flit_core.buildapi"
 
 [project]
 name = "polymath"
-version = "0.0.4"
+version = "0.0.5"
 authors = [
   { name="Alex Komoroske", email="alex@komoroske.com" },
   { name="Dimitri Glazkov", email="dimitri@glazkov.com" },
@@ -17,7 +17,9 @@ classifiers = ["License :: OSI Approved :: MIT License"]
 dependencies = [
   "numpy",
   "openai",
-  "transformers"
+  "transformers",
+  "google-cloud-firestore",
+  "docstring-parser"
 ]
 
 [project.urls]
