@@ -39,7 +39,8 @@ LEGAL_COUNT_TYPES = set(['token', 'bit'])
 LEGAL_OMIT_KEYS = set(
     ['*', '', 'similarity', 'embedding', 'token_count', 'info', 'access_tag'])
 
-def canonical_id(bit_text : str, url : str='') -> str:
+
+def canonical_id(bit_text: str, url: str = '') -> str:
     """
     Returns the canonical ID for a given bit of text.
     """
@@ -57,7 +58,7 @@ def canonical_id(bit_text : str, url : str='') -> str:
 # where `data` is an array of floats
 
 
-def vector_from_base64(str : str) -> NDArray[np.float32]:
+def vector_from_base64(str: str) -> NDArray[np.float32]:
     return np.frombuffer(base64.b64decode(str), dtype=np.float32)
 
 
@@ -68,7 +69,7 @@ def vector_similarity(x: NDArray[np.float32], y: NDArray[np.float32]) -> float:
 
 
 class BitInfo:
-    def __init__(self, bit: Union['Bit', None] = None, data : Union[BitInfoData, None]=None):
+    def __init__(self, bit: Union['Bit', None] = None, data: Union[BitInfoData, None] = None):
         self._data = data if data else {}
         self._bit = bit
 
@@ -77,7 +78,7 @@ class BitInfo:
         return str(self._data.get('url', ''))
 
     @url.setter
-    def url(self, value : str):
+    def url(self, value: str):
         if value == self.url:
             return
         self._data['url'] = value
@@ -89,7 +90,7 @@ class BitInfo:
         return str(self._data.get('image_url', ''))
 
     @image_url.setter
-    def image_url(self, value : str):
+    def image_url(self, value: str):
         if value == self.image_url:
             return
         self._data['image_url'] = value
@@ -101,7 +102,7 @@ class BitInfo:
         return str(self._data.get('title', ''))
 
     @title.setter
-    def title(self, value : str):
+    def title(self, value: str):
         if value == self.title:
             return
         self._data['title'] = value
@@ -113,7 +114,7 @@ class BitInfo:
         return str(self._data.get('description', ''))
 
     @description.setter
-    def description(self, value : str):
+    def description(self, value: str):
         if value == self.description:
             return
         self._data['description'] = value
@@ -133,7 +134,7 @@ class BitInfo:
 
 
 class Bit:
-    def __init__(self, library : Union['Library', None]=None, data : Union[BitData, None]=None):
+    def __init__(self, library: Union['Library', None] = None, data: Union[BitData, None] = None):
         self._cached_info = None
         self._cached_embedding = None
         self._canonical_id = None
@@ -146,7 +147,8 @@ class Bit:
         if not self.library:
             # We can't validate without knowing our library, which tells us which fields to omit.
             return
-        fields_to_omit = cast(set[str], self.library.fields_to_omit if self.library else set())
+        fields_to_omit = cast(
+            set[str], self.library.fields_to_omit if self.library else set())
         bit_id = self.id
         embedding_model = self.library.embedding_model if self.library else ''
         expected_embedding_length = EXPECTED_EMBEDDING_LENGTH.get(
@@ -214,7 +216,7 @@ class Bit:
         return str(self._data.get('text', ''))
 
     @text.setter
-    def text(self, value : str):
+    def text(self, value: str):
         if self.text == value:
             return
         self._data['text'] = value
@@ -229,7 +231,7 @@ class Bit:
         return result
 
     @token_count.setter
-    def token_count(self, value : int):
+    def token_count(self, value: int):
         self._data['token_count'] = value
 
     @property
@@ -244,9 +246,10 @@ class Bit:
         return self._cached_embedding
 
     @embedding.setter
-    def embedding(self, value : Union[NDArray[np.float32], None]):
+    def embedding(self, value: Union[NDArray[np.float32], None]):
         self._cached_embedding = value
-        self._data['embedding'] = Library.base64_from_vector(value).decode('ascii')
+        self._data['embedding'] = Library.base64_from_vector(
+            value).decode('ascii')
 
     @property
     def similarity(self) -> float:
@@ -256,7 +259,7 @@ class Bit:
         return result
 
     @similarity.setter
-    def similarity(self, value : float):
+    def similarity(self, value: float):
         self._data['similarity'] = value
 
     @property
@@ -267,7 +270,7 @@ class Bit:
         return str(result)
 
     @access_tag.setter
-    def access_tag(self, value : Union[str, None]):
+    def access_tag(self, value: Union[str, None]):
         self._data['access_tag'] = value
 
     @property
@@ -299,10 +302,10 @@ class Bit:
 
 class Library:
 
-    EMBEDDINGS_MODEL_ID : Final[str] = EMBEDDINGS_MODEL_ID
-    CURRENT_VERSION : Final[int] = CURRENT_VERSION
+    EMBEDDINGS_MODEL_ID: Final[str] = EMBEDDINGS_MODEL_ID
+    CURRENT_VERSION: Final[int] = CURRENT_VERSION
 
-    def __init__(self, data : Union[LibraryData, None]=None, blob:Union[str, None]=None, filename:Union[str, None]=None, access_tag:Union[str, bool, None]=None):
+    def __init__(self, data: Union[LibraryData, None] = None, blob: Union[str, None] = None, filename: Union[str, None] = None, access_tag: Union[str, bool, None] = None):
 
         # The only actual data member of the class is _data. If that ever
         # changes, also change copy().
@@ -334,7 +337,7 @@ class Library:
 
         content = self._data.get('bits', [])
         assert isinstance(content, list)
-        self._bits = cast(dict[str,Bit],{})
+        self._bits = cast(dict[str, Bit], {})
         # _bits_in_order is an inflated bit in the same order as the underlying data.
         self._bits_in_order = cast(list[Bit], [])
         for bit_data in content:
@@ -351,10 +354,10 @@ class Library:
         self.validate()
 
     @classmethod
-    def load_data_file(cls, file : str) -> LibraryData:
+    def load_data_file(cls, file: str) -> LibraryData:
         with open(file, "r") as f:
             return json.load(f)
-        
+
     # In JS, the argument can be produced with with:
     # ```
     # new Float32Array(new Uint8Array([...atob(encoded_data)].map(c => c.charCodeAt(0))).buffer);
@@ -398,7 +401,7 @@ class Library:
         return result
 
     @version.setter
-    def version(self, value : int):
+    def version(self, value: int):
         self._data['version'] = value
 
     @property
@@ -408,7 +411,7 @@ class Library:
         return result
 
     @embedding_model.setter
-    def embedding_model(self, value : str):
+    def embedding_model(self, value: str):
         if value != EMBEDDINGS_MODEL_ID:
             raise TypeError(
                 f'The only supported value for embedding model is {EMBEDDINGS_MODEL_ID}')
@@ -434,7 +437,7 @@ class Library:
         return fields_to_omit
 
     @omit.setter
-    def omit(self, value : str):
+    def omit(self, value: str):
         _, _, canonical_value = _keys_to_omit(value)
         if 'omit' in self._data and canonical_value == self._data['omit']:
             return
@@ -453,7 +456,7 @@ class Library:
         return result
 
     @sort.setter
-    def sort(self, value : str):
+    def sort(self, value: str):
         if value == self.sort:
             return
         if value not in LEGAL_SORTS:
@@ -463,7 +466,7 @@ class Library:
             del self._data['sort']
         self._re_sort()
 
-    def _insert_bit_in_order(self, bit : Bit):
+    def _insert_bit_in_order(self, bit: Bit):
         # bits is already in sorted order so we can do a bisect into it
         # instead of resorting after every insert, considerably faster.
         sort_type = self._data.get('sort', 'any')
@@ -473,7 +476,7 @@ class Library:
         if sort_type == 'similarity':
             # NOTE: if sort_reversed is ever supported, then bisect_left will
             # not be sufficient.
-            def get_similarity(bit : Bit) -> float:
+            def get_similarity(bit: Bit) -> float:
                 if not bit:
                     return -1
                 # We want to revese the similarity, because bisect assumes keys
@@ -502,7 +505,7 @@ class Library:
             rng = random.Random()
             rng.shuffle(bits_in_order)
         elif sort_type == 'similarity':
-            def get_similarity(bit : Bit) -> float:
+            def get_similarity(bit: Bit) -> float:
                 similarity = bit.similarity
                 if similarity == -1:
                     bit_id = bit.id
@@ -524,7 +527,7 @@ class Library:
             bits.append(bit._data)
         self._assert_bits_synced('_re_sort')
 
-    def _assert_bits_synced(self, callsite : str=''):
+    def _assert_bits_synced(self, callsite: str = ''):
         # Throws if the invariant that self._data[bits] and self._bits and
         # self._bits_in_order is not met. A useful check internally for
         # anything that modifies bits to verify everything is correct and find
@@ -549,7 +552,7 @@ class Library:
         return result
 
     @_details.setter
-    def _details(self, value : LibraryDetailsData):
+    def _details(self, value: LibraryDetailsData):
         self._data['details'] = value
 
     @property
@@ -562,7 +565,7 @@ class Library:
         return result
 
     @counts.setter
-    def counts(self, value : LibraryDetailsCountsData):
+    def counts(self, value: LibraryDetailsCountsData):
         self._details = self._details
         self._details['counts'] = value
 
@@ -574,7 +577,7 @@ class Library:
         return counts['bits']
 
     @count_bits.setter
-    def count_bits(self, value : int):
+    def count_bits(self, value: int):
         self._details = self._details
         self.counts = self.counts
         self.counts['bits'] = value
@@ -587,7 +590,7 @@ class Library:
         return counts['restricted']
 
     @count_restricted.setter
-    def count_restricted(self, value : int):
+    def count_restricted(self, value: int):
         self._details = self._details
         self.counts = self.counts
         self.counts['restricted'] = value
@@ -600,7 +603,7 @@ class Library:
         return result
 
     @message.setter
-    def message(self, value : str):
+    def message(self, value: str):
         self._details = self._details
         self._details['message'] = value
 
@@ -667,7 +670,7 @@ class Library:
         self._bits = {}
         self._bits_in_order = []
 
-    def delete_restricted_bits(self, access_token : Union[str, None]=None):
+    def delete_restricted_bits(self, access_token: Union[str, None] = None):
         """
         Deletes all bits that are restricted, unless access_token grants access.
 
@@ -688,7 +691,7 @@ class Library:
 
         return restricted_count
 
-    def bit(self, bit_id : str) -> Union[Bit, None]:
+    def bit(self, bit_id: str) -> Union[Bit, None]:
         return self._bits.get(bit_id, None)
 
     @property
@@ -729,7 +732,7 @@ class Library:
         self._bits[bit.id] = bit
         self._insert_bit_in_order(bit)
 
-    def serializable(self, include_access_tag:bool=False):
+    def serializable(self, include_access_tag: bool = False):
         """
         Returns a dict representing the data in the library that is suitable for
         being serialized e.g. into JSON.
@@ -740,7 +743,7 @@ class Library:
                 del bit['access_tag']
         return result
 
-    def slice(self, count : int, count_type_is_bit:bool=False) -> 'Library':
+    def slice(self, count: int, count_type_is_bit: bool = False) -> 'Library':
         """
         Returns a new library that contains a subset of the first items of self
         up to size count.
@@ -775,12 +778,12 @@ class Library:
             counter += 1
         return result
 
-    def save(self, filename : str):
+    def save(self, filename: str):
         result = self.serializable()
         with open(filename, 'w') as f:
             json.dump(result, f, indent='\t')
 
-    def _similarities(self, query_embedding : NDArray[np.float32]):
+    def _similarities(self, query_embedding: NDArray[np.float32]):
         bits = sorted([
             (vector_similarity(query_embedding, bit.embedding), bit.id)
             for bit
@@ -788,7 +791,7 @@ class Library:
             if bit.embedding is not None], reverse=True)
         return {key: value for value, key in bits}
 
-    def compute_similarities(self, query_embedding : Union[NDArray[np.float32], None]):
+    def compute_similarities(self, query_embedding: Union[NDArray[np.float32], None]):
         # if we won't store the similarities anyway then don't bother.
         if self.omit_whole_bit or 'similarities' in self.fields_to_omit or query_embedding is None:
             return
@@ -800,7 +803,7 @@ class Library:
             bit.similarity = similarity
 
     @classmethod
-    def _validate_query_arguments(cls, args : dict[str, Union[str, int]]):
+    def _validate_query_arguments(cls, args: dict[str, Union[str, int]]):
         version = int(args.get('version', -1))
         raw_query_embedding = args.get('query_embedding')
         query_embedding_model = str(args.get('query_embedding_model'))
@@ -821,7 +824,8 @@ class Library:
             raise Exception(f'version must be at least {CURRENT_VERSION}')
 
         if query_embedding_model != EMBEDDINGS_MODEL_ID:
-            raise Exception(f'Embedding model was {query_embedding_model} but expected {EMBEDDINGS_MODEL_ID}')
+            raise Exception(
+                f'Embedding model was {query_embedding_model} but expected {EMBEDDINGS_MODEL_ID}')
 
         query_embedding = None
         if raw_query_embedding:
@@ -831,7 +835,8 @@ class Library:
             query_embedding = vector_from_base64(raw_query_embedding)
         else:
             embedding_length = EXPECTED_EMBEDDING_LENGTH[query_embedding_model]
-            query_embedding = np.random.rand(embedding_length).astype(np.float32)
+            query_embedding = np.random.rand(
+                embedding_length).astype(np.float32)
 
         if count_type not in LEGAL_COUNT_TYPES:
             raise Exception(
@@ -844,11 +849,11 @@ class Library:
             'access_token': access_token
         })
 
-    def _produce_query_result(self, query_embedding : NDArray[np.float32]):
-        self.compute_similarities(query_embedding)
-        self.sort = 'similarity'
+    def _produce_query_result(self, target, query_embedding: NDArray[np.float32]):
+        target.compute_similarities(query_embedding)
+        target.sort = 'similarity'
 
-    def _remove_restricted_bits(self, count : int, omit : str, count_type : str, access_token : Union[str, None]):
+    def _remove_restricted_bits(self, count: int, omit: str, count_type: str, access_token: Union[str, None]):
         count_type_is_bit = count_type == 'bit'
         restricted_count = self.delete_restricted_bits(access_token)
         result = self.slice(count, count_type_is_bit=count_type_is_bit)
@@ -866,10 +871,10 @@ class Library:
             result.message = 'Restricted results were omitted. ' + restricted_message
         return result
 
-    def query(self, args : dict[str, Union[str, int]]):
+    def query(self, args: dict[str, Union[str, int]]):
         query_embedding, access_args = self._validate_query_arguments(args)
         result = self.copy()
-        result._produce_query_result(query_embedding)
+        self._produce_query_result(result, query_embedding)
         return result._remove_restricted_bits(**access_args)
 
 

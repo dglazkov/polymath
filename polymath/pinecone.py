@@ -2,13 +2,15 @@ import os
 
 import numpy as np
 import pinecone
-from .library import EXPECTED_EMBEDDING_LENGTH, Bit, Library
+from numpy.typing import NDArray
 from overrides import override
+
+from .library import Bit, Library
 
 # TODO: Make this configurable. Alternatively if we run out of content before
 # hitting our content bar, fetch another chunk of content from pinecone until we
 # have enough to return as many as the user asked for.
-TOP_K = 100
+TOP_K = 15
 
 
 class PineconeConfig:
@@ -25,8 +27,8 @@ class PineconeLibrary(Library):
         super().__init__()
 
     @override
-    def _produce_query_result(self, query_embedding):
-        self.omit = 'embedding'
+    def _produce_query_result(self, target, query_embedding: NDArray[np.float32]):
+        target.omit = 'embedding'
         pinecone.init(
             api_key=self.config.api_key,
             environment=self.config.environment)
@@ -41,7 +43,7 @@ class PineconeLibrary(Library):
             bit = Bit(data={
                 'id': item['id'],
                 'text': item['metadata']['text'],
-                'token_count': item['metadata'].get('token_count'),
+                'token_count': int(item['metadata'].get('token_count')),
                 'access_tag': item['metadata'].get('access_tag'),
                 'info': {
                     'url': item['metadata']['url'],
@@ -50,4 +52,4 @@ class PineconeLibrary(Library):
                     'description': item['metadata'].get('description'),
                 }
             })
-            self.insert_bit(bit)
+            target.insert_bit(bit)
