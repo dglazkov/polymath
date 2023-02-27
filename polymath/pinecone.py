@@ -2,7 +2,7 @@ import os
 
 import numpy as np
 import pinecone
-from library import EXPECTED_EMBEDDING_LENGTH, Bit, Library, vector_from_base64
+from .library import EXPECTED_EMBEDDING_LENGTH, Bit, Library
 from overrides import override
 
 # TODO: Make this configurable. Alternatively if we run out of content before
