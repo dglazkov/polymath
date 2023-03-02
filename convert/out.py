@@ -67,7 +67,7 @@ class PineconeExporter(BaseExporter):
             metadata['access_tag'] = bit.access_tag
 
         raw_embedding = bit.embedding
-        if not raw_embedding:
+        if raw_embedding is None:
             return
 
         embedding = raw_embedding.tolist()
@@ -88,13 +88,18 @@ class PineconeExporter(BaseExporter):
         if not index_name:
             raise Exception('No index name provided')
 
+        print('Initializing Pinecone ...')
         pinecone.init(
             api_key=api_key,
             environment=PINECONE_ENVIRONMENT)
         if self.index_name not in pinecone.list_indexes():
+            print(f'Creating index "{index_name}" ...')
             pinecone.create_index(index_name, dimension=VECTOR_DIMENSIONS)
         index = pinecone.Index(index_name)
+        print('Index initialized')
+        print(f'Sending {len(self.vectors)} vectors ...')
         for batch in make_batches(self.vectors, BATCH_SIZE):
+            print('Sending batch of vectors ...')
             index.upsert(
                 vectors=batch,
                 namespace=self.namespace)
