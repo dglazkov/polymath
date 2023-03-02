@@ -15,8 +15,8 @@ BATCH_SIZE = 100 # Size of the vector batch to send to Pinecone
 
 
 class BaseExporter:
-    def start(self, args : argparse.Namespace) -> None:
-        pass
+    def start(self, args : argparse.Namespace) -> bool:
+        return True
 
     def export_bit(self, bit : Bit):
         pass
@@ -35,9 +35,10 @@ class PineconeExporter(BaseExporter):
         self.vectors = []
 
     @override
-    def start(self, args: argparse.Namespace) -> None:
+    def start(self, args: argparse.Namespace) -> bool:
         self.index_name = args.index
         self.namespace = args.namespace
+        return True
 
     @override
     def install_args(self, parser: argparse.ArgumentParser):
