@@ -1,4 +1,7 @@
+NOTE: Consider this document archived. Its contents are now maintained in the [polymath-ai/architecture](https://github.com/polymath-ai/architecture/blob/main/format.md) repository.
+
 The format of the library files is as follows:
+
 ```
 {
   version: 1,
@@ -10,7 +13,7 @@ The format of the library files is as follows:
   sort: 'random',
   //details is optional. It's typically only set for libraries generated from Library.query()
   details: {
-    //Message is optional and will be displayed when 
+    //Message is optional and will be displayed when
     message: "A message that will be displayed when Library() is called with this data"
     //Counts is optional. It can be retrieved or set by Library.counts.
     counts: {
