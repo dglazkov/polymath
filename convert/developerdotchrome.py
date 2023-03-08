@@ -38,6 +38,7 @@ class DeveloperDotChromeImporter(BaseImporter):
         # print(markdownText)
 
         markdownText = re.sub(r"{%[^%]*%}", "", markdownText)
+        markdownText = re.sub(r"<img src=\"data:image\/jpeg;[^>]+>", "", markdownText)
         text = markdownText.split("\n\n")
 
         return generate_chunks([text])
