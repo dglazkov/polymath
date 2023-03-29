@@ -44,7 +44,7 @@ class HTMLScraperImporter(BaseImporter):
             info['title'] = title
         
         meta = soup.find("meta", attrs={"name": "description"})
-        if meta and isinstance(meta, Tag) and meta["content"]:
+        if meta and isinstance(meta, Tag) and "content" in meta and meta["content"]:
             info['description'] = str(meta["content"])
 
         body_ele = soup.find('body')
