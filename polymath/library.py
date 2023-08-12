@@ -253,7 +253,7 @@ class Bit:
 
     @property
     def similarity(self) -> float:
-        result = self._data.get('similarity', -1)
+        result = self._data.get('similarity', -1.0)
         if not isinstance(result, float):
             raise Exception('similarity not float as expected')
         return result
